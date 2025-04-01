@@ -9,12 +9,12 @@
 return {
   -- NOTE: Yes, you can install new plugins here!
   'mfussenegger/nvim-dap',
-  'mfussenegger/nvim-dap-python',
   -- NOTE: And you can specify dependencies as well
   dependencies = {
     -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
 
+    'mfussenegger/nvim-dap-python',
     -- Required dependency for nvim-dap-ui
     'nvim-neotest/nvim-nio',
 
@@ -136,7 +136,7 @@ return {
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
-    require('dap-python').setup '/.venv/bin/python'
+    require('dap-python').setup '/usr/bin/python'
     -- Install golang specific config
     require('dap-go').setup {
       delve = {
