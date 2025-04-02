@@ -16,3 +16,5 @@ vim.diagnostic.config {
 }
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next Diagnostic' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev Diagnostic' })
+  require('mini.move').setup() -- use default config
+vim.keymap.set('n', <M-r>', vim.lsp.buf.rename, { desc = 'Rename in buffer' })
