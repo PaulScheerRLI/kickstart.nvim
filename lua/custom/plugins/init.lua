@@ -40,6 +40,7 @@ return {
   harpoon,
   { 'tpope/vim-fugitive' },
   { 'echasnovski/mini.surround' },
+  { 'echasnovski/mini.move', config = require('mini.move').setup() },
   {
     'echasnovski/mini.sessions',
     config = function()
