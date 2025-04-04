@@ -41,6 +41,13 @@ return {
   { 'tpope/vim-fugitive' },
   { 'echasnovski/mini.surround' },
   {
+    'echasnovski/mini.sessions',
+    config = function()
+      print 'minis sessions'
+      require('mini.sessions').setup()
+    end,
+  },
+  {
     'mhartington/formatter.nvim',
     config = function()
       local augroup = vim.api.nvim_create_augroup
