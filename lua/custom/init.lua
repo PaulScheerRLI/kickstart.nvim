@@ -16,3 +16,6 @@ vim.diagnostic.config {
 }
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next Diagnostic' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev Diagnostic' })
+
+-- Just for Documentation
+-- Open neo tree with <Alt-Gr -\>
