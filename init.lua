@@ -1,3 +1,11 @@
+foo = function()
+  print 'starting my server'
+  vim.lsp.start {
+    name = 'my-server',
+    cmd = { 'J:/dev/python/django-manager-lsp/.venv/Scripts/python.exe', 'J:/dev/python/django-manager-lsp/main.py' },
+    root_dir = vim.fs.root(0, { 'pyproject.toml', 'setup.py' }),
+  }
+end
 --[[
 
 =====================================================================
@@ -91,7 +99,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -768,10 +776,11 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
+
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -1033,3 +1042,25 @@ require('lazy').setup({
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 require 'custom'
+
+local lspconfig = require 'lspconfig'
+local configs = require 'lspconfig.configs'
+local root_files = {
+  'pyproject.toml',
+  'setup.py',
+  'setup.cfg',
+  'requirements.txt',
+  'Pipfile',
+  '.git',
+}
+
+if not configs.my_server then
+  configs.my_server = {
+    default_config = {
+      cmd = { 'J:/dev/python/django-manager-lsp/.venv/Scripts/python.exe', 'J:/dev/python/django-manager-lsp/main.py' },
+      root_dir = lspconfig.util.root_pattern(unpack(root_files)),
+      filetypes = { 'python' },
+    },
+  }
+end
+lspconfig.my_server.setup {}
