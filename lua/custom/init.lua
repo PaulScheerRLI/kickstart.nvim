@@ -40,5 +40,5 @@ vim.keymap.set('n', '<C-a>', function()
   print('File added: ' .. file)
 end, { desc = 'Add file to git' })
 
--- Style Breakpoint
-vim.fn.sign_define('DapBreakpoint', { text = '•', texthl = 'red', linehl = '', numhl = '' })
+-- Style Breakpoint: Commented it since this styling is done in debug.lua
+--vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'red', linehl = '', numhl = '' })
