@@ -39,3 +39,6 @@ vim.keymap.set('n', '<C-a>', function()
   vim.cmd 'Gwrite'
   print('File added: ' .. file)
 end, { desc = 'Add file to git' })
+
+-- Style Breakpoint
+vim.fn.sign_define('DapBreakpoint', { text = '•', texthl = 'red', linehl = '', numhl = '' })
