@@ -66,7 +66,7 @@ return {
       print ':lua MiniSessions.write/read("foo")'
       require('mini.sessions').setup {
         -- Whether to read default session if Neovim opened without file arguments
-        autoread = true,
+        autoread = false,
 
         -- Whether to write currently read session before quitting Neovim
         autowrite = false,
