@@ -773,7 +773,10 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { 'isort', 'black' },
+        python = {
+          --'isort',
+          'black',
+        },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -1020,24 +1023,24 @@ require('lazy').setup({
 -- vim: ts=2 sts=2 sw=2 et
 require 'custom'
 
-local lspconfig = require 'lspconfig'
-local configs = require 'lspconfig.configs'
-local root_files = {
-  'pyproject.toml',
-  'setup.py',
-  'setup.cfg',
-  'requirements.txt',
-  'Pipfile',
-  '.git',
-}
-
-if not configs.my_server then
-  configs.my_server = {
-    default_config = {
-      cmd = { 'J:/dev/python/django-manager-lsp/.venv/Scripts/python.exe', 'J:/dev/python/django-manager-lsp/main.py' },
-      root_dir = lspconfig.util.root_pattern(unpack(root_files)),
-      filetypes = { 'python' },
-    },
-  }
-end
-lspconfig.my_server.setup {}
+--local lspconfig = require 'lspconfig'
+--local configs = require 'lspconfig.configs'
+--local root_files = {
+--  'pyproject.toml',
+--  'setup.py',
+--  'setup.cfg',
+--  'requirements.txt',
+--  'Pipfile',
+--  '.git',
+--}
+--
+--if not configs.my_server then
+--  configs.my_server = {
+--    default_config = {
+--      cmd = { 'J:/dev/python/django-manager-lsp/.venv/Scripts/python.exe', 'J:/dev/python/django-manager-lsp/main.py' },
+--      root_dir = lspconfig.util.root_pattern(unpack(root_files)),
+--      filetypes = { 'python' },
+--    },
+--  }
+--end
+--lspconfig.my_server.setup {}
