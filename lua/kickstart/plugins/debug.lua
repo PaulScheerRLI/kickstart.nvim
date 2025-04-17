@@ -56,6 +56,13 @@ return {
       desc = 'Debug: Step Out',
     },
     {
+      '<F4>',
+      function()
+        require('dap').focus_frame()
+      end,
+      desc = 'Debug: Focus Frame / Execution Line',
+    },
+    {
       '<leader>b',
       function()
         require('dap').toggle_breakpoint()
