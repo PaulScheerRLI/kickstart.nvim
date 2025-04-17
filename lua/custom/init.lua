@@ -21,3 +21,21 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev Diagnostic' }
 --
 vim.keymap.set('n', '<M-r>', vim.lsp.buf.rename, { desc = 'Rename in buffer' })
 vim.keymap.set('n', '<leader>n', '<cmd>bn<CR>', { desc = 'Next Buffer' })
+
+vim.api.nvim_set_hl(0, 'WinSeparator', { fg = '#c0caf5', bold = true })
+vim.opt.fillchars = {
+  horiz = '━',
+  horizup = '┻',
+  horizdown = '┳',
+  vert = '┃',
+  vertleft = '┫',
+  vertright = '┣',
+  verthoriz = '╋',
+}
+
+-- For fugitive adding file to git
+vim.keymap.set('n', '<C-a>', function()
+  local file = vim.fn.expand '%'
+  vim.cmd 'Gwrite'
+  print('File added: ' .. file)
+end, { desc = 'Add file to git' })
