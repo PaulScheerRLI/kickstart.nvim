@@ -128,7 +128,10 @@ return {
     }
 
     -- Change breakpoint icons
-    vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#e51400' })
+    -- vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#e51400' })
+
+    vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#fff0ff' })
+    -- vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffccff' })
     -- Not used. instead we use the tokyonight hl group DapStoppedLine
     -- vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffcc00', bg = '#ffcc00', blend = 90 })
     local breakpoint_icons = { Breakpoint = '', BreakpointCondition = '', BreakpointRejected = '', LogPoint = '', Stopped = '' }
@@ -137,8 +140,16 @@ return {
     --   or { Breakpoint = '●', BreakpointCondition = '⊜', BreakpointRejected = '⊘', LogPoint = '◆', Stopped = '⭔' }
     for type, icon in pairs(breakpoint_icons) do
       local tp = 'Dap' .. type
-      local hl = (type == 'Stopped') and 'DapStoppedLine' or 'DapBreak'
-      vim.fn.sign_define(tp, { text = icon, linehl = hl, texthl = hl, numhl = hl })
+      local hl
+      if type == 'Stopped' then
+        hl = 'DapStoppedLine'
+        vim.fn.sign_define(tp, { text = icon, linehl = hl, texthl = hl, numhl = hl })
+      else
+        hl = 'DapBreak'
+        vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
+      end
+      -- local hl = (type == 'Stopped') and 'DapStoppedLine' or 'DapBreak'
+      -- vim.fn.sign_define(tp, { text = icon, linehl = hl, texthl = hl, numhl = hl })
     end
 
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
