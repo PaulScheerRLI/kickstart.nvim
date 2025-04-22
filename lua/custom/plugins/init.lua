@@ -34,6 +34,10 @@ local harpoon = {
     vim.keymap.set('n', '<C-n>', function()
       harpoon_ui.nav_next()
     end, { desc = 'Go to next Harpoon File' })
+
+    vim.keymap.set('n', '<C-m>', function()
+      harpoon_ui.nav_prev()
+    end, { desc = 'Go to prev Harpoon File' })
   end,
 }
 return {
