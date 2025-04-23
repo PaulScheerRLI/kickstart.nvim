@@ -44,6 +44,7 @@ return {
   harpoon,
   { 'tpope/vim-fugitive' },
   { 'echasnovski/mini.surround' },
+  { 'ojroques/nvim-bufdel' },
   {
     'echasnovski/mini.move',
     config = require('mini.move').setup(),
