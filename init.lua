@@ -1,11 +1,3 @@
-foo = function()
-  print 'starting my server'
-  vim.lsp.start {
-    name = 'my-server',
-    cmd = { 'J:/dev/python/django-manager-lsp/.venv/Scripts/python.exe', 'J:/dev/python/django-manager-lsp/main.py' },
-    root_dir = vim.fs.root(0, { 'pyproject.toml', 'setup.py' }),
-  }
-end
 --[[
 
 =====================================================================
@@ -783,7 +775,6 @@ require('lazy').setup({
       },
     },
   },
-
   { -- Autocompletion
     'saghen/blink.cmp',
     event = 'VimEnter',
@@ -860,6 +851,31 @@ require('lazy').setup({
         documentation = { auto_show = false, auto_show_delay_ms = 500 },
       },
 
+      cmdline = {
+        enabled = false,
+        -- If source contains "cmdline" cmdline completion is very slow
+        -- this seems to be some bug, therefore i removed it from the sources
+        sources = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
+        keymap = { preset = 'cmdline' },
+        completion = {
+          trigger = {
+            show_on_blocked_trigger_characters = {},
+            show_on_x_blocked_trigger_characters = {},
+          },
+          list = {
+            selection = {
+              -- When `true`, will automatically select the first item in the completion list
+              preselect = true,
+              -- When `true`, inserts the completion item automatically when selecting it
+              auto_insert = true,
+            },
+          },
+          -- Whether to automatically show the window when new completion items are available
+          menu = { auto_show = false },
+          -- Displays a preview of the selected item on the current line
+          ghost_text = { enabled = true },
+        },
+      },
       sources = {
         default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
         providers = {
@@ -882,7 +898,6 @@ require('lazy').setup({
       signature = { enabled = true },
     },
   },
-
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
@@ -1022,7 +1037,7 @@ require('lazy').setup({
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 require 'custom'
-
+print 'Blink cmdline completion turned off!'
 --local lspconfig = require 'lspconfig'
 --local configs = require 'lspconfig.configs'
 --local root_files = {
