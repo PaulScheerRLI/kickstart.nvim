@@ -87,6 +87,7 @@ return {
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
+    require('dap').set_exception_breakpoints { 'raised', 'uncaught' }
 
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
@@ -144,7 +145,26 @@ return {
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
+    require('dap').configurations.python = {
+      {
+        type = 'python',
+        request = 'launch',
+        name = 'file:args with not justMyCode',
+        program = '${file}',
+        args = function()
+          local args_string = vim.fn.input 'Arguments: '
+          local utils = require 'dap.utils'
+          if utils.splitstr and vim.fn.has 'nvim-0.10' == 1 then
+            return utils.splitstr(args_string)
+          end
+          return vim.split(args_string, ' +')
+        end,
+        justMyCode = false,
+        console = 'integratedTerminal',
+      },
+    }
     require('dap-python').setup 'python'
+
     -- Install golang specific config
     require('dap-go').setup {
       delve = {
