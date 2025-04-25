@@ -62,6 +62,13 @@ return {
       desc = 'Debug: Focus Frame / Execution Line',
     },
     {
+      '<F6>',
+      function()
+        require('dap').run_to_cursor()
+      end,
+      desc = 'Debug: Debug till cursor',
+    },
+    {
       '<leader>b',
       function()
         require('dap').toggle_breakpoint()
