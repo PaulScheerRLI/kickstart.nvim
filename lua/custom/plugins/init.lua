@@ -5,41 +5,74 @@
 -- See the kickstart.nvim README for more information
 local harpoon = {
   'ThePrimeagen/harpoon',
+  branch = 'harpoon2',
+
+  dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
   config = function()
     local harpoon = require 'harpoon'
-    local harpoon_ui = require 'harpoon.ui'
 
-    harpoon.setup()
+    -- REQUIRED
+    harpoon:setup()
+    -- REQUIRED
 
     vim.keymap.set('n', '<leader>a', function()
-      require('harpoon.mark').add_file()
+      harpoon:list():add()
+    end)
+    vim.keymap.set('n', '<C-s>', function()
+      harpoon.ui:toggle_quick_menu(harpoon:list())
     end)
 
-    vim.keymap.set('n', '<C-e>', function()
-      harpoon_ui.toggle_quick_menu()
-    end, { desc = 'Toogle quick menu in Harpoon' })
-
     vim.keymap.set('n', '<C-h>', function()
-      harpoon_ui.nav_file(1)
-    end, { desc = 'Go to file 1 in Harpoon' })
-
+      harpoon:list():select(1)
+    end)
     vim.keymap.set('n', '<C-t>', function()
-      harpoon_ui.nav_file(2)
-    end, { desc = 'Go to file 2 in Harpoon' })
-
-    vim.keymap.set('n', '<C-s>', function()
-      harpoon_ui.nav_file(3)
-    end, { desc = 'Go to file 3 in Harpoon' })
-
+      harpoon:list():select(2)
+    end)
     vim.keymap.set('n', '<C-n>', function()
-      harpoon_ui.nav_next()
-    end, { desc = 'Go to next Harpoon File' })
+      harpoon:list():select(3)
+    end)
+    --vim.keymap.set('n', '<C-s>', function()
+    --  harpoon:list():select(4)
+    --end)
+
+    -- Toggle previous & next buffers stored within Harpoon list
+    vim.keymap.set('n', '<C-S-P>', function()
+      harpoon:list():prev()
+    end)
+    vim.keymap.set('n', '<C-S-N>', function()
+      harpoon:list():next()
+    end)
+    --
+    -- basic telescope configuration
+    local conf = require('telescope.config').values
+    local function toggle_telescope(harpoon_files)
+      local file_paths = {}
+      for _, item in ipairs(harpoon_files.items) do
+        table.insert(file_paths, item.value)
+      end
+
+      require('telescope.pickers')
+        .new({}, {
+          prompt_title = 'Harpoon',
+          finder = require('telescope.finders').new_table {
+            results = file_paths,
+          },
+          previewer = conf.file_previewer {},
+          sorter = conf.generic_sorter {},
+        })
+        :find()
+    end
+
+    vim.keymap.set('n', '<C-e>', function()
+      toggle_telescope(harpoon:list())
+    end, { desc = 'Open harpoon window' })
   end,
 }
 return {
   harpoon,
   { 'tpope/vim-fugitive' },
   { 'echasnovski/mini.surround' },
+  { 'ojroques/nvim-bufdel' },
   {
     'echasnovski/mini.move',
     config = require('mini.move').setup(),

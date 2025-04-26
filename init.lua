@@ -1,11 +1,3 @@
-foo = function()
-  print 'starting my server'
-  vim.lsp.start {
-    name = 'my-server',
-    cmd = { 'J:/dev/python/django-manager-lsp/.venv/Scripts/python.exe', 'J:/dev/python/django-manager-lsp/main.py' },
-    root_dir = vim.fs.root(0, { 'pyproject.toml', 'setup.py' }),
-  }
-end
 --[[
 
 =====================================================================
@@ -110,13 +102,13 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
 
 -- Don't show the mode, since it's already in the status line
-vim.opt.showmode = false
+vim.opt.showmode = true
 
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
@@ -765,11 +757,16 @@ require('lazy').setup({
           return nil
         else
           return {
-            timeout_ms = 500,
+            timeout_ms = 5000,
             lsp_format = 'fallback',
           }
         end
       end,
+      formatters = {
+        black = {
+          prepend_args = { '--fast' },
+        },
+      },
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
@@ -783,7 +780,6 @@ require('lazy').setup({
       },
     },
   },
-
   { -- Autocompletion
     'saghen/blink.cmp',
     event = 'VimEnter',
@@ -860,6 +856,31 @@ require('lazy').setup({
         documentation = { auto_show = false, auto_show_delay_ms = 500 },
       },
 
+      cmdline = {
+        enabled = false,
+        -- If source contains "cmdline" cmdline completion is very slow
+        -- this seems to be some bug, therefore i removed it from the sources
+        sources = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
+        keymap = { preset = 'cmdline' },
+        completion = {
+          trigger = {
+            show_on_blocked_trigger_characters = {},
+            show_on_x_blocked_trigger_characters = {},
+          },
+          list = {
+            selection = {
+              -- When `true`, will automatically select the first item in the completion list
+              preselect = true,
+              -- When `true`, inserts the completion item automatically when selecting it
+              auto_insert = true,
+            },
+          },
+          -- Whether to automatically show the window when new completion items are available
+          menu = { auto_show = false },
+          -- Displays a preview of the selected item on the current line
+          ghost_text = { enabled = true },
+        },
+      },
       sources = {
         default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
         providers = {
@@ -882,7 +903,6 @@ require('lazy').setup({
       signature = { enabled = true },
     },
   },
-
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
@@ -931,7 +951,41 @@ require('lazy').setup({
       --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      statusline.setup {
+        use_icons = vim.g.have_nerd_font,
+        -- Content of statusline as functions which return statusline string. See
+        -- `:h statusline` and code of default contents (used instead of `nil`).
+        content = {
+          -- Content for active window
+          active = function()
+            local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 120 }
+            local git = MiniStatusline.section_git { trunc_width = 40 }
+            local diff = MiniStatusline.section_diff { trunc_width = 75 }
+            local diagnostics = MiniStatusline.section_diagnostics { trunc_width = 75 }
+            local lsp = MiniStatusline.section_lsp { trunc_width = 75 }
+            local filename = MiniStatusline.section_filename { trunc_width = 140 }
+            local fileinfo = MiniStatusline.section_fileinfo { trunc_width = 120 }
+            local location = MiniStatusline.section_location { trunc_width = 75 }
+            local search = MiniStatusline.section_searchcount { trunc_width = 75 }
+
+            return MiniStatusline.combine_groups {
+              { hl = mode_hl, strings = { mode } },
+              { hl = 'MiniStatuslineFilename', strings = { filename } },
+              { hl = 'MiniStatuslineDevinfo', strings = { git } },
+              '%<', -- Mark general truncate point
+              { hl = 'MiniStatuslineDevinfo', strings = { diff, diagnostics, lsp } },
+              '%=', -- End left alignment
+              { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+              { hl = mode_hl, strings = { search, location } },
+            }
+          end,
+          -- Content for inactive window(s)
+          inactive = nil,
+        },
+
+        -- Whether to use icons by default
+        use_icons = true,
+      }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
@@ -1022,7 +1076,7 @@ require('lazy').setup({
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 require 'custom'
-
+print 'Blink cmdline completion turned off!'
 --local lspconfig = require 'lspconfig'
 --local configs = require 'lspconfig.configs'
 --local root_files = {
