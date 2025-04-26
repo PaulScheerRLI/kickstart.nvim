@@ -3,16 +3,27 @@ return {
   config = function(plugins, opts)
     local iron = require 'iron.core'
 
+    local view = require 'iron.view'
     iron.setup {
       config = {
         -- Whether a repl should be discarded or not
         scratch_repl = true,
         -- Your repl definitions come here
         repl_definition = {
+          ipython = {
+            -- Can be a table or a function that
+            -- returns a table (see below)
+            command = { 'ipython' },
+          },
           python = {
             -- Can be a table or a function that
             -- returns a table (see below)
             command = { 'python' },
+            block_dividers = { '# %%', '#%%' },
+          },
+          django = {
+            command = { 'python', 'manage.py', 'shell', '-i', 'ipython' },
+            format = require('iron.fts.common').bracketed_paste,
           },
         },
         -- How the repl window will be displayed

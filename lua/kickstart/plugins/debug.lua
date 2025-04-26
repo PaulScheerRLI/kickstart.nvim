@@ -95,7 +95,11 @@ return {
     local dap = require 'dap'
     local dapui = require 'dapui'
     require('dap').set_exception_breakpoints { 'raised', 'uncaught' }
-
+    vim.keymap.set('n', '<leader>ri', function()
+      local line = vim.api.nvim_get_current_line()
+      dap.repl.open()
+      dap.repl.execute(line)
+    end, { desc = 'Insert current line to dap Repl' })
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
