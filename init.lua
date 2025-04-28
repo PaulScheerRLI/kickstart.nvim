@@ -856,7 +856,6 @@ require('lazy').setup({
         documentation = { auto_show = false, auto_show_delay_ms = 500 },
       },
       cmdline = {
-        enabled = true,
         -- use 'inherit' to inherit mappings from top level `keymap` config
         keymap = { preset = 'inherit' },
         sources = function()
@@ -894,6 +893,13 @@ require('lazy').setup({
         default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+          cmdline = {
+
+            -- ignores cmdline completions when executing shell commands
+            enabled = function()
+              return vim.fn.getcmdtype() ~= ':' or not vim.fn.getcmdline():match "^[%%0-9,'<>%-]*!"
+            end,
+          },
         },
       },
 
