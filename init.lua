@@ -855,13 +855,22 @@ require('lazy').setup({
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
         documentation = { auto_show = false, auto_show_delay_ms = 500 },
       },
-
       cmdline = {
-        enabled = false,
-        -- If source contains "cmdline" cmdline completion is very slow
-        -- this seems to be some bug, therefore i removed it from the sources
-        sources = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
-        keymap = { preset = 'cmdline' },
+        enabled = true,
+        -- use 'inherit' to inherit mappings from top level `keymap` config
+        keymap = { preset = 'inherit' },
+        sources = function()
+          local type = vim.fn.getcmdtype()
+          -- Search forward and backward
+          if type == '/' or type == '?' then
+            return { 'buffer' }
+          end
+          -- Commands
+          if type == ':' or type == '@' then
+            return { 'cmdline' }
+          end
+          return {}
+        end,
         completion = {
           trigger = {
             show_on_blocked_trigger_characters = {},
