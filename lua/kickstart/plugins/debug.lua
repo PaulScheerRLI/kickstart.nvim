@@ -181,10 +181,26 @@ return {
           end
           return vim.split(args_string, ' +')
         end,
+        variablePresentation = {
+          all = 'group',
+        },
         justMyCode = false,
         console = 'integratedTerminal',
       },
     }
+    table.insert(require('dap').configurations.python, {
+      type = 'python',
+      request = 'launch',
+      name = 'My custom launch configuration',
+      program = '${file}',
+      variablePresentation = {
+        all = 'hide',
+        class = 'group',
+        protected = 'group',
+        special = 'group',
+        -- function cant be set because its a protected name by lua
+      },
+    })
     require('dap-python').setup 'python'
 
     -- Install golang specific config
