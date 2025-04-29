@@ -155,7 +155,7 @@ return {
       local hl
       if type == 'Stopped' then
         hl = 'DapStoppedLine'
-        vim.fn.sign_define(tp, { text = icon, linehl = hl, texthl = hl, numhl = hl })
+        vim.fn.sign_define(tp, { fg = '#8800517', text = icon, linehl = hl, texthl = hl, numhl = hl })
       else
         hl = 'DapBreak'
         vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
@@ -191,8 +191,9 @@ return {
     table.insert(require('dap').configurations.python, {
       type = 'python',
       request = 'launch',
-      name = 'My custom launch configuration',
-      program = '${file}',
+      name = 'Django runserver --no reload',
+      args = { 'runserver', '--noreload' },
+      program = vim.loop.cwd() .. '/manage.py',
       variablePresentation = {
         all = 'hide',
         class = 'group',

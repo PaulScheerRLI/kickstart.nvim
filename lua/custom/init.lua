@@ -2,10 +2,10 @@
 -- Folding by indent is nice, without ignoring anything
 print 'Setting Foldmethods in nvim/myinit.lua'
 vim.opt.foldmethod = 'indent'
-vim.opt.foldlevel = 5
---vim.opt.foldnestmax = 99
+vim.opt.foldlevel = 99
+vim.opt.foldnestmax = 99
 -- vim.opt.foldignore = ''
-
+vim.cmd 'command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
 vim.keymap.set('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
 vim.opt.colorcolumn = '100'
 
