@@ -145,7 +145,7 @@ return {
     vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#fff0ff' })
     -- vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffccff' })
     -- Not used. instead we use the tokyonight hl group DapStoppedLine
-    -- vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffcc00', bg = '#ffcc00', blend = 90 })
+    vim.api.nvim_set_hl(0, 'DapStop', { fg = '#e60e44' })
     local breakpoint_icons = { Breakpoint = '', BreakpointCondition = '', BreakpointRejected = '', LogPoint = '', Stopped = '' }
     -- local breakpoint_icons = vim.g.have_nerd_font
     --  and { Breakpoint = '', BreakpointCondition = '', BreakpointRejected = '', LogPoint = '', Stopped = '' }
@@ -155,7 +155,7 @@ return {
       local hl
       if type == 'Stopped' then
         hl = 'DapStoppedLine'
-        vim.fn.sign_define(tp, { fg = '#8800517', text = icon, linehl = hl, texthl = hl, numhl = hl })
+        vim.fn.sign_define(tp, { text = icon, linehl = hl, texthl = 'DapStop', numhl = 'DapStop' })
       else
         hl = 'DapBreak'
         vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
