@@ -6,14 +6,13 @@ vim.opt.foldlevel = 99
 vim.opt.foldnestmax = 99
 -- vim.opt.foldignore = ''
 vim.cmd 'command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
+
+-- We set the signcolumn to 2 so Errors and writing status can both be shown instead of
+-- overwritting each other
+vim.opt.signcolumn = 'yes:2'
 vim.keymap.set('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
 vim.opt.colorcolumn = '100'
 
-vim.diagnostic.config {
-  virtual_text = false,
-  underline = true,
-  signs = true,
-}
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next Diagnostic' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev Diagnostic' })
 -- Just for Documentation

@@ -191,6 +191,22 @@ return {
     table.insert(require('dap').configurations.python, {
       type = 'python',
       request = 'launch',
+      name = 'Django runserver WITH reload',
+      args = { 'runserver' },
+      django = true,
+      program = vim.loop.cwd() .. '/manage.py',
+      variablePresentation = {
+        all = 'hide',
+        class = 'group',
+        protected = 'group',
+        special = 'group',
+        -- function cant be set because its a protected name by lua
+      },
+    })
+    table.insert(require('dap').configurations.python, {
+      type = 'python',
+      request = 'launch',
+      django = true,
       name = 'Django runserver --no reload',
       args = { 'runserver', '--noreload' },
       program = vim.loop.cwd() .. '/manage.py',
