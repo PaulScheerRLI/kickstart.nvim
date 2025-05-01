@@ -716,6 +716,7 @@ require('lazy').setup({
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+
             require('lspconfig')[server_name].setup(server)
           end,
         },
@@ -1022,3 +1023,9 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+local on_attach = function(client, bufnr)
+  local navic = require 'nvim-navic'
+  if client.server_capabilties.documentSymbolProvider then
+    navic.attach(client, bufnr)
+  end
+end
