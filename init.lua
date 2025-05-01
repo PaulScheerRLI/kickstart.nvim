@@ -487,6 +487,7 @@ require('lazy').setup({
           local navbuddy = require 'nvim-navbuddy'
           local actions = require 'nvim-navbuddy.actions'
 
+          vim.keymap.set('n', 'grN', navbuddy.open, { desc = '[G]oto [N]avbuddy window' })
           navbuddy.setup {
             window = {
               border = 'single', -- "rounded", "double", "solid", "none"
