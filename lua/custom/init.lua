@@ -5,7 +5,7 @@ vim.opt.foldmethod = 'indent'
 vim.opt.foldlevel = 99
 vim.opt.foldnestmax = 99
 -- vim.opt.foldignore = ''
-vim.cmd 'command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
+vim.cmd 'command! DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
 
 -- We set the signcolumn to 2 so Errors and writing status can both be shown instead of
 -- overwritting each other
@@ -35,7 +35,7 @@ vim.opt.fillchars = {
 }
 
 -- For fugitive adding file to git
-vim.keymap.set('n', '<C-a>', function()
+vim.keymap.set('n', '<A-a>', function()
   local file = vim.fn.expand '%'
   vim.cmd 'Gwrite'
   print('File added: ' .. file)
