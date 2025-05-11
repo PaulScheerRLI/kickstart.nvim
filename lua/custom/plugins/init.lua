@@ -70,16 +70,14 @@ local harpoon = {
 }
 return {
   harpoon,
-  --  {
-  --    'SmiteshP/nvim-navbuddy',
-  --    dependencies = {
-  --      'neovim/nvim-lspconfig',
-  --      'SmiteshP/nvim-navic',
-  --      'MunifTanjim/nui.nvim',
-  --      'numToStr/Comment.nvim', -- Optional
-  --      'nvim-telescope/telescope.nvim', -- Optional
-  --    },
-  --},
+  {
+    'b0o/incline.nvim',
+    config = function()
+      require('incline').setup()
+    end,
+    -- Optional: Lazy load Incline
+    event = 'VeryLazy',
+  },
   {
     'SmiteshP/nvim-navic',
     dependencies = { 'neovim/nvim-lspconfig' },
@@ -152,6 +150,7 @@ return {
         --},
         -- OR in winbar
         winbar = {
+          lualine_a = { '' },
           lualine_c = {
             'navic',
             color_correction = nil,
