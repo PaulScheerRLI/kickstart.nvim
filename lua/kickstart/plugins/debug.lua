@@ -192,6 +192,7 @@ return {
       type = 'python',
       request = 'launch',
       name = 'Django manage.py with custom args',
+      console = 'integratedTerminal',
       args = function()
         local args_string = vim.fn.input 'Arguments: '
         local utils = require 'dap.utils'
