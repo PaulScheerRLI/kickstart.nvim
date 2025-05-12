@@ -12,6 +12,8 @@ return {
 
     vim.keymap.set('n', '<leader>ah', function()
       harpoon:list():add()
+      local file = vim.fn.expand '%'
+      print('Added to harpoon: ' .. file)
     end, { desc = '<Leader> [a]dd to [h]arpoon' })
     vim.keymap.set('n', '<C-s>', function()
       harpoon.ui:toggle_quick_menu(harpoon:list())
