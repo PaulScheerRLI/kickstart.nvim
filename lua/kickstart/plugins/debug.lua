@@ -191,6 +191,29 @@ return {
     table.insert(require('dap').configurations.python, {
       type = 'python',
       request = 'launch',
+      name = 'Django manage.py with custom args',
+      console = 'integratedTerminal',
+      args = function()
+        local args_string = vim.fn.input 'Arguments: '
+        local utils = require 'dap.utils'
+        if utils.splitstr and vim.fn.has 'nvim-0.10' == 1 then
+          return utils.splitstr(args_string)
+        end
+        return vim.split(args_string, ' +')
+      end,
+      django = true,
+      program = vim.loop.cwd() .. '/manage.py',
+      variablePresentation = {
+        all = 'hide',
+        class = 'group',
+        protected = 'group',
+        special = 'group',
+        -- function cant be set because its a protected name by lua
+      },
+    })
+    table.insert(require('dap').configurations.python, {
+      type = 'python',
+      request = 'launch',
       name = 'Django runserver WITH reload',
       args = { 'runserver' },
       django = true,

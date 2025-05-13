@@ -1,3 +1,6 @@
+-- Enable Spell check
+vim.opt.spelllang = 'en_us'
+vim.opt.spell = true
 -- My Custom Init for settings I like
 -- Folding by indent is nice, without ignoring anything
 print 'Setting Foldmethods in nvim/myinit.lua'
