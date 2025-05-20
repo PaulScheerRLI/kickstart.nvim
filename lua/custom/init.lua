@@ -1,6 +1,9 @@
 -- Enable Spell check
-vim.opt.spelllang = 'en_us'
-vim.opt.spell = true
+--
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
+  pattern = { '*.dart', '*.md', '*.py', '*.txt' },
+  command = 'set spell',
+})
 -- My Custom Init for settings I like
 -- Folding by indent is nice, without ignoring anything
 print 'Setting Foldmethods in nvim/myinit.lua'
