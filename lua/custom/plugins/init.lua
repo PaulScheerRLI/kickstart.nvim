@@ -95,12 +95,12 @@ return {
         --},
         -- OR in winbar
         winbar = {
-          lualine_a = { '' },
           lualine_c = {
             'navic',
             color_correction = nil,
             navic_opts = nil,
           },
+          lualine_z = { 'lsp_status' },
         },
       }
     end,
