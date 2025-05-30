@@ -161,6 +161,7 @@ return {
           },
         },
         inactive_winbar = {},
+        lualine_z = { 'lsp_status' },
         extensions = {},
       }
     end,
