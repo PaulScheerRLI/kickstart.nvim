@@ -18,7 +18,8 @@ return {
           ipython = {
             -- Can be a table or a function that
             -- returns a table (see below)
-            command = { 'ipython' },
+            command = { 'ipython', '--no-autoindent' },
+            block_dividers = { '# %%', '#%%' },
             format = require('iron.fts.common').bracketed_paste,
           },
           python = {
