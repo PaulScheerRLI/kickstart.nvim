@@ -10,16 +10,24 @@ return {
         scratch_repl = true,
         -- Your repl definitions come here
         repl_definition = {
+          terminal = {
+            -- Can be a table or a function that
+            -- returns a table (see below)
+            command = { 'zsh' },
+          },
           ipython = {
             -- Can be a table or a function that
             -- returns a table (see below)
             command = { 'ipython' },
+            format = require('iron.fts.common').bracketed_paste,
           },
           python = {
             -- Can be a table or a function that
             -- returns a table (see below)
             command = { 'python' },
             block_dividers = { '# %%', '#%%' },
+
+            format = require('iron.fts.common').bracketed_paste,
           },
           django = {
             command = { 'python', 'manage.py', 'shell', '-i', 'ipython' },
