@@ -3,6 +3,24 @@
 --  I promise not to create any merge conflicts in this directory .)
 --
 -- See the kickstart.nvim README for more information
+--- @param trunc_width number trunctates component when screen width is less then trunc_width
+--- @param trunc_len number truncates component to trunc_len number of chars
+--- @param hide_width number hides component when window width is smaller then hide_width
+--- @param no_ellipsis boolean whether to disable adding '...' at end after truncation
+--- return function that can format the component accordingly
+local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis)
+  local win_width = vim.fn.winwidth(0)
+  return function(str)
+    if hide_width and win_width < hide_width then
+      return ''
+    elseif trunc_width and trunc_len and win_width < trunc_width and #str > trunc_len then
+      local no_vowels = str:gsub('[aeiouAEIOU]', '')
+      return no_vowels:sub(-trunc_len) .. (no_ellipsis and '' or '...')
+    end
+    return str
+  end
+end
+
 return {
   {
     'Shatur/neovim-ayu',
@@ -120,7 +138,7 @@ return {
         },
         sections = {
           lualine_a = { 'mode' },
-          lualine_b = { 'branch', 'diff', 'diagnostics' },
+          lualine_b = { { 'branch', fmt = trunc(1920 / 2, 15, nil, true) }, 'diff', 'diagnostics' },
           lualine_c = { 'filename' },
           lualine_x = { 'encoding', 'fileformat', 'filetype' },
           lualine_y = { 'progress' },
@@ -175,10 +193,10 @@ return {
       print ':lua MiniSessions.write/read("foo")'
       require('mini.sessions').setup {
         -- Whether to read default session if Neovim opened without file arguments
-        autoread = false,
+        autoread = true,
 
         -- Whether to write currently read session before quitting Neovim
-        autowrite = false,
+        autowrite = true,
 
         -- Directory where global sessions are stored (use `''` to disable)
         -- directory = `''`, --<"session" subdir of user data directory from |stdpath()|>,
@@ -198,7 +216,7 @@ return {
         },
 
         -- Whether to print session path after action
-        verbose = { read = false, write = true, delete = true },
+        verbose = { read = true, write = true, delete = true },
       }
     end,
 
