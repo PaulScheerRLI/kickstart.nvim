@@ -196,11 +196,11 @@ return {
         -- Whether to read default session if Neovim opened without file arguments
         autoread = true,
 
-        -- Whether to write currently read session before quitting Neovim
         autowrite = true,
+        -- Whether to write currently read session before quitting Neovim
 
         -- Directory where global sessions are stored (use `''` to disable)
-        -- directory = `''`, --<"session" subdir of user data directory from |stdpath()|>,
+        directory = '',
 
         -- File for local session (use `''` to disable)
         file = 'Session.vim',
