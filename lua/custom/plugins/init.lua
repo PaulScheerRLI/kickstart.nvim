@@ -159,9 +159,9 @@ return {
             color_correction = nil,
             navic_opts = nil,
           },
+          lualine_z = { 'lsp_status' },
         },
         inactive_winbar = {},
-        lualine_z = { 'lsp_status' },
         extensions = {},
       }
     end,
