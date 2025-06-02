@@ -23,11 +23,11 @@ return {
     -- harpoon:list():select(1)
     -- end)
     vim.keymap.set('n', '<C-t>', function()
-      harpoon:list():select(2)
-    end)
+      harpoon:list():select(1)
+    end, { desc = 'First Harpoon' })
     vim.keymap.set('n', '<C-n>', function()
-      harpoon:list():select(3)
-    end)
+      harpoon:list():select(2)
+    end, { desc = 'Second Harpoon' })
     --vim.keymap.set('n', '<C-s>', function()
     --  harpoon:list():select(4)
     --end)
@@ -35,10 +35,10 @@ return {
     -- Toggle previous & next buffers stored within Harpoon list
     vim.keymap.set('n', '<C-S-P>', function()
       harpoon:list():prev()
-    end)
+    end, { desc = 'Previous Harpoon' })
     vim.keymap.set('n', '<C-S-N>', function()
       harpoon:list():next()
-    end)
+    end, { desc = 'Next Harpoon' })
     --
     -- basic telescope configuration
     local conf = require('telescope.config').values

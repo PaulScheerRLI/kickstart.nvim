@@ -34,6 +34,13 @@ return {
       desc = 'Debug: Start/Continue',
     },
     {
+      '<F8>',
+      function()
+        require('dap').restart()
+      end,
+      desc = 'Debug: Restart',
+    },
+    {
       '<F1>',
       function()
         require('dap').step_into()

@@ -3,6 +3,24 @@
 --  I promise not to create any merge conflicts in this directory .)
 --
 -- See the kickstart.nvim README for more information
+--- @param trunc_width number trunctates component when screen width is less then trunc_width
+--- @param trunc_len number truncates component to trunc_len number of chars
+--- @param hide_width number hides component when window width is smaller then hide_width
+--- @param no_ellipsis boolean whether to disable adding '...' at end after truncation
+--- return function that can format the component accordingly
+local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis)
+  local win_width = vim.fn.winwidth(0)
+  return function(str)
+    if hide_width and win_width < hide_width then
+      return ''
+    elseif trunc_width and trunc_len and win_width < trunc_width and #str > trunc_len then
+      local no_vowels = str:gsub('[aeiouAEIOU]', '')
+      return no_vowels:sub(-trunc_len) .. (no_ellipsis and '' or '...')
+    end
+    return str
+  end
+end
+
 return {
   {
     'b0o/incline.nvim',
@@ -77,6 +95,9 @@ return {
   {
     'nvim-lualine/lualine.nvim',
     config = function()
+      local function window()
+        return vim.api.nvim_win_get_number(0)
+      end
       require('lualine').setup {
         --sections = {
         --          lualine_c = {
@@ -94,6 +115,42 @@ return {
         --          },
         --},
         -- OR in winbar
+        options = {
+          icons_enabled = true,
+          theme = 'auto',
+          component_separators = { left = '', right = '' },
+          section_separators = { left = '', right = '' },
+          disabled_filetypes = {
+            statusline = {},
+            winbar = {},
+          },
+          ignore_focus = {},
+          always_divide_middle = true,
+          always_show_tabline = true,
+          globalstatus = false,
+          refresh = {
+            statusline = 100,
+            tabline = 100,
+            winbar = 100,
+          },
+        },
+        sections = {
+          lualine_a = { 'mode' },
+          lualine_b = { { 'branch', fmt = trunc(1920 / 2, 15, nil, true) }, 'diff', 'diagnostics' },
+          lualine_c = { 'filename' },
+          lualine_x = { 'encoding', 'fileformat', 'filetype' },
+          lualine_y = { 'progress' },
+          lualine_z = { 'location' },
+        },
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = { 'filename' },
+          lualine_x = { 'location' },
+          lualine_y = {},
+          lualine_z = { window },
+        },
+        tabline = {},
         winbar = {
           lualine_c = {
             'navic',
@@ -102,6 +159,8 @@ return {
           },
           lualine_z = { 'lsp_status' },
         },
+        inactive_winbar = {},
+        extensions = {},
       }
     end,
   },
@@ -133,13 +192,13 @@ return {
       print ':lua MiniSessions.write/read("foo")'
       require('mini.sessions').setup {
         -- Whether to read default session if Neovim opened without file arguments
-        autoread = false,
+        autoread = true,
 
+        autowrite = true,
         -- Whether to write currently read session before quitting Neovim
-        autowrite = false,
 
         -- Directory where global sessions are stored (use `''` to disable)
-        -- directory = `''`, --<"session" subdir of user data directory from |stdpath()|>,
+        directory = '',
 
         -- File for local session (use `''` to disable)
         file = 'Session.vim',
@@ -156,7 +215,7 @@ return {
         },
 
         -- Whether to print session path after action
-        verbose = { read = false, write = true, delete = true },
+        verbose = { read = true, write = true, delete = true },
       }
     end,
 
