@@ -21,93 +21,92 @@ local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis)
   end
 end
 return {
-  {
-    'nvim-lualine/lualine.nvim',
-    config = function()
-      local function window()
-        return vim.api.nvim_win_get_number(0)
-      end
+  'nvim-lualine/lualine.nvim',
+  config = function()
+    local function window()
+      return vim.api.nvim_win_get_number(0)
+    end
     local custom_tokyonight = require 'lualine.themes.tokyonight-night'
     local tokyonight_moon = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
 
     -- Change the background of inactive lualine/statusline to slightly darker
 
     custom_tokyonight.inactive.c.bg = '#0b0b00'
-      require('lualine').setup {
-        --sections = {
-        --          lualine_c = {
-        --            'navic',
-        --
-        --            -- Component specific options
-        --            color_correction = nil, -- Can be nil, "static" or "dynamic". This option is useful only when you have highlights enabled.
-        --            -- Many colorschemes don't define same backgroud for nvim-navic as their lualine statusline backgroud.
-        --            -- Setting it to "static" will perform a adjustment once when the component is being setup. This should
-        --            --	 be enough when the lualine section isn't changing colors based on the mode.
-        --            -- Setting it to "dynamic" will keep updating the highlights according to the current modes colors for
-        --            --	 the current section.
-        --
-        --            navic_opts = nil, -- lua table with same format as setup's option. All options except "lsp" options take effect when set here.
-        --          },
-        --},
-        -- OR in winbar
-        options = {
-          icons_enabled = true,
-          theme = 'auto',
-          component_separators = { left = '', right = '' },
-          section_separators = { left = '', right = '' },
-          disabled_filetypes = {
-            statusline = {},
-            winbar = {
-              'dap-repl',
-            },
-          },
-          ignore_focus = {
-            'dapui_watches',
-            'dapui_breakpoints',
-            'dapui_scopes',
-            'dapui_console',
-            'dapui_stacks',
+    require('lualine').setup {
+      --sections = {
+      --          lualine_c = {
+      --            'navic',
+      --
+      --            -- Component specific options
+      --            color_correction = nil, -- Can be nil, "static" or "dynamic". This option is useful only when you have highlights enabled.
+      --            -- Many colorschemes don't define same backgroud for nvim-navic as their lualine statusline backgroud.
+      --            -- Setting it to "static" will perform a adjustment once when the component is being setup. This should
+      --            --	 be enough when the lualine section isn't changing colors based on the mode.
+      --            -- Setting it to "dynamic" will keep updating the highlights according to the current modes colors for
+      --            --	 the current section.
+      --
+      --            navic_opts = nil, -- lua table with same format as setup's option. All options except "lsp" options take effect when set here.
+      --          },
+      --},
+      -- OR in winbar
+      options = {
+        icons_enabled = true,
+        theme = 'auto',
+        component_separators = { left = '', right = '' },
+        section_separators = { left = '', right = '' },
+        disabled_filetypes = {
+          statusline = {},
+          winbar = {
             'dap-repl',
           },
-          always_divide_middle = true,
-          always_show_tabline = true,
-          globalstatus = false,
-          refresh = {
-            statusline = 100,
-            tabline = 100,
-            winbar = 100,
-          },
         },
-        sections = {
-          lualine_a = { 'mode' },
-          lualine_b = { { 'branch', fmt = trunc(1920 / 2, 15, nil, true) }, 'diff', 'diagnostics' },
-          lualine_c = { { 'filename', path = 1 } },
-          lualine_x = { 'encoding', 'fileformat', 'filetype' },
-          lualine_y = { 'progress' },
-          lualine_z = { 'location' },
+        ignore_focus = {
+          'dapui_watches',
+          'dapui_breakpoints',
+          'dapui_scopes',
+          'dapui_console',
+          'dapui_stacks',
+          'dap-repl',
         },
-        inactive_sections = {
-          lualine_a = {},
-          lualine_b = {},
-          lualine_c = { { 'filename', path = 1 } },
-          lualine_x = { 'location' },
-          lualine_y = {},
-          lualine_z = { window },
+        always_divide_middle = true,
+        always_show_tabline = true,
+        globalstatus = false,
+        refresh = {
+          statusline = 100,
+          tabline = 100,
+          winbar = 100,
         },
-        tabline = {},
-        winbar = {
-          lualine_c = {
-            'navic',
-            color_correction = nil,
-            navic_opts = nil,
-          },
-          lualine_x = { 'filename' },
-          lualine_z = { 'lsp_status' },
+      },
+      sections = {
+        lualine_a = { 'mode' },
+        lualine_b = { { 'branch', fmt = trunc(1920 / 2, 15, nil, true) }, 'diff', 'diagnostics' },
+        lualine_c = { { 'filename', path = 1 } },
+        lualine_x = { 'encoding', 'fileformat', 'filetype' },
+        lualine_y = { 'progress' },
+        lualine_z = { 'location' },
+      },
+      inactive_sections = {
+        lualine_a = {},
+        lualine_b = {},
+        lualine_c = { { 'filename', path = 1 } },
+        lualine_x = { 'location' },
+        lualine_y = {},
+        lualine_z = { window },
+      },
+      tabline = {},
+      winbar = {
+        lualine_c = {
+          'navic',
+          color_correction = nil,
+          navic_opts = nil,
         },
-        inactive_winbar = {
-          lualine_x = { 'filename' },
-        },
-        extensions = {},
-      }
-    end,
-  }
+        lualine_x = { 'filename' },
+        lualine_z = { 'lsp_status' },
+      },
+      inactive_winbar = {
+        lualine_x = { 'filename' },
+      },
+      extensions = {},
+    }
+  end,
+}
