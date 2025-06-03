@@ -26,6 +26,12 @@ return {
     local function window()
       return vim.api.nvim_win_get_number(0)
     end
+    local custom_tokyonight = require 'lualine.themes.tokyonight-night'
+    local tokyonight_moon = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
+
+    -- Change the background of inactive lualine/statusline to slightly darker
+
+    custom_tokyonight.inactive.c.bg = '#0b0b00'
     require('lualine').setup {
       --sections = {
       --          lualine_c = {
@@ -43,9 +49,10 @@ return {
       --          },
       --},
       -- OR in winbar
+
       options = {
         icons_enabled = true,
-        theme = 'auto',
+        theme = custom_tokyonight,
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         disabled_filetypes = {
