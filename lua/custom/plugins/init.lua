@@ -22,14 +22,6 @@ local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis)
 end
 
 return {
-  {
-    'b0o/incline.nvim',
-    config = function()
-      require('incline').setup()
-    end,
-    -- Optional: Lazy load Incline
-    event = 'VeryLazy',
-  },
   { 'kkoomen/vim-doge' },
   --  {
   --    'SmiteshP/nvim-navbuddy',
@@ -157,9 +149,12 @@ return {
             color_correction = nil,
             navic_opts = nil,
           },
+          lualine_x = { 'filename' },
           lualine_z = { 'lsp_status' },
         },
-        inactive_winbar = {},
+        inactive_winbar = {
+          lualine_x = { 'filename' },
+        },
         extensions = {},
       }
     end,
