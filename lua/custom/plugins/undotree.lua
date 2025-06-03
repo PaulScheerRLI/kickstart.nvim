@@ -1,7 +1,8 @@
 return {
   'mbbill/undotree',
   config = function()
-    if string.find(string.lower(vim.loop.os_uname().sysname), 'windows') > 0 then
+    -- string.find returns nil if not found --> cant compare to 0
+    if (string.find(string.lower(vim.loop.os_uname().sysname), 'windows') or 0) > 0 then
       vim.g.undotree_DiffCommand = 'FC'
     end
   end,
