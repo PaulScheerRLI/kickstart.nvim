@@ -1,24 +1,22 @@
-
 return {
   'jmbuhr/otter.nvim',
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
   },
-  config = function (){
-
-    local otter = require'otter'
-    otter.setup{
+  config = function()
+    local otter = require 'otter'
+    otter.setup {
       lsp = {
         -- `:h events` that cause the diagnostics to update. Set to:
         -- { "BufWritePost", "InsertLeave", "TextChanged" } for less performant
         -- but more instant diagnostic updates
-        diagnostic_update_events = { "BufWritePost" },
+        diagnostic_update_events = { 'BufWritePost' },
         -- function to find the root dir where the otter-ls is started
         root_dir = function(_, bufnr)
           return vim.fs.root(bufnr or 0, {
-            ".git",
-            "_quarto.yml",
-            "package.json",
+            '.git',
+            '_quarto.yml',
+            'package.json',
           }) or vim.fn.getcwd(0)
         end,
       },
@@ -42,26 +40,22 @@ return {
         -- lua patterns: https://www.lua.org/pil/20.2.html
         ignore_pattern = {
           -- ipython cell magic (lines starting with %) and shell commands (lines starting with !)
-          python = "^(%s*[%%!].*)",
+          python = '^(%s*[%%!].*)',
         },
       },
       -- list of characters that should be stripped from the beginning and end of the code chunks
-      strip_wrapping_quote_characters = { "'", '"', "`" },
+      strip_wrapping_quote_characters = { "'", '"', '`' },
       -- remove whitespace from the beginning of the code chunks when writing to the ottter buffers
       -- and calculate it back in when handling lsp requests
       handle_leading_whitespace = true,
       -- mapping of filetypes to extensions for those not already included in otter.tools.extensions
       -- e.g. ["bash"] = "sh"
-      extensions = {
-      },
+      extensions = {},
       -- add event listeners for LSP events for debugging
       debug = false,
       verbose = { -- set to false to disable all verbose messages
-        no_code_found = false -- warn if otter.activate is called, but no injected code was found
+        no_code_found = false, -- warn if otter.activate is called, but no injected code was found
       },
     }
-
-  }
-
-  end
+  end,
 }
