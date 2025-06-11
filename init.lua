@@ -86,6 +86,16 @@ P.S. You can delete this when you're done too. It's your config now! :)
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
+
+local python_path = '/home/ubuntu/.pyenv/versions/neovim/bin/python'
+-- Check if the file exists
+if vim.loop.fs_stat(python_path) then
+  vim.g.python3_host_prog = python_path
+else
+  vim.print 'Python path not found. Using local python instead'
+  vim.g.python3_host_prog = 'python'
+end
+
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
