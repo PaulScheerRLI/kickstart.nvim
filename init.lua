@@ -934,10 +934,37 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        python = {
-          --'isort',
-          'black',
-        },
+        python = { 'black', 'ruff' },
+        -- not working at the moment
+        -- python = function(bufnr)
+        --   local util = require 'conform.util'
+        --   print 'foobar'
+        --   vim.print 'foo vim bar'
+        --   local root_fn = util.root_file { 'pyproject.toml' }
+        --   local dirname = vim.fn.expand '%:p:h'
+        --   local root = root_fn(nil, { dirname = dirname })
+        --   local formatters = {}
+        --   if root then
+        --     local pyproject = root .. '/pyproject.toml'
+        --     if vim.fn.filereadable(pyproject) == 1 then
+        --       local lines = vim.fn.readfile(pyproject)
+        --       for _, line in ipairs(lines) do
+        --         if line:match '%[tool.black%]' and not vim.tbl_contains(formatters, 'black') then
+        --           table.insert(formatters, 'black')
+        --         end
+        --         if line:match '%[tool.isort%]' and not vim.tbl_contains(formatters, 'isort') then
+        --           table.insert(formatters, 'isort')
+        --         end
+        --         if line:match '%[tool.ruff%]' and not vim.tbl_contains(formatters, 'ruff_format') then
+        --           table.insert(formatters, 'ruff_format')
+        --         end
+        --       end
+        --     end
+        --   end
+        --   print(formatters)
+        --
+        --   return formatters
+        -- end,
         htmldjango = { 'djlint' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
