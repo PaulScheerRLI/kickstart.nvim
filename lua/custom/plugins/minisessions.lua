@@ -5,7 +5,9 @@ return {
       -- Whether to read default session if Neovim opened without file arguments
       autoread = true,
 
-      autowrite = true,
+      -- If false sessions are only written given the :mksession command or explicit
+      -- :lua require('mini-sessions').write('some-session')
+      autowrite = false,
       -- Whether to write currently read session before quitting Neovim
 
       -- Directory where global sessions are stored (use `''` to disable)
