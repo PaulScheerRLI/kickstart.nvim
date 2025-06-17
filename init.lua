@@ -937,8 +937,7 @@ require('lazy').setup({
         python = { 'black', 'ruff' },
         -- not working at the moment
         -- python = function(bufnr)
-        --   local util = require 'conform.util'
-        --   print 'foobar'
+        --   local util = require 'conform.util' print 'foobar'
         --   vim.print 'foo vim bar'
         --   local root_fn = util.root_file { 'pyproject.toml' }
         --   local dirname = vim.fn.expand '%:p:h'
@@ -1051,7 +1050,7 @@ require('lazy').setup({
       },
       cmdline = {
         -- use 'inherit' to inherit mappings from top level `keymap` config
-        keymap = { preset = 'inherit' },
+        keymap = { preset = 'cmdline' },
         sources = function()
           local type = vim.fn.getcmdtype()
           -- Search forward and backward
