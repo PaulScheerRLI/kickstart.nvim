@@ -1155,13 +1155,8 @@ require('lazy').setup({
       --  - va)  - [V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
       --  - ci'  - [C]hange [I]nside [']quote
-      local ai = require 'mini.ai'
-      ai.setup {
-        n_lines = 5000,
-        custom_textobjects = {
-          t = ai.gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }, {}),
-        },
-      }
+      require('mini.ai').setup { n_lines = 500 }
+
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
@@ -1230,6 +1225,11 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
+      matchup = {
+        enable = true, -- mandatory, false will disable the whole extension
+        disable = { 'c', 'ruby' }, -- optional, list of language that will be disabled
+        -- [options]
+      },
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
       auto_install = true,
