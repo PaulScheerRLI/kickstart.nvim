@@ -86,7 +86,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
-
+vim.o.path = vim.o.path .. '**'
 local python_path = '/home/ubuntu/.pyenv/versions/neovim/bin/python'
 -- Check if the file exists
 if vim.loop.fs_stat(python_path) then
