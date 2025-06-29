@@ -1,5 +1,6 @@
 -- Enable Spell check
 --
+
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
   pattern = { '*.dart', '*.md', '*.py', '*.txt' },
   command = 'setlocal spell',
@@ -17,8 +18,13 @@ vim.opt.foldlevel = 99
 -- vim.opt.foldlevel = 99
 -- vim.opt.foldnestmax = 99
 -- vim.opt.foldignore = ''
-vim.cmd 'command! DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
-
+if vim.fn.exists ':DiffOrig' == 0 then
+  vim.cmd 'command! DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
+end
+-- Duplicate lines by pressing arrow down in normal, inserst or visual mode
+vim.keymap.set('n', '<Down>', ':copy . <CR>', { desc = 'Duplicate' })
+vim.keymap.set('v', '<Down>', ':copy +0 <CR>', { desc = 'duplicate' })
+vim.keymap.set('i', '<Down>', ':copy +0 <CR>i', { desc = 'duplicate' })
 -- We set the signcolumn to 2 so Errors and writing status can both be shown instead of
 -- overwritting each other
 vim.opt.signcolumn = 'yes:2'
@@ -45,13 +51,3 @@ vim.opt.fillchars = {
   vertright = '┣',
   verthoriz = '╋',
 }
-
--- For fugitive adding file to git
-vim.keymap.set('n', '<A-a>', function()
-  local file = vim.fn.expand '%'
-  vim.cmd 'Gwrite'
-  print('File added: ' .. file)
-end, { desc = 'Add file to git' })
-
--- Style Breakpoint: Commented it since this styling is done in debug.lua
---vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'red', linehl = '', numhl = '' })
