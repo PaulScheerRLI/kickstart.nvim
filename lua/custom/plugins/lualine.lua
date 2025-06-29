@@ -51,7 +51,7 @@ return {
       -- OR in winbar
       options = {
         icons_enabled = true,
-        theme = 'auto',
+        theme = custom_tokyonight,
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         disabled_filetypes = {
