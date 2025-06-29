@@ -6,9 +6,16 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
 })
 -- My Custom Init for settings I like
 -- Folding by indent is nice, without ignoring anything
-vim.opt.foldmethod = 'indent'
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.o.foldtext = ''
+vim.o.fillchars = 'fold: '
+
 vim.opt.foldlevel = 99
-vim.opt.foldnestmax = 99
+-- old indent folding
+-- vim.opt.foldmethod = 'indent'
+-- vim.opt.foldlevel = 99
+-- vim.opt.foldnestmax = 99
 -- vim.opt.foldignore = ''
 vim.cmd 'command! DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
 
