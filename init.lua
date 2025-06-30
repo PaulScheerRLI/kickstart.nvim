@@ -999,6 +999,10 @@ require('lazy').setup({
               require('luasnip.loaders.from_vscode').lazy_load {
                 paths = { vim.fn.stdpath 'config' .. '/snippets' },
               }
+              -- will exclude all javascript snippets
+              require('luasnip.loaders.from_vscode').load {
+                exclude = {},
+              }
             end,
           },
         },
