@@ -19,52 +19,31 @@
 --   vim.lsp.buf_request(main_nr, ms.textDocument_documentSymbol, params, nil)
 -- end
 --
--- vim.keymap.set('n', '<leader>os', get_otter_symbols_lang, { desc = 'otter [s]ymbols' }) -- Enable Spell check
--- --- This code will run whenever you enter insert mode...
--- vim.api.nvim_create_autocmd('InsertEnter', {
---   group = vim.api.nvim_create_augroup('otter-autostart', {}),
---   -- ...But this only runs in markdown and quarto documents
---   pattern = { '*.md', '*.qmd' },
---   callback = function()
---     -- Get the treesitter parser for the current buffer
---     local ok, parser = pcall(vim.treesitter.get_parser)
---     if not ok then
---       return
---     end
---
---     local otter = require 'otter'
---     local extensions = require 'otter.tools.extensions'
---     local attached = {}
---
---     -- Get the language for the current cursor position (this will be
---     -- determined by the current code chunk if that's where the cursor
---     -- is)
---     local line, col = vim.fn.line '.' - 1, vim.fn.col '.'
---     local lang = parser:language_for_range({ line, col, line, col + 1 }):lang()
---
---     -- If otter has an extension available for that language, and if
---     -- the LSP isn't already attached, then activate otter for that
---     -- language
---     if extensions[lang] and not vim.tbl_contains(attached, lang) then
---       table.insert(attached, lang)
---       vim.schedule(function()
---         otter.activate({ lang }, true, true)
---       end)
---     end
---   end,
--- })
+
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
   pattern = { '*.dart', '*.md', '*.py', '*.txt' },
   command = 'setlocal spell',
 })
 -- My Custom Init for settings I like
 -- Folding by indent is nice, without ignoring anything
-vim.opt.foldmethod = 'indent'
-vim.opt.foldlevel = 99
-vim.opt.foldnestmax = 99
--- vim.opt.foldignore = ''
-vim.cmd 'command! DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.o.foldtext = ''
+vim.o.fillchars = 'fold: '
 
+vim.opt.foldlevel = 99
+-- old indent folding
+-- vim.opt.foldmethod = 'indent'
+-- vim.opt.foldlevel = 99
+-- vim.opt.foldnestmax = 99
+-- vim.opt.foldignore = ''
+if vim.fn.exists ':DiffOrig' == 0 then
+  vim.cmd 'command! DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
+end
+-- Duplicate lines by pressing arrow down in normal, inserst or visual mode
+vim.keymap.set('n', '<Down>', ':copy . <CR>', { desc = 'Duplicate' })
+vim.keymap.set('v', '<Down>', ':copy +0 <CR>', { desc = 'duplicate' })
+vim.keymap.set('i', '<Down>', ':copy +0 <CR>i', { desc = 'duplicate' })
 -- We set the signcolumn to 2 so Errors and writing status can both be shown instead of
 -- overwritting each other
 vim.opt.signcolumn = 'yes:2'
@@ -91,13 +70,3 @@ vim.opt.fillchars = {
   vertright = '┣',
   verthoriz = '╋',
 }
-
--- For fugitive adding file to git
-vim.keymap.set('n', '<A-a>', function()
-  local file = vim.fn.expand '%'
-  vim.cmd 'Gwrite'
-  print('File added: ' .. file)
-end, { desc = 'Add file to git' })
-
--- Style Breakpoint: Commented it since this styling is done in debug.lua
---vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'red', linehl = '', numhl = '' })

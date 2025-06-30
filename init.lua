@@ -355,6 +355,7 @@ require('lazy').setup({
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
+      win = { height = { min = 4, max = 15 } },
     },
   },
 
@@ -439,11 +440,17 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sG', builtin.git_status)
+      vim.keymap.set('n', '<leader>sG', builtin.git_status, { desc = '[S]earch [G]it status' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("."cfor repeat)' })
+      vim.keymap.set('n', '<leader>scf', function()
+        builtin.find_files { search_dirs = { vim.fn.expand '%:h:p' } }
+      end, { desc = 'find in current directory' })
+      vim.keymap.set('n', '<leader>scg', function()
+        builtin.live_grep { search_dirs = { vim.fn.expand '%:h:p' } }
+      end, { desc = 'Grep in current directory' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
