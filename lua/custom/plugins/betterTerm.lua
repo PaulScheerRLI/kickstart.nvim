@@ -54,7 +54,8 @@ return {
   },
   opts = {
     position = 'bot',
+    new_tab_mapping = '<A-t>', -- Create new terminal
     size = 20,
-    jump_tab_mapping = '<A-$tab>',
+    jump_tab_mapping = '<A-$tab>', -- doesnt seem to work
   },
 }
