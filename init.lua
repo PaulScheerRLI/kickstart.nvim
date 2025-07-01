@@ -83,6 +83,15 @@ I hope you enjoy your Neovim journey,
 
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
+vim.o.path = vim.o.path .. '**'
+local python_path = '/home/ubuntu/.pyenv/versions/neovim/bin/python'
+-- Check if the file exists
+if vim.loop.fs_stat(python_path) then
+  vim.g.python3_host_prog = python_path
+else
+  vim.print 'Python path not found. Using local python instead'
+  vim.g.python3_host_prog = 'python'
+end
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
@@ -1002,7 +1011,7 @@ require('lazy').setup({
         -- <c-k>: Toggle signature help
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
+        preset = 'super-tab',
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -1021,7 +1030,7 @@ require('lazy').setup({
       },
       cmdline = {
         -- use 'inherit' to inherit mappings from top level `keymap` config
-        keymap = { preset = 'inherit' },
+        keymap = { preset = 'cmdline' },
         sources = function()
           local type = vim.fn.getcmdtype()
           -- Search forward and backward
