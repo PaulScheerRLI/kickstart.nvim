@@ -86,16 +86,6 @@ P.S. You can delete this when you're done too. It's your config now! :)
 
 -- Set <space> as the leader key
 -- See `:help mapleader`
-vim.o.path = vim.o.path .. '**'
-local python_path = '/home/ubuntu/.pyenv/versions/neovim/bin/python'
--- Check if the file exists
-if vim.loop.fs_stat(python_path) then
-  vim.g.python3_host_prog = python_path
-else
-  vim.print 'Python path not found. Using local python instead'
-  vim.g.python3_host_prog = 'python'
-end
-
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
@@ -112,7 +102,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
-vim.opt.relativenumber = true
+-- vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -941,36 +931,10 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        python = { 'black', 'ruff' },
-        -- not working at the moment
-        -- python = function(bufnr)
-        --   local util = require 'conform.util' print 'foobar'
-        --   vim.print 'foo vim bar'
-        --   local root_fn = util.root_file { 'pyproject.toml' }
-        --   local dirname = vim.fn.expand '%:p:h'
-        --   local root = root_fn(nil, { dirname = dirname })
-        --   local formatters = {}
-        --   if root then
-        --     local pyproject = root .. '/pyproject.toml'
-        --     if vim.fn.filereadable(pyproject) == 1 then
-        --       local lines = vim.fn.readfile(pyproject)
-        --       for _, line in ipairs(lines) do
-        --         if line:match '%[tool.black%]' and not vim.tbl_contains(formatters, 'black') then
-        --           table.insert(formatters, 'black')
-        --         end
-        --         if line:match '%[tool.isort%]' and not vim.tbl_contains(formatters, 'isort') then
-        --           table.insert(formatters, 'isort')
-        --         end
-        --         if line:match '%[tool.ruff%]' and not vim.tbl_contains(formatters, 'ruff_format') then
-        --           table.insert(formatters, 'ruff_format')
-        --         end
-        --       end
-        --     end
-        --   end
-        --   print(formatters)
-        --
-        --   return formatters
-        -- end,
+        python = {
+          --'isort',
+          'black',
+        },
         htmldjango = { 'djlint' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
@@ -1006,10 +970,6 @@ require('lazy').setup({
               require('luasnip.loaders.from_vscode').lazy_load {
                 paths = { vim.fn.stdpath 'config' .. '/snippets' },
               }
-              -- will exclude all javascript snippets
-              require('luasnip.loaders.from_vscode').load {
-                exclude = {},
-              }
             end,
           },
         },
@@ -1042,7 +1002,7 @@ require('lazy').setup({
         -- <c-k>: Toggle signature help
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'super-tab',
+        preset = 'default',
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -1061,7 +1021,7 @@ require('lazy').setup({
       },
       cmdline = {
         -- use 'inherit' to inherit mappings from top level `keymap` config
-        keymap = { preset = 'cmdline' },
+        keymap = { preset = 'inherit' },
         sources = function()
           local type = vim.fn.getcmdtype()
           -- Search forward and backward
@@ -1236,11 +1196,6 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      matchup = {
-        enable = true, -- mandatory, false will disable the whole extension
-        disable = { 'c', 'ruby' }, -- optional, list of language that will be disabled
-        -- [options]
-      },
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
       auto_install = true,
