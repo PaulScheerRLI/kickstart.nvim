@@ -1,24 +1,31 @@
--- local ms = vim.lsp.protocol.Methods
--- local function get_otter_symbols_lang()
---   local otterkeeper = require 'otter.keeper'
---   local main_nr = vim.api.nvim_get_current_buf()
---   local langs = {}
---   for i, l in ipairs(otterkeeper.rafts[main_nr].languages) do
---     langs[i] = i .. ': ' .. l
---   end
---   -- promt to choose one of langs
---   local i = vim.fn.inputlist(langs)
---   local lang = otterkeeper.rafts[main_nr].languages[i]
---   local params = {
---     textDocument = vim.lsp.util.make_text_document_params(),
---     otter = {
---       lang = lang,
---     },
---   }
---   -- don't pass a handler, as we want otter to use its own handlers
---   vim.lsp.buf_request(main_nr, ms.textDocument_documentSymbol, params, nil)
--- end
---
+-- without this nvim copy pasting to inside tmux to tmux terminals or windows did now work
+vim.g.clipboard = {
+  name = 'OSC 52',
+  copy = {
+    ['+'] = require('vim.ui.clipboard.osc52').copy '+',
+    ['*'] = require('vim.ui.clipboard.osc52').copy '*',
+  },
+  paste = {
+    ['+'] = require('vim.ui.clipboard.osc52').paste '+',
+    ['*'] = require('vim.ui.clipboard.osc52').paste '*',
+  },
+}
+if vim.env.TMUX ~= nil then
+  local copy = { 'tmux', 'load-buffer', '-w', '-' }
+  local paste = { 'bash', '-c', 'tmux refresh-client -l && sleep 0.05 && tmux save-buffer -' }
+  vim.g.clipboard = {
+    name = 'tmux',
+    copy = {
+      ['+'] = copy,
+      ['*'] = copy,
+    },
+    paste = {
+      ['+'] = paste,
+      ['*'] = paste,
+    },
+    cache_enabled = 0,
+  }
+end
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
   pattern = { '*.dart', '*.md', '*.py', '*.txt' },
