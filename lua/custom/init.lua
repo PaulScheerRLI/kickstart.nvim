@@ -1,4 +1,5 @@
 -- without this nvim copy pasting to inside tmux to tmux terminals or windows did now work
+-- from https://github.com/neovim/neovim/discussions/29350
 vim.g.clipboard = {
   name = 'OSC 52',
   copy = {
