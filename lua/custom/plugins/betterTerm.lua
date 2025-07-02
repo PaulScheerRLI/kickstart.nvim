@@ -51,7 +51,6 @@ return {
           require('betterTerm').open()
           return
         end
-        print(word)
         require('betterTerm').open(word)
       end,
       desc = 'Open BetterTerm 0',

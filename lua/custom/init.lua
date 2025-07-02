@@ -22,7 +22,10 @@
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
   pattern = { '*.dart', '*.md', '*.py', '*.txt' },
-  command = 'setlocal spell',
+  callback = function()
+    vim.opt_local.spelllang = { 'en_us', 'de' }
+    vim.opt_local.spell = true
+  end,
 })
 -- My Custom Init for settings I like
 -- Folding by indent is nice, without ignoring anything

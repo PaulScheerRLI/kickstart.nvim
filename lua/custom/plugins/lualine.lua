@@ -58,6 +58,7 @@ return {
           statusline = {},
           winbar = {
             'dap-repl',
+            'better_term',
           },
         },
         ignore_focus = {
