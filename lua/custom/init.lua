@@ -49,7 +49,11 @@ vim.keymap.set('v', '<Down>', ':copy +0 <CR>', { desc = 'duplicate' })
 vim.keymap.set('i', '<Down>', ':copy +0 <CR>i', { desc = 'duplicate' })
 -- We set the signcolumn to 2 so Errors and writing status can both be shown instead of
 -- overwritting each other
-vim.opt.signcolumn = 'yes:2'
+--
+-- vim.opt.signcolumn = 'yes:1'
+vim.opt.numberwidth = 3
+vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s"
+
 vim.keymap.set('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
 vim.opt.colorcolumn = '100'
 
