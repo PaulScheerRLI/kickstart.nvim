@@ -8,6 +8,9 @@ else
   vim.print 'Python path not found. Using local python instead'
   vim.g.python3_host_prog = 'python'
 end
+-- for better pasting in tmux remap + to yank to + register
+
+vim.keymap.set('n', '+', '"+y', { desc = 'Yank to plus' })
 
 -- without this nvim copy pasting to inside tmux to tmux terminals or windows did now work
 -- from https://github.com/neovim/neovim/discussions/29350
@@ -47,6 +50,7 @@ if vim.fn.has 'wsl' == 1 then
   --   },
   -- }
   if vim.env.TMUX ~= nil then
+    -- TODO: maybe unnamedplus for tmux would make sense
     local copy = { 'tmux', 'load-buffer', '-w', '-' }
     local paste = { 'bash', '-c', 'tmux refresh-client -l && tmux save-buffer -' }
     vim.g.clipboard = {
