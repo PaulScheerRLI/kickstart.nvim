@@ -10,7 +10,7 @@ else
 end
 -- for better pasting in tmux remap + to yank to + register
 
-vim.keymap.set('n', '+', '"+y', { desc = 'Yank to plus' })
+vim.keymap.set({ 'x', 'n' }, '+', '"+y', { desc = 'Yank to plus' })
 
 -- without this nvim copy pasting to inside tmux to tmux terminals or windows did now work
 -- from https://github.com/neovim/neovim/discussions/29350
