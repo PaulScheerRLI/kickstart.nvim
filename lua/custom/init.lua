@@ -1,11 +1,3 @@
-vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
-vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
-vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
-vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
-vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
-vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
-vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
-vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
 vim.o.path = vim.o.path .. '**'
 
 local python_path = '/home/ubuntu/.pyenv/versions/neovim/bin/python'
@@ -20,22 +12,26 @@ end
 -- without this nvim copy pasting to inside tmux to tmux terminals or windows did now work
 -- from https://github.com/neovim/neovim/discussions/29350
 -- standard clipboard behaviour
--- vim.opt.clipboard = 'unnamedplus'
--- vim.opt.clipboard = 'unnamedplus'
--- also slow
--- vim.g.clipboard = {
---   name = 'win32yank-wsl',
---   copy = {
---     ['+'] = 'win32yank.exe -i --crlf',
---     ['*'] = 'win32yank.exe -i --crlf',
---   },
---   paste = {
---     ['+'] = 'win32yank.exe -o --lf',
---     ['*'] = 'win32yank.exe -o --lf',
---   },
---   cache_enabled = 1,
--- }
 if vim.fn.has 'wsl' == 1 then
+  -- with this doesn use + and * register by default calling win32yank each time
+  -- it also means that to copy paste outside we need to explicitly call the register
+  -- i find this better for now since mostly i dont copy  paste from nvim to outside
+  --
+  vim.opt.clipboard = ''
+  -- vim.opt.clipboard = 'unnamedplus'
+  -- also slow
+  vim.g.clipboard = {
+    name = 'win32yank-wsl',
+    copy = {
+      ['+'] = 'win32yank.exe -i --crlf',
+      ['*'] = 'win32yank.exe -i --crlf',
+    },
+    paste = {
+      ['+'] = 'win32yank.exe -o --lf',
+      ['*'] = 'win32yank.exe -o --lf',
+    },
+    cache_enabled = 1,
+  }
   -- from vim help clipboard-wsl
   --
   -- works but is very slow
