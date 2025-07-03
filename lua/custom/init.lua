@@ -1,5 +1,35 @@
 -- without this nvim copy pasting to inside tmux to tmux terminals or windows did now work
 -- from https://github.com/neovim/neovim/discussions/29350
+-- vim.g.clipboard = {
+--   name = 'OSC 52',
+--   copy = {
+--     ['+'] = require('vim.ui.clipboard.osc52').copy '+',
+--     ['*'] = require('vim.ui.clipboard.osc52').copy '*',
+--   },
+--   paste = {
+--     ['+'] = require('vim.ui.clipboard.osc52').paste '+',
+--     ['*'] = require('vim.ui.clipboard.osc52').paste '*',
+--   },
+-- }
+-- if vim.env.TMUX ~= nil then
+--   local copy = { 'tmux', 'load-buffer', '-w', '-' }
+--   local paste = { 'bash', '-c', 'tmux refresh-client -l && sleep 0.05 && tmux save-buffer -' }
+--   vim.g.clipboard = {
+--     name = 'tmux',
+--     copy = {
+--       ['+'] = copy,
+--       ['*'] = copy,
+--     },
+--     paste = {
+--       ['+'] = paste,
+--       ['*'] = paste,
+--     },
+--     cache_enabled = 0,
+--   }
+-- end
+
+vim.opt.clipboard = 'unnamedplus'
+
 vim.g.clipboard = {
   name = 'OSC 52',
   copy = {
@@ -11,22 +41,6 @@ vim.g.clipboard = {
     ['*'] = require('vim.ui.clipboard.osc52').paste '*',
   },
 }
-if vim.env.TMUX ~= nil then
-  local copy = { 'tmux', 'load-buffer', '-w', '-' }
-  local paste = { 'bash', '-c', 'tmux refresh-client -l && sleep 0.05 && tmux save-buffer -' }
-  vim.g.clipboard = {
-    name = 'tmux',
-    copy = {
-      ['+'] = copy,
-      ['*'] = copy,
-    },
-    paste = {
-      ['+'] = paste,
-      ['*'] = paste,
-    },
-    cache_enabled = 0,
-  }
-end
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
   pattern = { '*.dart', '*.md', '*.py', '*.txt' },
