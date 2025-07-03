@@ -1,4 +1,11 @@
 vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
 vim.o.path = vim.o.path .. '**'
 
 local python_path = '/home/ubuntu/.pyenv/versions/neovim/bin/python'
@@ -15,18 +22,19 @@ end
 -- standard clipboard behaviour
 -- vim.opt.clipboard = 'unnamedplus'
 -- vim.opt.clipboard = 'unnamedplus'
-vim.g.clipboard = {
-  name = 'win32yank-wsl',
-  copy = {
-    ['+'] = 'win32yank.exe -i --crlf',
-    ['*'] = 'win32yank.exe -i --crlf',
-  },
-  paste = {
-    ['+'] = 'win32yank.exe -o --crlf',
-    ['*'] = 'win32yank.exe -o --crlf',
-  },
-  cache_enabled = 0,
-}
+-- also slow
+-- vim.g.clipboard = {
+--   name = 'win32yank-wsl',
+--   copy = {
+--     ['+'] = 'win32yank.exe -i --crlf',
+--     ['*'] = 'win32yank.exe -i --crlf',
+--   },
+--   paste = {
+--     ['+'] = 'win32yank.exe -o --lf',
+--     ['*'] = 'win32yank.exe -o --lf',
+--   },
+--   cache_enabled = 1,
+-- }
 if vim.fn.has 'wsl' == 1 then
   -- from vim help clipboard-wsl
   --
