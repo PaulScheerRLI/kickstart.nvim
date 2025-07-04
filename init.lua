@@ -966,6 +966,9 @@ require('lazy').setup({
           {
             'rafamadriz/friendly-snippets',
             config = function()
+              require('luasnip.loaders.from_vscode').load {
+                exclude = { 'javascript' },
+              }
               require('luasnip.loaders.from_vscode').lazy_load {
                 paths = { vim.fn.stdpath 'config' .. '/snippets' },
               }
