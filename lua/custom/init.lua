@@ -15,59 +15,61 @@ vim.keymap.set({ 'x', 'n' }, '+', '"+y', { desc = 'Yank to plus' })
 -- without this nvim copy pasting to inside tmux to tmux terminals or windows did now work
 -- from https://github.com/neovim/neovim/discussions/29350
 -- standard clipboard behaviour
-if vim.fn.has 'wsl' == 1 then
-  -- with this doesn use + and * register by default calling win32yank each time
-  -- it also means that to copy paste outside we need to explicitly call the register
-  -- i find this better for now since mostly i dont copy  paste from nvim to outside
-  --
-  vim.opt.clipboard = ''
-  -- vim.opt.clipboard = 'unnamedplus'
-  -- also slow
-  vim.g.clipboard = {
-    name = 'win32yank-wsl',
-    copy = {
-      ['+'] = 'win32yank.exe -i --crlf',
-      ['*'] = 'win32yank.exe -i --crlf',
-    },
-    paste = {
-      ['+'] = 'win32yank.exe -o --lf',
-      ['*'] = 'win32yank.exe -o --lf',
-    },
-    cache_enabled = 1,
-  }
-  -- from vim help clipboard-wsl
-  --
-  -- works but is very slow
-  -- vim.g.clipboard = {
-  --   name = 'WslClipboard',
-  --   copy = {
-  --     ['+'] = 'clip.exe',
-  --     ['*'] = 'clip.exe',
-  --   },
-  --   paste = {
-  --     ['+'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-  --     ['*'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-  --   },
-  -- }
-  if vim.env.TMUX ~= nil then
-    -- TODO: maybe unnamedplus for tmux would make sense
-    local copy = { 'tmux', 'load-buffer', '-w', '-' }
-    local paste = { 'bash', '-c', 'tmux refresh-client -l && tmux save-buffer -' }
+vim.schedule(function()
+  vim.opt.clipboard = 'unnamedplus'
+  if vim.fn.has 'wsl' == 1 then
+    -- with this doesn use + and * register by default calling win32yank each time
+    -- it also means that to copy paste outside we need to explicitly call the register
+    -- i find this better for now since mostly i dont copy  paste from nvim to outside
+    --
+    vim.opt.clipboard = ''
+    -- vim.opt.clipboard = 'unnamedplus'
+    -- also slow
     vim.g.clipboard = {
-      name = 'tmux',
+      name = 'win32yank-wsl',
       copy = {
-        ['+'] = copy,
-        ['*'] = copy,
+        ['+'] = 'win32yank.exe -i --crlf',
+        ['*'] = 'win32yank.exe -i --crlf',
       },
       paste = {
-        ['+'] = paste,
-        ['*'] = paste,
+        ['+'] = 'win32yank.exe -o --lf',
+        ['*'] = 'win32yank.exe -o --lf',
       },
-      cache_enabled = 0,
+      cache_enabled = 1,
     }
+    -- from vim help clipboard-wsl
+    --
+    -- works but is very slow
+    -- vim.g.clipboard = {
+    --   name = 'WslClipboard',
+    --   copy = {
+    --     ['+'] = 'clip.exe',
+    --     ['*'] = 'clip.exe',
+    --   },
+    --   paste = {
+    --     ['+'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+    --     ['*'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+    --   },
+    -- }
+    if vim.env.TMUX ~= nil then
+      -- TODO: maybe unnamedplus for tmux would make sense
+      local copy = { 'tmux', 'load-buffer', '-w', '-' }
+      local paste = { 'bash', '-c', 'tmux refresh-client -l && tmux save-buffer -' }
+      vim.g.clipboard = {
+        name = 'tmux',
+        copy = {
+          ['+'] = copy,
+          ['*'] = copy,
+        },
+        paste = {
+          ['+'] = paste,
+          ['*'] = paste,
+        },
+        cache_enabled = 0,
+      }
+    end
   end
-end
-
+end)
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
   pattern = { '*.dart', '*.md', '*.py', '*.txt' },
   callback = function()
