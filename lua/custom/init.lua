@@ -49,29 +49,32 @@ if vim.fn.has 'wsl' == 1 then
   --     ['*'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
   --   },
   -- }
-  if vim.env.TMUX ~= nil then
-    -- TODO: maybe unnamedplus for tmux would make sense
-    local copy = { 'tmux', 'load-buffer', '-w', '-' }
-    local paste = { 'bash', '-c', 'tmux refresh-client -l && tmux save-buffer -' }
-    vim.g.clipboard = {
-      name = 'tmux',
-      copy = {
-        ['+'] = copy,
-        ['*'] = copy,
-      },
-      paste = {
-        ['+'] = paste,
-        ['*'] = paste,
-      },
-      cache_enabled = 0,
-    }
-  end
+  -- if vim.env.TMUX ~= nil then
+  --   -- TODO: maybe unnamedplus for tmux would make sense
+  --   --  tmux buffer only allows limited size of copy paste
+  --   --  winyank works to -> disable it
+  --   local copy = { 'tmux', 'load-buffer', '-w', '-' }
+  --   local paste = { 'bash', '-c', 'tmux refresh-client -l && tmux save-buffer -' }
+  --   vim.g.clipboard = {
+  --     name = 'tmux',
+  --     copy = {
+  --       ['+'] = copy,
+  --       ['*'] = copy,
+  --     },
+  --     paste = {
+  --       ['+'] = paste,
+  --       ['*'] = paste,
+  --     },
+  --     cache_enabled = 0,
+  --   }
+  -- end
 end
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
-  pattern = { '*.dart', '*.md', '*.py', '*.txt' },
+  pattern = { '*.dart', '*.md', '*.py', '*.txt', '*COMMIT_EDITMSG' },
   callback = function()
-    vim.opt_local.spelllang = { 'en_us', 'de' }
+    -- // de_20 is german with new spelling
+    vim.opt_local.spelllang = { 'en_us', 'de_20' }
     vim.opt_local.spell = true
   end,
 })

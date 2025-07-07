@@ -1,1 +1,1 @@
-{"+code":{"body":["```","${1:}","```"],"prefix":"+code"}}
+{"+code":{"body":["```","${1:}","```"],"prefix":"+code"},"dropdown":{"body":["<details open>","<summary>${1:Summary}</summary>","<br>","${2:Details}","</details>"],"prefix":"dropdown"}}
