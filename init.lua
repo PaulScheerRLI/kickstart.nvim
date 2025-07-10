@@ -639,7 +639,17 @@ require('lazy').setup({
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
       { 'williamboman/mason.nvim', opts = {} },
-      'williamboman/mason-lspconfig.nvim',
+      {
+        'mason-org/mason-lspconfig.nvim',
+        opts = {
+          ensure_installed = { 'lua_ls' },
+        },
+        dependencies = {
+          { 'mason-org/mason.nvim', opts = {} },
+          'neovim/nvim-lspconfig',
+        },
+      },
+
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
@@ -883,6 +893,7 @@ require('lazy').setup({
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
+            vim.print 'never called'
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
@@ -1272,24 +1283,70 @@ require('lazy').setup({
 require 'custom'
 print 'Blink cmdline completion turned off!'
 
---local lspconfig = require 'lspconfig'
---local configs = require 'lspconfig.configs'
---local root_files = {
---  'pyproject.toml',
---  'setup.py',
---  'setup.cfg',
---  'requirements.txt',
---  'Pipfile',
---  '.git',
---}
+-- local lspconfig = require 'lspconfig'
+-- local configs = require 'lspconfig.configs'
+-- --local root_files = {
+-- --  'pyproject.toml',
+-- --  'setup.py',
+-- --  'setup.cfg',
+-- --  'requirements.txt',
+-- --  'Pipfile',
+-- --  '.git',
+-- --}
+-- --
+-- if not configs.lemminx then
+--   configs.lemminx = {
 --
---if not configs.my_server then
---  configs.my_server = {
---    default_config = {
---      cmd = { 'J:/dev/python/django-manager-lsp/.venv/Scripts/python.exe', 'J:/dev/python/django-manager-lsp/main.py' },
---      root_dir = lspconfig.util.root_pattern(unpack(root_files)),
---      filetypes = { 'python' },
---    },
---  }
---end
---lspconfig.my_server.setup {}
+--     maxItemsComputed = 5103,
+--     settings = {
+--       xml = {
+--         symbols = { maxItemsComputed = 5002 },
+--         maxItemsComputed = 5003,
+--       },
+--       railml = {
+--         symbols = { maxItemsComputed = 5002 },
+--         maxItemsComputed = 5003,
+--       },
+--
+--       symbols = { maxItemsComputed = 5002 },
+--       maxItemsComputed = 5103,
+--     },
+--     default_config = {
+--
+--       maxItemsComputed = 5103,
+--       settings = {
+--         xml = {
+--           symbols = { maxItemsComputed = 5002 },
+--           maxItemsComputed = 5003,
+--         },
+--         railml = {
+--           symbols = { maxItemsComputed = 5002 },
+--           maxItemsComputed = 5003,
+--         },
+--
+--         symbols = { maxItemsComputed = 5002 },
+--         maxItemsComputed = 5103,
+--       },
+--     },
+--   }
+-- end
+-- lspconfig.lemminx.setup {}
+function lemminx()
+  vim.lsp.config('lemminx', {
+    -- Server-specific settings. See `:help lsp-quickstart`
+    settings = {
+      ['lemminx'] = {
+        xml = {
+          symbols = { maxItemsComputed = 10009 },
+        },
+        settings = {
+
+          xml = {
+            symbols = { maxItemsComputed = 10008 },
+          },
+        },
+      },
+    },
+  })
+end
+lemminx()
