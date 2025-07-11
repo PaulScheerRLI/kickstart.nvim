@@ -71,9 +71,10 @@ vim.schedule(function()
   end
 end)
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
-  pattern = { '*.dart', '*.md', '*.py', '*.txt' },
+  pattern = { '*.dart', '*.md', '*.py', '*.txt', '*COMMIT_EDITMSG' },
   callback = function()
-    vim.opt_local.spelllang = { 'en_us', 'de' }
+    -- // de_20 is german with new spelling
+    vim.opt_local.spelllang = { 'en_us', 'de_20' }
     vim.opt_local.spell = true
   end,
 })
