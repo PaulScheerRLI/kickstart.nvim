@@ -290,7 +290,7 @@ require('lazy').setup({
 
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+    event = 'VeryLazy', -- Sets the loading event to 'VimEnter'
     opts = {
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.opt.timeoutlen
@@ -354,7 +354,7 @@ require('lazy').setup({
 
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
-    event = 'VimEnter',
+    event = 'VeryLazy',
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -483,7 +483,7 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
-    event = 'VimEnter',
+    event = 'VeryLazy',
     dependencies = {
       {
         'SmiteshP/nvim-navbuddy',
@@ -944,12 +944,13 @@ require('lazy').setup({
   },
   { -- Autocompletion
     'saghen/blink.cmp',
-    event = 'VimEnter',
+    event = 'VeryLazy',
     version = '1.*',
     dependencies = {
       -- Snippet Engine
       {
         'L3MON4D3/LuaSnip',
+        event = 'VeryLazy',
         version = '2.*',
         build = (function()
           -- Build Step is needed for regex support in snippets.
@@ -966,6 +967,7 @@ require('lazy').setup({
           --    https://github.com/rafamadriz/friendly-snippets
           {
             'rafamadriz/friendly-snippets',
+            event = 'VeryLazy',
             config = function()
               -- require('luasnip.loaders.from_vscode').load {}
               require('luasnip.loaders.from_vscode').lazy_load {}
@@ -1094,7 +1096,7 @@ require('lazy').setup({
             print 'using rust for blink'
             return 'rust'
           end
-          print 'using lua for blink'
+          -- vim.print 'using lua for blink'
           return 'lua'
         end)(),
       },
@@ -1126,7 +1128,7 @@ require('lazy').setup({
   },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  { 'folke/todo-comments.nvim', event = 'VeryLazy', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -1203,6 +1205,7 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    event = 'VeryLazy',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`

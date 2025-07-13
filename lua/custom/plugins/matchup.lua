@@ -1,11 +1,12 @@
 return {
   {
     'andymass/vim-matchup',
+    event = 'VeryLazy',
     enabled = function()
       if vim.fn.has 'wsl' == 1 then
         return true
       end
-      print 'matchup is disabled for windows since its kinda laggy'
+      -- vim.print 'matchup is disabled for windows since its kinda laggy'
       return false
     end,
     -- init = function()
