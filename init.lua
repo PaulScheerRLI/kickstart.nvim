@@ -1086,7 +1086,16 @@ require('lazy').setup({
       -- the rust implementation via `'prefer_rust_with_warning'`
       --
       -- See :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'prefer_rust_with_warning' },
+      fuzzy = {
+        implementation = (function()
+          if vim.fn.has 'wsl' == 1 then
+            print 'using rust for blink'
+            return 'rust'
+          end
+          print 'using lua for blink'
+          return 'lua'
+        end)(),
+      },
 
       -- Shows a signature help window while you type arguments for a function
       signature = { enabled = true },
@@ -1271,12 +1280,24 @@ require('lazy').setup({
   },
 })
 
+require 'custom'
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
-require 'custom'
-print 'Blink cmdline completion turned off!'
 
---local lspconfig = require 'lspconfig'
+-- local lspconfig = require 'lspconfig'
+-- lspconfig.dartls.setup {
+--   settings = {
+--     color = { -- show the derived colours for dart variables
+--       enabled = true, -- whether or not to highlight color variables at all, only supported on flutter >= 2.10
+--       background = true, -- highlight the background
+--       background_color = nil, -- required, when background is transparent (i.e. background_color = { r = 19, g = 17, b = 24},)
+--       foreground = true, -- highlight the foreground
+--       virtual_text = true, -- show the highlight using virtual text
+--       virtual_text_str = '■', -- the virtual text character to highlight
+--     },
+--   },
+-- }
+
 --local configs = require 'lspconfig.configs'
 --local root_files = {
 --  'pyproject.toml',
