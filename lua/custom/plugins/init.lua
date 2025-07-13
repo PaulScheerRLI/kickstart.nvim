@@ -12,6 +12,7 @@ return {
   --},
   {
     'SmiteshP/nvim-navic',
+    event = 'VimEnter',
     dependencies = { 'neovim/nvim-lspconfig' },
     config = function()
       navic = require 'nvim-navic'

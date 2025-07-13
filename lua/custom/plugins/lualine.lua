@@ -22,6 +22,7 @@ local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis)
 end
 return {
   'nvim-lualine/lualine.nvim',
+  event = 'VimEnter',
   config = function()
     local function window()
       return vim.api.nvim_win_get_number(0)

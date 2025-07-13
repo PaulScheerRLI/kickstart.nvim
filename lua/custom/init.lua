@@ -1,3 +1,4 @@
+print 'init custom'
 vim.o.path = vim.o.path .. '**'
 
 local python_path = '/home/ubuntu/.pyenv/versions/neovim/bin/python'

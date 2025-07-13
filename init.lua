@@ -483,6 +483,7 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
+    event = 'VimEnter',
     dependencies = {
       {
         'SmiteshP/nvim-navbuddy',
@@ -966,7 +967,8 @@ require('lazy').setup({
           {
             'rafamadriz/friendly-snippets',
             config = function()
-              require('luasnip.loaders.from_vscode').load {}
+              -- require('luasnip.loaders.from_vscode').load {}
+              require('luasnip.loaders.from_vscode').lazy_load {}
               require('luasnip.loaders.from_vscode').lazy_load {
                 paths = { vim.fn.stdpath 'config' .. '/snippets' },
               }
