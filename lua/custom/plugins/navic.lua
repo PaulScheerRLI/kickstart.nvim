@@ -1,6 +1,7 @@
 -- Navigate treesitter objects
 return {
   'SmiteshP/nvim-navic',
+  event = 'VeryLazy',
   dependencies = { 'neovim/nvim-lspconfig' },
   config = function()
     local navic = require 'nvim-navic'

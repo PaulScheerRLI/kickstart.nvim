@@ -1,5 +1,6 @@
 return {
   'hkupty/iron.nvim',
+  event = 'VeryLazy',
   config = function(plugins, opts)
     local iron = require 'iron.core'
 
