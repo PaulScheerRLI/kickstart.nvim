@@ -1,5 +1,4 @@
 --[[
-
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
@@ -636,7 +635,7 @@ require('lazy').setup({
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
-      { 'williamboman/mason.nvim', opts = {} },
+      { 'williamboman/mason.nvim', event = 'VeryLazy', opts = {} },
       {
         'mason-org/mason-lspconfig.nvim',
         opts = {
@@ -1107,7 +1106,6 @@ require('lazy').setup({
       fuzzy = {
         implementation = (function()
           if vim.fn.has 'wsl' == 1 then
-            print 'using rust for blink'
             return 'rust'
           end
           -- vim.print 'using lua for blink'
