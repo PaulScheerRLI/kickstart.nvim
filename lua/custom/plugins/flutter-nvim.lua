@@ -6,8 +6,6 @@ return {
     'stevearc/dressing.nvim', -- optional for vim.ui.select
   },
   config = function()
-    print 'flutter'
-    vim.print 'flutter'
     require('flutter-tools').setup {
       widget_guides = {
         enabled = true,
