@@ -108,6 +108,17 @@ return {
       dap.repl.open()
       dap.repl.execute(line)
     end, { desc = 'Insert current line to dap Repl' })
+
+    vim.keymap.set('x', '<leader>ri', function()
+      -- The keys to press, encoded as a string
+      local keys = ':DapEval! <CR> :q <CR>'
+
+      -- Use nvim_replace_termcodes to convert keys like <CR>, <Esc>, etc.
+      local termcodes = vim.api.nvim_replace_termcodes(keys, true, false, true)
+
+      -- Feed keys into Neovim input queue
+      vim.api.nvim_feedkeys(termcodes, 'n', false)
+    end, { desc = 'Insert selectioon line to buffer for dap Repl' })
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations

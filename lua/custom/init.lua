@@ -82,6 +82,7 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
 -- Folding by indent is nice, without ignoring anything
 vim.opt.foldmethod = 'expr'
 vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+-- set foldexpr=nvim_treesitter#foldexpr()
 vim.o.foldtext = ''
 vim.o.fillchars = 'fold: '
 

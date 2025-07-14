@@ -1,5 +1,4 @@
 --[[
-
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
@@ -101,7 +100,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -636,8 +635,22 @@ require('lazy').setup({
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
-      { 'williamboman/mason.nvim', opts = {} },
-      'williamboman/mason-lspconfig.nvim',
+      { 'williamboman/mason.nvim', event = 'VeryLazy', opts = {} },
+      {
+        'mason-org/mason-lspconfig.nvim',
+        -- these options are applied
+        opts = {
+          ensure_installed = { 'lua_ls' },
+          automatic_enable = {
+            exclude = { 'pyright', 'ty' },
+          },
+        },
+        dependencies = {
+          { 'mason-org/mason.nvim', opts = {} },
+          'neovim/nvim-lspconfig',
+        },
+      },
+
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
@@ -875,20 +888,25 @@ require('lazy').setup({
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
-      require('mason-lspconfig').setup {
-        ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-        automatic_installation = false,
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup { server }
-          end,
-        },
-      }
+      -- this does nothing it seems
+      -- require('mason-lspconfig').setup {
+      --   ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+      --   automatic_enable = {
+      --     exclude = { 'pyright', 'ty' },
+      --   },
+      --   automatic_installation = false,
+      --   handlers = {
+      --     function(server_name)
+      --       local server = servers[server_name] or {}
+      --       vim.print 'never called'
+      --       -- This handles overriding only values explicitly passed
+      --       -- by the server configuration above. Useful when disabling
+      --       -- certain features of an LSP (for example, turning off formatting for ts_ls)
+      --       server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+      --       require('lspconfig')[server_name].setup { server }
+      --     end,
+      --   },
+      -- }
     end,
   },
 
@@ -1093,7 +1111,6 @@ require('lazy').setup({
       fuzzy = {
         implementation = (function()
           if vim.fn.has 'wsl' == 1 then
-            print 'using rust for blink'
             return 'rust'
           end
           -- vim.print 'using lua for blink'
@@ -1290,6 +1307,18 @@ require 'custom'
 -- vim: ts=2 sts=2 sw=2 et
 
 -- local lspconfig = require 'lspconfig'
+-- local configs = require 'lspconfig.configs'
+-- --local root_files = {
+-- --  'pyproject.toml',
+-- --  'setup.py',
+-- --  'setup.cfg',
+-- --  'requirements.txt',
+-- --  'Pipfile',
+-- --  '.git',
+-- --}
+-- --
+-- if not configs.lemminx then
+--   configs.lemminx = {
 -- lspconfig.dartls.setup {
 --   settings = {
 --     color = { -- show the derived colours for dart variables
@@ -1313,13 +1342,56 @@ require 'custom'
 --  '.git',
 --}
 --
---if not configs.my_server then
---  configs.my_server = {
---    default_config = {
---      cmd = { 'J:/dev/python/django-manager-lsp/.venv/Scripts/python.exe', 'J:/dev/python/django-manager-lsp/main.py' },
---      root_dir = lspconfig.util.root_pattern(unpack(root_files)),
---      filetypes = { 'python' },
---    },
---  }
---end
---lspconfig.my_server.setup {}
+--     maxItemsComputed = 5103,
+--     settings = {
+--       xml = {
+--         symbols = { maxItemsComputed = 5002 },
+--         maxItemsComputed = 5003,
+--       },
+--       railml = {
+--         symbols = { maxItemsComputed = 5002 },
+--         maxItemsComputed = 5003,
+--       },
+--
+--       symbols = { maxItemsComputed = 5002 },
+--       maxItemsComputed = 5103,
+--     },
+--     default_config = {
+--
+--       maxItemsComputed = 5103,
+--       settings = {
+--         xml = {
+--           symbols = { maxItemsComputed = 5002 },
+--           maxItemsComputed = 5003,
+--         },
+--         railml = {
+--           symbols = { maxItemsComputed = 5002 },
+--           maxItemsComputed = 5003,
+--         },
+--
+--         symbols = { maxItemsComputed = 5002 },
+--         maxItemsComputed = 5103,
+--       },
+--     },
+--   }
+-- end
+-- lspconfig.lemminx.setup {}
+-- function lemminx()
+--   vim.lsp.config('lemminx', {
+--     -- Server-specific settings. See `:help lsp-quickstart`
+--     settings = {
+--       ['lemminx'] = {
+--         xml = {
+--           symbols = { maxItemsComputed = 10009 },
+--         },
+--         settings = {
+--
+--           xml = {
+--             symbols = { maxItemsComputed = 10008 },
+--           },
+--         },
+--       },
+--     },
+--   })
+-- end
+-- lemminx()

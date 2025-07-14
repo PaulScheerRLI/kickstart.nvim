@@ -1,6 +1,6 @@
 return {
   'zk-org/zk-nvim',
-  event = 'VimEnter',
+  event = 'VeryLazy',
   config = function()
     require('zk').setup {
       -- Can be "telescope", "fzf", "fzf_lua", "minipick", "snacks_picker",

@@ -1,6 +1,13 @@
 return {
   'nvim-flutter/flutter-tools.nvim',
   lazy = false,
+  enabled = (function()
+    -- flutter is disabled for wsl. since i dont develop flutter on wsl
+    if vim.fn.has 'wsl' == 1 then
+      return false
+    end
+    return true
+  end)(),
   dependencies = {
     'nvim-lua/plenary.nvim',
     'stevearc/dressing.nvim', -- optional for vim.ui.select

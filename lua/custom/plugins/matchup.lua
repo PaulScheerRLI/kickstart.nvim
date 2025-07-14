@@ -2,6 +2,7 @@ return {
   {
     'andymass/vim-matchup',
     event = 'VeryLazy',
+    ft = 'html',
     enabled = function()
       if vim.fn.has 'wsl' == 1 then
         return true
@@ -29,6 +30,8 @@ return {
         stopline = 500,
       },
     },
+    dependencies = {
+      'antoinemadec/FixCursorHold.nvim',
+    },
   },
-  'antoinemadec/FixCursorHold.nvim',
 }
