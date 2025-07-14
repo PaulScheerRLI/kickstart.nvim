@@ -2,6 +2,7 @@ return {
   {
     'andymass/vim-matchup',
     event = 'VeryLazy',
+    ft = 'html',
     enabled = function()
       if vim.fn.has 'wsl' == 1 then
         return true
@@ -28,6 +29,9 @@ return {
       treesitter = {
         stopline = 500,
       },
+    },
+    dependencies = {
+      'antoinemadec/FixCursorHold.nvim',
     },
   },
 }
