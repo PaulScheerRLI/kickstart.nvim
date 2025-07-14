@@ -889,6 +889,9 @@ require('lazy').setup({
 
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+        automatic_enable = {
+          exclude = { 'pyright', 'ty' },
+        },
         automatic_installation = false,
         handlers = {
           function(server_name)
@@ -1331,22 +1334,22 @@ print 'Blink cmdline completion turned off!'
 --   }
 -- end
 -- lspconfig.lemminx.setup {}
-function lemminx()
-  vim.lsp.config('lemminx', {
-    -- Server-specific settings. See `:help lsp-quickstart`
-    settings = {
-      ['lemminx'] = {
-        xml = {
-          symbols = { maxItemsComputed = 10009 },
-        },
-        settings = {
-
-          xml = {
-            symbols = { maxItemsComputed = 10008 },
-          },
-        },
-      },
-    },
-  })
-end
-lemminx()
+-- function lemminx()
+--   vim.lsp.config('lemminx', {
+--     -- Server-specific settings. See `:help lsp-quickstart`
+--     settings = {
+--       ['lemminx'] = {
+--         xml = {
+--           symbols = { maxItemsComputed = 10009 },
+--         },
+--         settings = {
+--
+--           xml = {
+--             symbols = { maxItemsComputed = 10008 },
+--           },
+--         },
+--       },
+--     },
+--   })
+-- end
+-- lemminx()
