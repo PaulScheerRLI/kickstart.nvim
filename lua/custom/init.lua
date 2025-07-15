@@ -1,4 +1,6 @@
 vim.o.path = vim.o.path .. '**'
+vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+vim.keymap.set({ 'n' }, '<leader>td', ':lcd %:p:h <CR>', { desc = 'Toggle directory to current file path' })
 vim.opt.grepprg = 'rg --vimgrep'
 vim.opt.grepformat = '%f:%l:%c:%m'
 local python_path = '/home/ubuntu/.pyenv/versions/neovim/bin/python'
