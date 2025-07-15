@@ -1,15 +1,5 @@
 return {
   { 'kkoomen/vim-doge' },
-  --  {
-  --    'SmiteshP/nvim-navbuddy',
-  --    dependencies = {
-  --      'neovim/nvim-lspconfig',
-  --      'SmiteshP/nvim-navic',
-  --      'MunifTanjim/nui.nvim',
-  --      'numToStr/Comment.nvim', -- Optional
-  --      'nvim-telescope/telescope.nvim', -- Optional
-  --    },
-  --},
   {
     'SmiteshP/nvim-navic',
     event = 'VeryLazy',

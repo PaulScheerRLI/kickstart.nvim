@@ -1,5 +1,6 @@
 vim.o.path = vim.o.path .. '**'
-
+vim.opt.grepprg = 'rg --vimgrep'
+vim.opt.grepformat = '%f:%l:%c:%m'
 local python_path = '/home/ubuntu/.pyenv/versions/neovim/bin/python'
 -- Check if the file exists
 if vim.loop.fs_stat(python_path) then
