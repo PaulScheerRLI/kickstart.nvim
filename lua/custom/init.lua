@@ -132,3 +132,103 @@ vim.opt.fillchars = {
   vertright = '┣',
   verthoriz = '╋',
 }
+-- local ts = vim.treesitter
+--
+-- function getN()
+--   local bufnr = vim.api.nvim_get_current_buf()
+--   local lang = ts.language.get_lang(vim.bo[bufnr].filetype)
+--   local parser = ts.get_parser(bufnr, lang)
+--   local tree = parser:parse()[1]
+--   local root = tree:root()
+--
+--   local function print_node(node)
+--     local start_row, start_col, end_row, end_col = node:range()
+--     print(string.format('Type: %-20s Start: (%d, %d) End: (%d, %d)', node:type(), start_row + 1, start_col + 1, end_row + 1, end_col + 1))
+--     for child in node:iter_children() do
+--       print_node(child)
+--     end
+--   end
+--
+--   print_node(root)
+-- end
+--
+function getText()
+  local ts = vim.treesitter
+  local api = vim.api
+  -- local nts = require 'nvim-treesitter.ts_utils'
+
+  -- Parse the current buffer using the HTML parser
+  local bufnr = vim.api.nvim_get_current_buf()
+  lang = lang or ts.language.get_lang(vim.bo[bufnr].filetype)
+  local parser = ts.get_parser(bufnr, lang)
+  local tree = parser:parse()[1]
+  local root = tree:root()
+
+  -- Define the Tree-sitter query to capture all text nodes
+  local query = ts.query.parse(
+    'html',
+    [[
+(text) @text
+]]
+  )
+
+  -- Collect quickfix entries
+  local qf_entries = {}
+  local filepath = vim.api.nvim_buf_get_name(bufnr)
+  for id, node, metadata in query:iter_captures(root, bufnr, 0, -1) do
+    local name = query.captures[id] -- name of the capture, like "function" or "name"
+    local sr, sc, er, ec = node:range()
+    local text = ts.get_node_text(node, bufnr)
+    -- Skip empty or whitespace-only text nodes
+    if text:match '%S' then
+      table.insert(qf_entries, {
+        bufnr = bufnr,
+        lnum = sr + 1,
+        col = sr + 1,
+        text = text,
+      })
+    end
+  end
+
+  ---     bufnr  buffer number; must be the number of a valid
+  ---     buffer
+  ---     filename  name of a file; only used when "bufnr" is not
+  ---     present or it is invalid.
+  ---     module  name of a module; if given it will be used in
+  ---     quickfix error window instead of the filename.
+  ---     lnum  line number in the file
+  ---     end_lnum  end of lines, if the item spans multiple lines
+  ---     pattern  search pattern used to locate the error
+  ---     col    column number
+  ---     vcol  when non-zero: "col" is visual column
+  ---     when zero: "col" is byte index
+  ---     end_col  end column, if the item spans multiple columns
+  ---     nr    error number
+  ---     text  description of the error
+  ---     type  single-character error type, 'E', 'W', etc.
+  ---     valid  recognized error message
+  ---     user_data
+  ---     custom data associated with the item, can be
+  ---     any type.
+  -- Set the quickfix list and open it
+  vim.fn.setqflist(qf_entries, 'r')
+  vim.cmd 'copen'
+end
+--
+-- local ts = vim.treesitter
+--
+-- function print_query_nodes(query_str, lang)
+--   local bufnr = vim.api.nvim_get_current_buf()
+--   lang = lang or ts.language.get_lang(vim.bo[bufnr].filetype)
+--   local parser = ts.get_parser(bufnr, lang)
+--   local tree = parser:parse()[1]
+--   local root = tree:root()
+--
+--   local query = vim.treesitter.query.parse(lang, query_str)
+--
+--   for id, node, metadata in query:iter_captures(root, bufnr, 0, -1) do
+--     local name = query.captures[id] -- name of the capture, like "function" or "name"
+--     local sr, sc, er, ec = node:range()
+--     print(string.format('Capture: %-15s Type: %-20s Range: (%d, %d) - (%d, %d)', name, node:type(), sr + 1, sc + 1, er + 1, ec + 1))
+--   end
+-- end
