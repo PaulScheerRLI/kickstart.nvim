@@ -155,27 +155,35 @@ vim.opt.fillchars = {
 function getText()
   local ts = vim.treesitter
   local api = vim.api
-  -- local nts = require 'nvim-treesitter.ts_utils'
 
   -- Parse the current buffer using the HTML parser
   local bufnr = vim.api.nvim_get_current_buf()
-  lang = lang or ts.language.get_lang(vim.bo[bufnr].filetype)
+  local lang = ts.language.get_lang(vim.bo[bufnr].filetype)
   local parser = ts.get_parser(bufnr, lang)
   local tree = parser:parse()[1]
   local root = tree:root()
-
+  print(bufnr)
+  print(lang)
   -- Define the Tree-sitter query to capture all text nodes
+  -- local query = ts.query.parse(lang, '[[(text) @text]]')
   local query = ts.query.parse(
-    'html',
+    lang,
     [[
-(text) @text
-]]
+    (paired_statement) @element
+    (raw_html) @raw
+    (tag_name) @tag
+    (attribute) @attr
+    (djangotag) @django_tag
+    (django_comment) @django_comment
+  ]]
   )
-
   -- Collect quickfix entries
   local qf_entries = {}
   local filepath = vim.api.nvim_buf_get_name(bufnr)
+  print(filepath)
+  print(rppt)
   for id, node, metadata in query:iter_captures(root, bufnr, 0, -1) do
+    vim.print(node)
     local name = query.captures[id] -- name of the capture, like "function" or "name"
     local sr, sc, er, ec = node:range()
     local text = ts.get_node_text(node, bufnr)
@@ -184,7 +192,7 @@ function getText()
       table.insert(qf_entries, {
         bufnr = bufnr,
         lnum = sr + 1,
-        col = sr + 1,
+        col = sc + 1,
         text = text,
       })
     end
@@ -215,20 +223,86 @@ function getText()
   vim.cmd 'copen'
 end
 --
--- local ts = vim.treesitter
 --
--- function print_query_nodes(query_str, lang)
---   local bufnr = vim.api.nvim_get_current_buf()
---   lang = lang or ts.language.get_lang(vim.bo[bufnr].filetype)
---   local parser = ts.get_parser(bufnr, lang)
---   local tree = parser:parse()[1]
---   local root = tree:root()
---
---   local query = vim.treesitter.query.parse(lang, query_str)
---
---   for id, node, metadata in query:iter_captures(root, bufnr, 0, -1) do
---     local name = query.captures[id] -- name of the capture, like "function" or "name"
---     local sr, sc, er, ec = node:range()
---     print(string.format('Capture: %-15s Type: %-20s Range: (%d, %d) - (%d, %d)', name, node:type(), sr + 1, sc + 1, er + 1, ec + 1))
---   end
--- end
+function print_query_nodes(query_str, lang)
+  local ts = vim.treesitter
+  local bufnr = vim.api.nvim_get_current_buf()
+  lang = lang or ts.language.get_lang(vim.bo[bufnr].filetype)
+  local parser = ts.get_parser(bufnr, lang)
+  local tree = parser:parse()[1]
+  local root = tree:root()
+  print(root)
+  local query = vim.treesitter.query.parse(lang, query_str)
+
+  for id, node, metadata in query:iter_captures(root, bufnr, 0, -1) do
+    vim.print(metadata)
+    local name = query.captures[id] -- name of the capture, like "function" or "name"
+    local sr, sc, er, ec = node:range()
+    print(string.format('Capture: %-15s Type: %-20s Range: (%d, %d) - (%d, %d)', name, node:type(), sr + 1, sc + 1, er + 1, ec + 1))
+    print(ts.get_node_text(node, bufnr))
+  end
+  print 'finished'
+end
+
+local ts = vim.treesitter
+
+function query_all_injected_trees(query)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local parser = ts.get_parser(bufnr)
+  local trees = { parser:parse()[1] }
+
+  -- Also include all injected trees (html, javascript, etc.)
+  all_trees = {}
+
+  -- Add main tree
+  for _, tree in ipairs(parser:parse()) do
+    print 'main'
+    print(parser:lang())
+    table.insert(all_trees, { tree = tree, lang = parser:lang() })
+  end
+
+  -- Add injected trees manually
+  function addChildren(parser)
+    for key, child in pairs(parser:children()) do
+      print 'child.lang'
+      print(child:lang())
+      for _, tree in pairs(child:parse()) do
+        print 'found tree'
+        table.insert(all_trees, { tree = tree, lang = child:lang() })
+      end
+      addChildren(child)
+    end
+  end
+
+  addChildren(parser)
+
+  for _, tree_data in ipairs(all_trees) do
+    local tree = tree_data.tree
+    local lang = tree_data.lang
+    local root = tree:root()
+    -- Query example: get all text and element nodes from any tree
+    local ok, query = pcall(function()
+      return ts.query.parse(lang, [[    (text) @text    (element) @element  ]])
+    end)
+    if ok then
+      for id, node, _ in query:iter_captures(root, bufnr, 0, -1) do
+        local name = query.captures[id]
+        local sr, sc, er, ec = node:range()
+        local ok, text = pcall(ts.get_node_text, node, bufnr)
+        print(
+          string.format(
+            'Capture: %-10s Type: %-15s Text: %.40s (%d:%d - %d:%d)',
+            name,
+            node:type(),
+            ok and text:gsub('\n', '\\n') or '[unavailable]',
+            sr + 1,
+            sc + 1,
+            er + 1,
+            ec + 1
+          )
+        )
+      end
+    end
+  end
+  print 'end'
+end
