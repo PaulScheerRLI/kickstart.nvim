@@ -136,8 +136,6 @@ vim.opt.fillchars = {
 local ts = vim.treesitter
 
 function query_all_injected_trees(query, quicklist_method)
-  print(query)
-  print(quicklist_method)
   assert(quicklist_method == 'r' or quicklist_method == 'a' or quicklist_method == 'f' or quicklist_method == ' ' or quicklist_method == nil)
   quicklist_method = quicklist_method or 'r'
 
@@ -145,33 +143,39 @@ function query_all_injected_trees(query, quicklist_method)
     error 'Pass a query like [[(text) @text]] to the function. quotes around query are optional.'
   end
   local bufnr = vim.api.nvim_get_current_buf()
+
+  -- Temporarily open the buffer in a window. This is needed since injected languages are only detected when opening the file.
+  -- kinda strange behvaioru
+  local cur_win = vim.api.nvim_get_current_win()
+  vim.cmd 'keepalt silent belowright split'
+  local tmp_win = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_buf(tmp_win, bufnr)
+
   local parser = ts.get_parser(bufnr)
   local trees = { parser:parse()[1] }
-
-  -- Also include all injected trees (html, javascript, etc.)
+  local filename = vim.api.nvim_buf_get_name(bufnr)
   local all_trees = {}
 
   -- Add main tree
   for _, tree in ipairs(parser:parse()) do
-    -- print 'main'
-    print(parser:lang())
     table.insert(all_trees, { tree = tree, lang = parser:lang() })
   end
 
   -- Add injected trees manually
   local function addChildren(parser)
     for key, child in pairs(parser:children()) do
-      -- print 'child.lang'
-      print(child:lang())
       for _, tree in pairs(child:parse()) do
-        -- print 'found tree'
         table.insert(all_trees, { tree = tree, lang = child:lang() })
       end
       addChildren(child)
     end
   end
-
   addChildren(parser)
+
+  -- the children/ injected languages are detected. close window again
+  vim.api.nvim_win_close(tmp_win, true)
+  vim.api.nvim_set_current_win(cur_win)
+
   local qf_entries = {}
   for _, tree_data in ipairs(all_trees) do
     local tree = tree_data.tree
@@ -186,19 +190,6 @@ function query_all_injected_trees(query, quicklist_method)
         local name = query.captures[id]
         local sr, sc, er, ec = node:range()
         local ok, text = pcall(ts.get_node_text, node, bufnr)
-        -- print(
-        --   string.format(
-        --     'Capture: %-10s Type: %-15s Text: %.40s (%d:%d - %d:%d)',
-        --     name,
-        --     node:type(),
-        --     ok and text:gsub('\n', '\\n') or '[unavailable]',
-        --     sr + 1,
-        --     sc + 1,
-        --     er + 1,
-        --     ec + 1
-        --   )
-        -- )
-
         table.insert(qf_entries, {
           bufnr = bufnr,
           lnum = sr + 1,
@@ -211,15 +202,31 @@ function query_all_injected_trees(query, quicklist_method)
     end
   end
   if next(qf_entries) == nil then
-    vim.print(qf_entries)
-    vim.print 'No matches found'
+    vim.print(filename)
+    vim.print 'No matches found. The following languages where searched'
+    local langs = {}
+    for key, value in pairs(all_trees) do
+      table.insert(langs, value.lang)
+    end
+    vim.print(langs)
     return
   end
   vim.fn.setqflist(qf_entries, quicklist_method)
-  vim.cmd 'copen'
 end
 
-function select_current_qf_item()
+local function unique(list)
+  local seen = {}
+  local result = {}
+  for _, v in ipairs(list) do
+    if not seen[v] then
+      seen[v] = true
+      table.insert(result, v)
+    end
+  end
+  return result
+end
+
+local function select_current_qf_item()
   local qf_list = vim.fn.getqflist()
   local idx = vim.fn.getqflist({ idx = 0 }).idx
   local item = qf_list[idx]
@@ -233,7 +240,6 @@ function select_current_qf_item()
   local start_col = item.col
   local end_lnum = item.end_lnum or item.lnum
   local end_col = item.end_col or (item.col + 1)
-
   -- Switch to the buffer and move the cursor
   vim.api.nvim_set_current_buf(bufnr)
   vim.api.nvim_win_set_cursor(0, { start_lnum, start_col - 1 })
@@ -253,3 +259,6 @@ vim.api.nvim_create_user_command('QueryTS', function(opts)
   query_all_injected_trees(query, flag)
 end, { nargs = 1 })
 vim.api.nvim_create_user_command('SelectQuickList', select_current_qf_item, {})
+vim.api.nvim_create_user_command('Clearquickfix', function()
+  vim.fn.setqflist({}, ' ')
+end, {})
