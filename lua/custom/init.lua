@@ -154,7 +154,7 @@ function query_all_injected_trees(query)
   end
 
   -- Add injected trees manually
-  function addChildren(parser)
+  local function addChildren(parser)
     for key, child in pairs(parser:children()) do
       -- print 'child.lang'
       print(child:lang())
@@ -209,7 +209,7 @@ function query_all_injected_trees(query)
   vim.cmd 'copen'
 end
 
-local function select_current_qf_item_rai()
+function select_current_qf_item()
   local qf_list = vim.fn.getqflist()
   local idx = vim.fn.getqflist({ idx = 0 }).idx
   local item = qf_list[idx]
@@ -233,6 +233,10 @@ local function select_current_qf_item_rai()
   vim.api.nvim_win_set_cursor(0, { end_lnum, math.max(end_col - 1, 0) })
 end
 
-if vim.fn.exists ':DiffOrig' == 0 then
-  vim.cmd 'command! DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
+if vim.fn.exists ':QueryTS' == 0 then
+  vim.api.nvim_create_user_command('QueryTS', query_all_injected_trees, { nargs = 1 })
+end
+
+if vim.fn.exists ':SelectQuickList' == 0 then
+  vim.api.nvim_create_user_command('SelectQuickList', select_current_qf_item, {})
 end
