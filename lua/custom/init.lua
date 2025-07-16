@@ -135,7 +135,12 @@ vim.opt.fillchars = {
 
 local ts = vim.treesitter
 
-function query_all_injected_trees(query)
+function query_all_injected_trees(query, quicklist_method)
+  print(query)
+  print(quicklist_method)
+  assert(quicklist_method == 'r' or quicklist_method == 'a' or quicklist_method == 'f' or quicklist_method == ' ' or quicklist_method == nil)
+  quicklist_method = quicklist_method or 'r'
+
   if query == nil or query == '' then
     error 'Pass a query like [[(text) @text]] to the function. quotes around query are optional.'
   end
@@ -205,7 +210,12 @@ function query_all_injected_trees(query)
       end
     end
   end
-  vim.fn.setqflist(qf_entries, 'r')
+  if next(qf_entries) == nil then
+    vim.print(qf_entries)
+    vim.print 'No matches found'
+    return
+  end
+  vim.fn.setqflist(qf_entries, quicklist_method)
   vim.cmd 'copen'
 end
 
@@ -233,10 +243,13 @@ function select_current_qf_item()
   vim.api.nvim_win_set_cursor(0, { end_lnum, math.max(end_col - 1, 0) })
 end
 
-if vim.fn.exists ':QueryTS' == 0 then
-  vim.api.nvim_create_user_command('QueryTS', query_all_injected_trees, { nargs = 1 })
-end
-
-if vim.fn.exists ':SelectQuickList' == 0 then
-  vim.api.nvim_create_user_command('SelectQuickList', select_current_qf_item, {})
-end
+vim.api.nvim_create_user_command('QueryTS', function(opts)
+  local query = opts.args
+  local flag = string.match(query, '%-(%a)')
+  if flag then
+    local cleaned = string.gsub(query, '%-' .. flag, '', 1)
+    query = vim.trim(cleaned)
+  end
+  query_all_injected_trees(query, flag)
+end, { nargs = 1 })
+vim.api.nvim_create_user_command('SelectQuickList', select_current_qf_item, {})
