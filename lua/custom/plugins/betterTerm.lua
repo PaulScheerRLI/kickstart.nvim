@@ -57,8 +57,8 @@ return {
       desc = 'Open BetterTerm 0',
     },
     {
-      mode = { 'n', 't', 'i' },
-      '<A-;>',
+      mode = { 'n', 't' },
+      "<A-'>",
       function()
         if lastTerm == nil then
           require('betterTerm').open()
@@ -69,6 +69,7 @@ return {
       desc = 'Switch betterTerm / go to last active terminal',
     },
     {
+      mode = { 'n', 't' },
       '<leader>tt',
       function()
         require('betterTerm').select()
