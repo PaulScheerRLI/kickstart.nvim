@@ -32,7 +32,8 @@ return {
 
     -- Change the background of inactive lualine/statusline to slightly darker
 
-    custom_tokyonight.inactive.c.bg = '#0b0b00'
+    custom_tokyonight.inactive.c.bg = tokyonight_moon.inactive.c.bg
+    custom_tokyonight.normal.c.bg = tokyonight_moon.normal.c.bg
     require('lualine').setup {
       --sections = {
       --          lualine_c = {

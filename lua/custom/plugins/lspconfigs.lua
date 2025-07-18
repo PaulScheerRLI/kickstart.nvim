@@ -14,5 +14,20 @@ vim.schedule(function()
       },
     },
   })
+  vim.lsp.config('efm', {
+    capabilities = capabilities,
+    filetypes = { '!**.py' },
+    on_attach = function(client, bufnr)
+
+      -- Your on_attach logic here (keymaps, etc.)
+    end,
+    settings = {
+      -- Your Lemminx settings go here
+
+      xml = {
+        symbols = { maxItemsComputed = 20008 },
+      },
+    },
+  })
 end)
 return {}

@@ -30,8 +30,5 @@ return {
         stopline = 500,
       },
     },
-    dependencies = {
-      'antoinemadec/FixCursorHold.nvim',
-    },
   },
 }
