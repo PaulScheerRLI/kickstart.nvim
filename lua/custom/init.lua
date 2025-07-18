@@ -73,6 +73,28 @@ vim.schedule(function()
     end
   end
 end)
+-- Idea from nvim help
+-- use + register to paste tp clip.exe. this enables pasting in windows
+-- from windows im using ctrl-v anyways which works fine
+-- to paste in nvim we can override both paste to use foo. i dont use * differently anyways
+-- vim.g.clipboard = {
+--   name = 'myClipboard',
+--   copy = {
+--     ['+'] = 'clip.exe',
+--     ['*'] = function(lines, regtype)
+--       vim.g.foo = { lines, regtype }
+--     end,
+--   },
+--   paste = {
+--     ['+'] = function()
+--       return vim.g.foo or {}
+--     end,
+--     ['*'] = function()
+--       return vim.g.foo or {}
+--     end,
+--   },
+-- }
+
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
   pattern = { '*.dart', '*.md', '*.py', '*.txt', '*COMMIT_EDITMSG' },
   callback = function()
