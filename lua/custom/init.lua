@@ -55,14 +55,14 @@ vim.schedule(function()
     --   },
     -- }
     if vim.env.TMUX ~= nil then
-      -- TODO: maybe unnamedplus for tmux would make sense
+      vim.opt.clipboard = 'unnamedplus'
       local copy = { 'tmux', 'load-buffer', '-w', '-' }
       local paste = { 'bash', '-c', 'tmux refresh-client -l && tmux save-buffer -' }
       vim.g.clipboard = {
         name = 'tmux',
         copy = {
-          ['+'] = copy,
-          ['*'] = copy,
+          ['+'] = 'clip.exe',
+          ['*'] = 'clip.exe',
         },
         paste = {
           ['+'] = paste,
@@ -239,7 +239,7 @@ local function select_current_qf_item()
   local start_lnum = item.lnum
   local start_col = item.col
   local end_lnum = item.end_lnum or item.lnum
-  local end_col = item.end_col or (item.col + 1)
+  local end_col = item.end_col - 1 or (item.col + 1)
   -- Switch to the buffer and move the cursor
   vim.api.nvim_set_current_buf(bufnr)
   vim.api.nvim_win_set_cursor(0, { start_lnum, start_col - 1 })
