@@ -139,10 +139,14 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev Diagnostic' }
 -- Just for Documentation
 -- Open neo tree with <Alt-Gr -\>
 --
-vim.keymap.set('n', '<M-r>', vim.lsp.buf.rename, { desc = 'Rename in buffer' })
-vim.keymap.set('n', '<leader>n', '<cmd>bn<CR>', { desc = 'Next Buffer' })
-vim.keymap.set('n', '<leader>m', '<cmd>bp<CR>', { desc = 'Prev Buffer' })
-vim.keymap.set('n', '<leader>cc', '<cmd>BufDel<CR>', { desc = 'Delete Buffer' })
+-- this is done with the lsp setup - grn
+-- vim.keymap.set('n', '<M-r>', vim.lsp.buf.rename, { desc = 'Rename in buffer' })
+-- this is done by [b   ]b
+-- vim.keymap.set('n', '<leader>n', '<cmd>bn<CR>', { desc = 'Next Buffer' })
+-- vim.keymap.set('n', '<leader>m', '<cmd>bp<CR>', { desc = 'Prev Buffer' })
+vim.keymap.set('n', '<leader>cc', function()
+  vim.cmd 'BufDel'
+end, { desc = 'Delete Buffer' })
 
 vim.api.nvim_set_hl(0, 'WinSeparator', { fg = '#c0caf5', bold = true })
 vim.opt.fillchars = {

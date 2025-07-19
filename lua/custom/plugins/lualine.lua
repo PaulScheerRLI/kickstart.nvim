@@ -98,11 +98,7 @@ return {
       },
       tabline = {},
       winbar = {
-        lualine_c = {
-          'navic',
-          color_correction = nil,
-          navic_opts = nil,
-        },
+        lualine_c = {},
         lualine_x = { 'filename' },
         lualine_z = { 'lsp_status' },
       },
