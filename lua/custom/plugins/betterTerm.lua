@@ -41,7 +41,7 @@ return {
   event = 'VimEnter',
   keys = {
     {
-      mode = { 'n', 't' },
+      mode = { 'n' },
       '<leader>to',
       function()
         local ok, word = pcall(vim.fn.input, 'Create terminal: ')
@@ -69,7 +69,7 @@ return {
       desc = 'Switch betterTerm / go to last active terminal',
     },
     {
-      mode = { 'n', 't' },
+      mode = { 'n' },
       '<leader>tt',
       function()
         require('betterTerm').select()
