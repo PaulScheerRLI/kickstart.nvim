@@ -15,6 +15,8 @@ end
 
 vim.keymap.set({ 'x', 'n' }, '+', '"+y', { desc = 'Yank to plus' })
 
+local vimrc = vim.fn.stdpath 'config' .. '/vimrc.vim'
+vim.cmd.source(vimrc)
 -- without this nvim copy pasting to inside tmux to tmux terminals or windows did now work
 -- from https://github.com/neovim/neovim/discussions/29350
 -- standard clipboard behaviour

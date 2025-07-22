@@ -18,7 +18,7 @@ return {
         enabled = true,
       },
       closing_tags = {
-        enabled = false,
+        enabled = true,
       },
       lsp = {
         color = { -- show the derived colours for dart variables
