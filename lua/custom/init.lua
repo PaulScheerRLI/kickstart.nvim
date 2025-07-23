@@ -1,4 +1,33 @@
-vim.o.path = vim.o.path .. '**'
+local function get_nvim_open_level()
+  local Path = require 'plenary.path' -- Requires plenary.nvim
+  local cwd = Path:new(vim.fn.getcwd()):absolute()
+  local level = 0
+
+  for i = 1, 9 do
+    local parent = Path:new(cwd):parent()
+    if parent.filename == cwd.filename then
+      break
+    end
+    cwd = parent
+    level = level + 1
+  end
+
+  return level
+end
+local min_level
+if vim.fn.has 'wsl' == 1 then
+  min_level = 4
+else
+  min_level = 2
+end
+
+--  lets me jump around in zk with gf
+vim.o.suffixesadd = vim.o.suffixesadd .. '.md,.html'
+
+if get_nvim_open_level() >= min_level then
+  vim.o.path = vim.o.path .. '**'
+  print 'path has been appended with cwd'
+end
 vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
 vim.keymap.set({ 'n' }, '<leader>td', ':lcd %:p:h <CR>', { desc = 'Toggle directory to current file path' })
 vim.opt.grepprg = 'rg --vimgrep'
@@ -56,20 +85,19 @@ vim.schedule(function()
     -- }
     if vim.env.TMUX ~= nil then
       vim.opt.clipboard = 'unnamedplus'
-      local copy = { 'tmux', 'load-buffer', '-w', '-' }
-      local paste = { 'bash', '-c', 'tmux refresh-client -l && tmux save-buffer -' }
-      vim.g.clipboard = {
-        name = 'tmux',
-        copy = {
-          ['+'] = 'clip.exe',
-          ['*'] = 'clip.exe',
-        },
-        paste = {
-          ['+'] = paste,
-          ['*'] = paste,
-        },
-        cache_enabled = 0,
-      }
+      vim.g.clipboard = 'tmux'
+      -- vim.g.clipboard = {
+      --   name = 'tmux',
+      --   copy = {
+      --     ['+'] = 'clip.exe',
+      --     ['*'] = 'clip.exe',
+      --   },
+      --   paste = {
+      --     ['+'] = paste,
+      --     ['*'] = paste,
+      --   },
+      --   cache_enabled = 0,
+      -- }
     end
   end
 end)
