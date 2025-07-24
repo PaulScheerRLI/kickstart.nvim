@@ -44,7 +44,11 @@ end
 
 vim.keymap.set({ 'x', 'n' }, '+', '"+y', { desc = 'Yank to plus' })
 
+-- Insta completion from buffer using next or previous match
+vim.keymap.set('i', '<C-G>', '<C-X><C-N>', { desc = 'Complete with upcoming matches' })
+vim.keymap.set('i', '<C-F>', '<C-X><C-P>', { desc = 'Complete with previous matches' })
 local vimrc = vim.fn.stdpath 'config' .. '/vimrc.vim'
+
 vim.cmd.source(vimrc)
 -- without this nvim copy pasting to inside tmux to tmux terminals or windows did now work
 -- from https://github.com/neovim/neovim/discussions/29350
