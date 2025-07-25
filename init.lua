@@ -175,21 +175,16 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 --  <ESC><ESC> does not work with tmux. instead we us C-B. In tmux thats <C-B><C-B> since the the first one
 --  is escaped
 vim.keymap.set('t', '<C-B>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
-
--- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+vim.keymap.set('t', '<ESC><ESC>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
--- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
--- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
--- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
--- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('t', '<A-h>', '<C-\\><C-N><C-W><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('t', '<A-l>', '<C-\\><C-N><C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('t', '<A-j>', '<C-\\><C-N><C-W><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('t', '<A-k>', '<C-\\><C-N><C-W><C-k>', { desc = 'Move focus to the upper window' })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -1276,19 +1271,47 @@ require('lazy').setup({
   --
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
+  -- -- require 'kickstart.plugins.neo-tree',
   --
+  -- indent_line seems to make neovim a little slow for me
+  -- i tried out indentmini but it was even worse
+  -- require 'kickstart.plugins.indent_line',
+  -- autopairs feel like they are rarely useful
+  -- require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
-  require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
-
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
   --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  { import = 'custom.plugins' },
+  require 'custom.plugins.betterTerm',
+
+  -- what can code-runner do that slime cant?
+  -- require 'custom.plugins.code-runner',
+  require 'custom.plugins.mason_setup',
+  require 'custom.plugins.lspconfigs',
+  require 'custom.plugins.fugitive',
+  require 'custom.plugins.gF-python-traceback',
+  require 'custom.plugins.harpoon',
+  require 'custom.plugins.misc',
+  require 'custom.plugins.lazygit',
+  require 'custom.plugins.minisessions',
+  require 'custom.plugins.nvim-scissors',
+  require 'custom.plugins.otter',
+  require 'custom.plugins.refactor',
+  require 'custom.plugins.render-markdown',
+  require 'custom.plugins.slides',
+  require 'custom.plugins.tmux',
+  require 'custom.plugins.treesitter-context',
+  require 'custom.plugins.treesitter-textobjects',
+  require 'custom.plugins.vim_slime',
+  require 'custom.plugins.vimbegood',
+  require 'custom.plugins.zettelkasten',
+
+  require 'custom.plugins.flutter-nvim',
+  require 'custom.plugins.matchup',
+  require 'custom.plugins.undotree',
+  require 'custom.plugins.lualine',
+  --
+  -- { import = 'custom.plugins.' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
