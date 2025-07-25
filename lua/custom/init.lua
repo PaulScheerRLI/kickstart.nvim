@@ -43,6 +43,7 @@ end
 -- for better pasting in tmux remap + to yank to + register
 
 vim.keymap.set({ 'x', 'n' }, '+', '"+y', { desc = 'Yank to plus' })
+vim.keymap.set({ 'n' }, 'M', 'm`', { desc = 'Set JuMp. Overrides default jump to mid' })
 
 -- Insta completion from buffer using next or previous match
 vim.keymap.set('i', '<C-G>', '<C-X><C-N>', { desc = 'Complete with upcoming matches' })
@@ -164,6 +165,26 @@ vim.keymap.set('i', '<Down>', ':copy +0 <CR>i', { desc = 'duplicate' })
 -- vim.opt.signcolumn = 'yes:1'
 vim.opt.numberwidth = 3
 vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s"
+-- for netwr
+vim.g.netrw_winsize = 20
+vim.g.netrw_banner = 0
+vim.g.netrw_liststyle = 3
+
+-- set last entrance to relativenumver, the rest are defaults
+vim.g.netrw_bufsettings = 'noma nomod nonu nobl nowrap ro rnu'
+
+-- there does not seem to be a bufenter event when entering netwr so this does not work
+-- vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
+--   group = vim.api.nvim_create_augroup('CustomNetwrRelNum', { clear = true }),
+--   callback = function()
+--     vim.print(vim.bo.filetype)
+--     if vim.bo.filetype == 'netwr' then
+--       vim.print 'callback'
+--       -- // de_20 is german with new spelling
+--       vim.bo.relativenumber = true
+--     end
+--   end,
+-- })
 
 vim.keymap.set('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
 vim.opt.colorcolumn = '100'
