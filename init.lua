@@ -650,7 +650,7 @@ require('lazy').setup({
         opts = {
           ensure_installed = { 'lua_ls' },
           automatic_enable = {
-            exclude = { 'pyright', 'ty' },
+            exclude = { 'pyrefly', 'ty' },
           },
         },
         dependencies = {
@@ -1094,9 +1094,9 @@ require('lazy').setup({
               end,
             },
           },
-          lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
-          lsp = { score_offset = 50 },
-          buffer = { score_offset = 900 },
+          lazydev = { module = 'lazydev.integrations.blink', score_offset = 0 },
+          lsp = { score_offset = 1 },
+          buffer = { score_offset = 0 },
           cmdline = {
 
             -- ignores cmdline completions when executing shell commands
@@ -1117,8 +1117,14 @@ require('lazy').setup({
       --
       -- See :h blink-cmp-config-fuzzy for more information
       fuzzy = {
+        sorts = {
+          'score', -- Primary sort: by fuzzy matching score
+          'sort_text', -- Secondary sort: by sortText field if scores are equal
+          'label', -- Tertiary sort: by label if still tied
+        },
         implementation = (function()
           if vim.fn.has 'wsl' == 1 then
+            vim.print 'using rust'
             return 'rust'
           end
           -- vim.print 'using lua for blink'
