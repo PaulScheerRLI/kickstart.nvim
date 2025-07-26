@@ -13,13 +13,67 @@ function turn_on_auto_source()
 end
 
 vim.api.nvim_create_user_command('AutoSourceOn', turn_on_auto_source, {})
-function jumplist_files_into_quickfix()
+function get_current_jumplist()
   local winnr = vim.api.nvim_get_current_win()
   local tabpage = vim.api.nvim_get_current_tabpage()
   local jumplist = vim.fn.getjumplist(winnr, tabpage)
-  -- local current_idx = jumplist[2]
-  -- vim.print(winnr, tabpage, current_idx, jumplist)
-  -- local current_buffer = jumplist[1][current_idx + 1].bufnr
+  local current_idx = (jumplist[2] or tablelength(jumplist)) + 1
+  return jumplist, current_idx
+end
+
+function traverse_jumpfiles(forward)
+  -- ternary workaaround
+  local direction = forward and 1 or -1
+  local winnr = vim.api.nvim_get_current_win()
+  local jumplist, current_idx = get_current_jumplist()
+  local current_buffer = vim.api.nvim_get_current_buf()
+  local length = tablelength(jumplist[1])
+  local lnum, col = vim.api.nvim_win_get_position(winnr)
+  local num = 1
+  -- loop at least once
+  upper = math.max(length, 1)
+  for _ = 0, upper do
+    current_idx = current_idx + direction
+    if current_idx < 1 or current_idx > length then
+      return vim.print 'No more files'
+    end
+    if current_buffer == jumplist[1][current_idx].bufnr then
+      num = num + 1
+    else
+      break
+    end
+  end
+
+  local command = nil
+  if direction == -1 then
+    command = 'execute "normal! ' .. tostring(num) .. '\\<c-o>"'
+  else
+    command = 'execute "normal! ' .. tostring(num) .. '\\<c-i>"'
+  end
+  print(command)
+  vim.cmd(command)
+end
+
+vim.api.nvim_create_user_command('TraverseJumpFile', function(opts)
+  local forward = nil
+  if tonumber(opts.args) > 0 then
+    forward = true
+  else
+    forward = false
+  end
+  traverse_jumpfiles(forward)
+end, { nargs = 1 })
+
+vim.keymap.set('n', '[j', function()
+  traverse_jumpfiles(false)
+end, { desc = 'Go to the previous JumpFile ' })
+
+vim.keymap.set('n', ']j', function()
+  traverse_jumpfiles(true)
+end, { desc = 'Go to the next JumpFile ' })
+
+function jumplist_files_into_quickfix()
+  local jumplist, current_idx = get_current_jumplist()
   local unique_buffers = {}
   local unique_jumplist = {}
   for i, jump in pairs(jumplist[1]) do
@@ -63,5 +117,12 @@ function clear_jumps_from_deleted_buffers()
   end
 end
 
+function tablelength(T)
+  local count = 0
+  for _ in pairs(T) do
+    count = count + 1
+  end
+  return count
+end
 vim.api.nvim_create_user_command('ClearJumpsFromNonBuffers', clear_jumps_from_deleted_buffers, {})
 vim.api.nvim_create_user_command('JumpFilesIntoQuickFix', jumplist_files_into_quickfix, {})
