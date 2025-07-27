@@ -95,8 +95,8 @@ vim.g.have_nerd_font = true
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
-
 -- Make line numbers default
+--
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
@@ -486,155 +486,6 @@ require('lazy').setup({
     'neovim/nvim-lspconfig',
     event = 'VeryLazy',
     dependencies = {
-      {
-        -- does it hurt disabling it?
-        'SmiteshP/nvim-navbuddy',
-        enabled = false,
-        dependencies = {
-          'SmiteshP/nvim-navic',
-          'MunifTanjim/nui.nvim',
-          'numToStr/Comment.nvim', --  " Optional
-        },
-        config = function()
-          local navbuddy = require 'nvim-navbuddy'
-          local actions = require 'nvim-navbuddy.actions'
-
-          vim.keymap.set('n', 'grN', navbuddy.open, { desc = '[G]oto [N]avbuddy window' })
-          navbuddy.setup {
-            window = {
-              border = 'single', -- "rounded", "double", "solid", "none"
-              -- or an array with eight chars building up the border in a clockwise fashion
-              -- starting with the top-left corner. eg: { "╔", "═" ,"╗", "║", "╝", "═", "╚", "║" }.
-              size = '60%', -- Or table format example: { height = "40%", width = "100%"}
-              position = '50%', -- Or table format example: { row = "100%", col = "0%"}
-              scrolloff = nil, -- scrolloff value within navbuddy window
-              sections = {
-                left = {
-                  size = '20%',
-                  border = nil, -- You can set border style for each section individually as well.
-                },
-                mid = {
-                  size = '40%',
-                  border = nil,
-                },
-                right = {
-                  -- No size option for right most section. It fills to
-                  -- remaining area.
-                  border = nil,
-                  preview = 'leaf', -- Right section can show previews too.
-                  -- Options: "leaf", "always" or "never"
-                },
-              },
-            },
-            node_markers = {
-              enabled = true,
-              icons = {
-                leaf = '  ',
-                leaf_selected = ' → ',
-                branch = ' ',
-              },
-            },
-            icons = {
-              File = '󰈙 ',
-              Module = ' ',
-              Namespace = '󰌗 ',
-              Package = ' ',
-              Class = '󰌗 ',
-              Method = '󰆧 ',
-              Property = ' ',
-              Field = ' ',
-              Constructor = ' ',
-              Enum = '󰕘',
-              Interface = '󰕘',
-              Function = '󰊕 ',
-              Variable = '󰆧 ',
-              Constant = '󰏿 ',
-              String = ' ',
-              Number = '󰎠 ',
-              Boolean = '◩ ',
-              Array = '󰅪 ',
-              Object = '󰅩 ',
-              Key = '󰌋 ',
-              Null = '󰟢 ',
-              EnumMember = ' ',
-              Struct = '󰌗 ',
-              Event = ' ',
-              Operator = '󰆕 ',
-              TypeParameter = '󰊄 ',
-            },
-            use_default_mappings = true, -- If set to false, only mappings set
-            -- by user are set. Else default
-            -- mappings are used for keys
-            -- that are not set by user
-            mappings = {
-              ['<esc>'] = actions.close(), -- Close and cursor to original location
-              ['q'] = actions.close(),
-
-              ['j'] = actions.next_sibling(), -- down
-              ['k'] = actions.previous_sibling(), -- up
-
-              ['h'] = actions.parent(), -- Move to left panel
-              ['l'] = actions.children(), -- Move to right panel
-              ['0'] = actions.root(), -- Move to first panel
-
-              ['v'] = actions.visual_name(), -- Visual selection of name
-              ['V'] = actions.visual_scope(), -- Visual selection of scope
-
-              ['y'] = actions.yank_name(), -- Yank the name to system clipboard "+
-              ['Y'] = actions.yank_scope(), -- Yank the scope to system clipboard "+
-
-              ['i'] = actions.insert_name(), -- Insert at start of name
-              ['I'] = actions.insert_scope(), -- Insert at start of scope
-
-              ['a'] = actions.append_name(), -- Insert at end of name
-              ['A'] = actions.append_scope(), -- Insert at end of scope
-
-              ['r'] = actions.rename(), -- Rename currently focused symbol
-
-              ['d'] = actions.delete(), -- Delete scope
-
-              ['f'] = actions.fold_create(), -- Create fold of current scope
-              ['F'] = actions.fold_delete(), -- Delete fold of current scope
-
-              ['c'] = actions.comment(), -- Comment out current scope
-
-              ['<enter>'] = actions.select(), -- Goto selected symbol
-              ['o'] = actions.select(),
-
-              ['J'] = actions.move_down(), -- Move focused node down
-              ['K'] = actions.move_up(), -- Move focused node up
-
-              ['s'] = actions.toggle_preview(), -- Show preview of current node
-
-              ['<C-v>'] = actions.vsplit(), -- Open selected node in a vertical split
-              ['<C-s>'] = actions.hsplit(), -- Open selected node in a horizontal split
-
-              ['t'] = actions.telescope { -- Fuzzy finder at current level.
-                layout_config = { -- All options that can be
-                  height = 0.60, -- passed to telescope.nvim's
-                  width = 0.60, -- default can be passed here.
-                  prompt_position = 'top',
-                  preview_width = 0.50,
-                },
-                layout_strategy = 'horizontal',
-              },
-
-              ['g?'] = actions.help(), -- Open mappings help window
-            },
-            lsp = {
-              auto_attach = true, -- If set to true, you don't need to manually use attach function
-              preference = nil, -- list of lsp server names in order of preference
-            },
-            source_buffer = {
-              follow_node = true, -- Keep the current node in focus on the source buffer
-              highlight = true, -- Highlight the currently focused node
-              reorient = 'smart', -- "smart", "top", "mid" or "none"
-              scrolloff = nil, -- scrolloff value when navbuddy is open
-            },
-            custom_hl_group = nil, -- "Visual" or any other hl group to use instead of inverted colors
-          }
-        end,
-      },
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
@@ -1042,7 +893,9 @@ require('lazy').setup({
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = false, auto_show_delay_ms = 500 },
+        documentation = { auto_show = true, auto_show_delay_ms = 500 },
+        menu = { border = 'none' },
+        documentation = { window = { border = 'double' } },
       },
       cmdline = {
         -- use 'inherit' to inherit mappings from top level `keymap` config
@@ -1073,7 +926,7 @@ require('lazy').setup({
             },
           },
           -- Whether to automatically show the window when new completion items are available
-          menu = { auto_show = false },
+          menu = { auto_show = true },
           -- Displays a preview of the selected item on the current line
           ghost_text = { enabled = true },
         },
@@ -1089,8 +942,9 @@ require('lazy').setup({
               end,
             },
           },
-          lazydev = { module = 'lazydev.integrations.blink', score_offset = 0 },
+          lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
           lsp = { score_offset = 1 },
+          snippets = { score_offset = -40 },
           buffer = { score_offset = 0 },
           cmdline = {
 
@@ -1113,6 +967,7 @@ require('lazy').setup({
       -- See :h blink-cmp-config-fuzzy for more information
       fuzzy = {
         sorts = {
+          'exact', -- prio for exact matches
           'score', -- Primary sort: by fuzzy matching score
           'sort_text', -- Secondary sort: by sortText field if scores are equal
           'label', -- Tertiary sort: by label if still tied
@@ -1123,13 +978,14 @@ require('lazy').setup({
             return 'rust'
           end
           -- vim.print 'using lua for blink'
-          return 'lua'
+          return 'rust'
         end)(),
       },
 
       -- Shows a signature help window while you type arguments for a function
       signature = { enabled = true },
     },
+    -- signature = { window = { border = 'single' } },
   },
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
