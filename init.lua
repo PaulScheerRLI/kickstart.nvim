@@ -933,8 +933,12 @@ require('lazy').setup({
       },
       sources = {
         -- Removed buffer for now
-        default = { 'lsp', 'path', 'snippets', 'lazydev' },
+        default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
+        per_filetype = {
+          sql = { 'snippets', 'dadbod', 'buffer' },
+        },
         providers = {
+          dadbod = { name = 'Dadbod', module = 'vim_dadbod_completion.blink' },
           path = {
             opts = {
               get_cwd = function(_)
@@ -945,7 +949,7 @@ require('lazy').setup({
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
           lsp = { score_offset = 1 },
           snippets = { score_offset = -40 },
-          buffer = { score_offset = 0 },
+          buffer = { score_offset = -44 },
           cmdline = {
 
             -- ignores cmdline completions when executing shell commands
@@ -1161,6 +1165,7 @@ require('lazy').setup({
   require 'custom.plugins.vim_slime',
   require 'custom.plugins.vimbegood',
   require 'custom.plugins.zettelkasten',
+  require 'custom.plugins.dadbod',
 
   require 'custom.plugins.flutter-nvim',
   require 'custom.plugins.matchup',
