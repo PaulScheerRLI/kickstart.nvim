@@ -978,7 +978,6 @@ require('lazy').setup({
         },
         implementation = (function()
           if vim.fn.has 'wsl' == 1 then
-            vim.print 'using rust'
             return 'rust'
           end
           -- vim.print 'using lua for blink'
