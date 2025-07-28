@@ -21,6 +21,9 @@ else
   min_level = 2
 end
 
+-- this way hovers dont blend so much with the background
+vim.o.winborder = 'rounded'
+
 --  lets me jump around in zk with gf
 vim.o.suffixesadd = vim.o.suffixesadd .. '.md,.html'
 
@@ -30,8 +33,16 @@ if get_nvim_open_level() >= min_level then
 end
 vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
 vim.keymap.set({ 'n' }, '<leader>td', ':lcd %:p:h <CR>', { desc = 'Toggle directory to current file path' })
+
+-- Set up grep to use vim grep, set the format to properly parse the results to
+-- the quickfix/"copen" and fix the shell for windows
 vim.opt.grepprg = 'rg --vimgrep'
 vim.opt.grepformat = '%f:%l:%c:%m'
+if vim.fn.has 'windows' == 1 and vim.fn.has 'wsl' == 0 then
+  -- nvim uses a package called tee for piping which does not come with windows
+  vim.o.shellpipe = '>%s 2>&1'
+end
+
 local python_path = '/home/ubuntu/.pyenv/versions/neovim/bin/python'
 -- Check if the file exists
 if vim.loop.fs_stat(python_path) then

@@ -82,7 +82,7 @@ return {
       },
       sections = {
         lualine_a = { 'mode' },
-        lualine_b = { { 'branch', fmt = trunc(1920 / 2, 15, nil, true) }, 'diff', 'diagnostics' },
+        lualine_b = { { 'branch', shorting_target = 120 }, 'diff', 'diagnostics' },
         lualine_c = { { 'filename', path = 1 } },
         lualine_x = { 'encoding', 'fileformat', 'filetype' },
         lualine_y = { 'progress' },
@@ -98,8 +98,8 @@ return {
       },
       tabline = {},
       winbar = {
-        lualine_c = {},
-        lualine_x = { 'filename' },
+        lualine_a = { { 'filename', path = 1, shorting_target = 120 } },
+        lualine_x = {},
         lualine_z = { 'lsp_status' },
       },
       inactive_winbar = {

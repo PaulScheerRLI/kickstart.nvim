@@ -46,14 +46,6 @@ return {
     --  harpoon:list():select(4)
     --end)
 
-    -- Toggle previous & next buffers stored within Harpoon list
-    vim.keymap.set('n', '<C-S-P>', function()
-      harpoon:list():prev()
-    end, { desc = 'Previous Harpoon' })
-    vim.keymap.set('n', '<C-S-N>', function()
-      harpoon:list():next()
-    end, { desc = 'Next Harpoon' })
-    --
     -- basic telescope configuration
     local conf = require('telescope.config').values
     local function toggle_telescope(harpoon_files)
@@ -73,9 +65,9 @@ return {
         })
         :find()
     end
-
-    vim.keymap.set('n', '<C-e>', function()
-      toggle_telescope(harpoon:list())
-    end, { desc = 'Open harpoon window' })
+    -- harpoon is good when not using a picker
+    -- vim.keymap.set('n', '<C-e>', function()
+    --   toggle_telescope(harpoon:list())
+    -- end, { desc = 'Open harpoon window' })
   end,
 }

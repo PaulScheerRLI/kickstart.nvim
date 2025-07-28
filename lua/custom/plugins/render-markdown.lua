@@ -8,6 +8,8 @@ return {
     ---@module 'render-markdown'
     ---@type render.md.UserConfig
     opts = {},
+    -- dont enable it since most oven i prefer markdown preview
+    ft = {},
   },
 
   {
