@@ -23,6 +23,7 @@ end
 
 -- this way hovers dont blend so much with the background
 vim.o.winborder = 'rounded'
+vim.o.exrc = true
 
 --  lets me jump around in zk with gf
 vim.o.suffixesadd = vim.o.suffixesadd .. '.md,.html'
