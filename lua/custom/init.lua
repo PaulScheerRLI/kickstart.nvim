@@ -59,8 +59,12 @@ vim.keymap.set({ 'n' }, 'M', 'm`', { desc = 'Set JuMp. Overrides default jump to
 -- Insta completion from buffer using next or previous match
 vim.keymap.set('i', '<C-G>', '<C-X><C-N>', { desc = 'Complete with upcoming matches' })
 vim.keymap.set('i', '<C-F>', '<C-X><C-P>', { desc = 'Complete with previous matches' })
+
+vim.keymap.set('n', '<leader>rr', ':%s/', { desc = 'Enter Replace/Substition' })
+
 local vimrc = vim.fn.stdpath 'config' .. '/vimrc.vim'
 
+vim.api.nvim_set_hl(0, 'BlinkCmpSignatureHelpActiveParameter', { bg = 'darkred' })
 vim.cmd.source(vimrc)
 -- without this nvim copy pasting to inside tmux to tmux terminals or windows did now work
 -- from https://github.com/neovim/neovim/discussions/29350
