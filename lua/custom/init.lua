@@ -25,6 +25,14 @@ end
 vim.o.winborder = 'rounded'
 vim.o.exrc = true
 
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
+  pattern = { 'dbui' },
+  callback = function()
+    vim.o.tabstop = 1
+    vim.o.shiftwidth = 1
+  end,
+})
+
 --  lets me jump around in zk with gf
 vim.o.suffixesadd = vim.o.suffixesadd .. '.md,.html'
 
