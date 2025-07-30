@@ -14,7 +14,7 @@ vim.schedule(function()
       },
     },
   })
-
+  vim.lsp.config('lua_ls', { settings = { lua = { loglevel = 'trace' } } })
   vim.lsp.config(
     'pyright',
     { settings = {
