@@ -14,6 +14,19 @@ vim.schedule(function()
       },
     },
   })
+
+  vim.lsp.config(
+    'pyright',
+    { settings = {
+      python = {
+        analysis = {
+          autoSearchPaths = false,
+          typeCheckingMode = 'off',
+        },
+      },
+    } }
+  )
+  -- vim.lsp.enable 'pyright'
   vim.lsp.config('efm', {
     capabilities = capabilities,
     filetypes = { '!**.py' },

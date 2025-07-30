@@ -496,7 +496,7 @@ require('lazy').setup({
         opts = {
           ensure_installed = { 'lua_ls' },
           automatic_enable = {
-            exclude = { 'pyrefly', 'ty' },
+            exclude = { 'pyright', 'pyrefly', 'ty' },
           },
         },
         dependencies = {
@@ -741,26 +741,6 @@ require('lazy').setup({
         'black',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
-      -- this does nothing it seems
-      -- require('mason-lspconfig').setup {
-      --   ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-      --   automatic_enable = {
-      --     exclude = { 'pyright', 'ty' },
-      --   },
-      --   automatic_installation = false,
-      --   handlers = {
-      --     function(server_name)
-      --       local server = servers[server_name] or {}
-      --       vim.print 'never called'
-      --       -- This handles overriding only values explicitly passed
-      --       -- by the server configuration above. Useful when disabling
-      --       -- certain features of an LSP (for example, turning off formatting for ts_ls)
-      --       server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-      --       require('lspconfig')[server_name].setup { server }
-      --     end,
-      --   },
-      -- }
     end,
   },
 
@@ -898,7 +878,7 @@ require('lazy').setup({
         documentation = { window = { border = 'double' } },
       },
       cmdline = {
-        keymap = { preset = 'inherit' },
+        keymap = { preset = 'cmdline' },
         sources = function()
           local type = vim.fn.getcmdtype()
           -- Search forward and backward
@@ -908,9 +888,9 @@ require('lazy').setup({
           -- Commands
           --
           if type == ':' or type == '@' then
-            vim.print(vim.fn.getcmdline())
+            -- Use the default autocomplete from nvim for find commands.
+            -- this enables fuzzy finding like ./dir/**/*.txt
             if string.find(vim.fn.getcmdline(), 'find') ~= nil then
-              vim.print 'found it'
               return {}
             end
             return { 'cmdline' }
