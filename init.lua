@@ -898,8 +898,7 @@ require('lazy').setup({
         documentation = { window = { border = 'double' } },
       },
       cmdline = {
-        -- use 'inherit' to inherit mappings from top level `keymap` config
-        keymap = { preset = 'cmdline' },
+        keymap = { preset = 'inherit' },
         sources = function()
           local type = vim.fn.getcmdtype()
           -- Search forward and backward
@@ -907,7 +906,13 @@ require('lazy').setup({
             return { 'buffer' }
           end
           -- Commands
+          --
           if type == ':' or type == '@' then
+            vim.print(vim.fn.getcmdline())
+            if string.find(vim.fn.getcmdline(), 'find') ~= nil then
+              vim.print 'found it'
+              return {}
+            end
             return { 'cmdline' }
           end
           return {}
@@ -951,7 +956,7 @@ require('lazy').setup({
           snippets = { score_offset = -40 },
           buffer = { score_offset = -44 },
           cmdline = {
-
+            -- wsl setting, since it used to break see blink.cmp doc
             -- ignores cmdline completions when executing shell commands
             enabled = function()
               return vim.fn.getcmdtype() ~= ':' or not vim.fn.getcmdline():match "^[%%0-9,'<>%-]*!"
