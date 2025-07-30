@@ -187,8 +187,15 @@ vim.keymap.set('i', '<Down>', ':copy +0 <CR>i', { desc = 'duplicate' })
 -- overwritting each other
 --
 -- vim.opt.signcolumn = 'yes:1'
+-- -- The name should be unique so that it doesn't overwrite one of the default highlight group
 vim.opt.numberwidth = 3
-vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s"
+vim.api.nvim_set_hl(0, 'StatusBorder', {
+  bg = '#032040',
+})
+
+vim.opt.statuscolumn = "%s%=%#StatusBorder#%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%="
+local tokyonight = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
+
 -- for netwr
 vim.g.netrw_winsize = 20
 vim.g.netrw_banner = 0

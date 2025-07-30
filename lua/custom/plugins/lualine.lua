@@ -98,7 +98,7 @@ return {
       },
       tabline = {},
       winbar = {
-        lualine_a = { { 'filename', path = 1, shorting_target = 120 } },
+        lualine_a = { { 'filename', path = 1, shorting_target = 80 } },
         lualine_x = {},
         lualine_z = { 'lsp_status' },
       },
