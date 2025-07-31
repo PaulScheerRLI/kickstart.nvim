@@ -987,7 +987,10 @@ require('lazy').setup({
       require('tokyonight').setup {
         styles = {
           comments = { italic = false }, -- Disable italics in comments
+          sidebars = 'transparent',
+          float = 'transparent',
         },
+        transparent = true,
       }
 
       -- Load the colorscheme here.
