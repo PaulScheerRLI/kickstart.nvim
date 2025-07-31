@@ -186,14 +186,23 @@ vim.keymap.set('i', '<Down>', ':copy +0 <CR>i', { desc = 'duplicate' })
 -- We set the signcolumn to 2 so Errors and writing status can both be shown instead of
 -- overwritting each other
 --
--- vim.opt.signcolumn = 'yes:1'
 -- -- The name should be unique so that it doesn't overwrite one of the default highlight group
-vim.opt.numberwidth = 3
-vim.api.nvim_set_hl(0, 'StatusBorder', {
-  bg = '#032040',
-})
 
-vim.opt.statuscolumn = "%s%=%#StatusBorder#%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%="
+vim.opt.signcolumn = 'yes:1'
+-- sets the minimum amount of numbers
+vim.opt.numberwidth = 1
+local tokyonight_moon = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
+
+vim.api.nvim_set_hl(0, 'StatusBorder', { bg = tokyonight_moon.inactive.c.bg })
+
+-- Change the background of inactive lualine/statusline to slightly darker
+--'%#StatusBorder#%'
+-- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . ' ' : v:lnum) : ''}%s│%T"
+-- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? @SignCb@%s : v:lnum) : ''}%=│%T"
+-- vim.opt.statuscolumn = '%s%=%l│'
+
+vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
+-- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '' : v:lnum) : ''}%"
 local tokyonight = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
 
 -- for netwr
@@ -203,19 +212,6 @@ vim.g.netrw_liststyle = 3
 
 -- set last entrance to relativenumver, the rest are defaults
 vim.g.netrw_bufsettings = 'noma nomod nonu nobl nowrap ro rnu'
-
--- there does not seem to be a bufenter event when entering netwr so this does not work
--- vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
---   group = vim.api.nvim_create_augroup('CustomNetwrRelNum', { clear = true }),
---   callback = function()
---     vim.print(vim.bo.filetype)
---     if vim.bo.filetype == 'netwr' then
---       vim.print 'callback'
---       -- // de_20 is german with new spelling
---       vim.bo.relativenumber = true
---     end
---   end,
--- })
 
 vim.keymap.set('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
 vim.opt.colorcolumn = '100'

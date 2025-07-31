@@ -496,7 +496,7 @@ require('lazy').setup({
         opts = {
           ensure_installed = { 'lua_ls' },
           automatic_enable = {
-            exclude = { 'pyright', 'pyrefly', 'ty' },
+            exclude = { 'efm', 'pyright', 'pyrefly', 'ty' },
           },
         },
         dependencies = {

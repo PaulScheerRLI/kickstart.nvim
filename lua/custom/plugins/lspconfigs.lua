@@ -15,6 +15,8 @@ vim.schedule(function()
     },
   })
 
+  vim.lsp.config('pyrefly', {})
+  vim.lsp.config('ty', {})
   vim.lsp.config(
     'pyright',
     { settings = {
@@ -26,6 +28,7 @@ vim.schedule(function()
       },
     } }
   )
+  vim.lsp.enable 'pyright'
   -- vim.lsp.enable 'pyright'
   vim.lsp.config('efm', {
     capabilities = capabilities,
@@ -42,5 +45,6 @@ vim.schedule(function()
       },
     },
   })
+  vim.lsp.enable('efm', false)
 end)
 return {}
