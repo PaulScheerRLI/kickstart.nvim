@@ -1,8 +1,7 @@
 return {
   {
     'andymass/vim-matchup',
-    event = 'VeryLazy',
-    ft = 'html',
+    -- ft = { 'html', 'python', 'lua', 'py' },
     enabled = function()
       if vim.fn.has 'wsl' == 1 then
         return true
@@ -26,9 +25,13 @@ return {
     -- `require('match-up').setup` under the hood
     ---@type matchup.Config
     opts = {
+      matchup_enabled = true,
       treesitter = {
         stopline = 500,
       },
+      -- NOTE: This seems to be a very important setting. setting to 1 makes it way less laggg i thinkg
+      matchup_matchparen_deferred = 1,
+      matchup_transmute_enabled = false,
     },
   },
 }

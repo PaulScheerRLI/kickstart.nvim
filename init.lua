@@ -1152,10 +1152,13 @@ require('lazy').setup({
   require 'custom.plugins.dadbod',
 
   require 'custom.plugins.flutter-nvim',
-  require 'custom.plugins.matchup',
   require 'custom.plugins.undotree',
   require 'custom.plugins.lualine',
   --
+  -- NOTE: This  plugin is terrible for the speed, introduces laggyness very easily with multiple bigger buffers
+  -- strangley configuring it to be used with python (ft = python) reduced lag instead of increasing it
+  -- maybe more resaerch is needed
+  require 'custom.plugins.matchup',
   -- { import = 'custom.plugins.' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
