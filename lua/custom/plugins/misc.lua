@@ -32,10 +32,10 @@ return {
     line_down = '<M-j>',
     line_up = '<M-k>',
     },
---]]
+    --]]
   },
   {
-    'mluders/comfy-line-numbers.nvim',
+    dir = vim.fn.stdpath 'config' .. '/comfy-line-numbers.nvim',
     enabled = true,
 
     config = function()
@@ -58,7 +58,7 @@ return {
         hidden_buffer_types = { 'terminal' },
       }
 
-      vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
+      -- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
     end,
   },
 }

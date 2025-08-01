@@ -509,7 +509,7 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim', opts = { notification = { window = { normal_hl = 'Comment', winblend = 0, border = 'none' } } } },
 
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
