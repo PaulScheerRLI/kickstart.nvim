@@ -36,6 +36,11 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
 --  lets me jump around in zk with gf
 vim.o.suffixesadd = vim.o.suffixesadd .. '.md,.html'
 
+-- for better goFile with python file / line number combos based on
+-- https://github.com/sychen52/gF-python-traceback
+-- the function is in  autoload/pythongF
+vim.keymap.set({ 'n' }, 'gF', '<Cmd>call pythongF#gF()<CR>', { desc = 'go  to File with python formatting' })
+
 if get_nvim_open_level() >= min_level then
   vim.o.path = vim.o.path .. '**'
   print 'path has been appended with cwd'
@@ -72,6 +77,18 @@ vim.keymap.set('i', '<C-F>', '<C-X><C-P>', { desc = 'Complete with previous matc
 vim.keymap.set('n', '<leader>rr', ':%s/', { desc = 'Enter Replace/Substition' })
 
 local vimrc = vim.fn.stdpath 'config' .. '/vimrc.vim'
+
+-- Return to last edit positon when opening files
+vim.api.nvim_create_autocmd('BufReadPost', {
+  group = vim.api.nvim_create_augroup('SaveCursorPos', { clear = true }),
+  callback = function()
+    local mark = vim.api.nvim_buf_get_mark(0, '"')
+    local lcount = vim.api.nvim_buf_line_count(0)
+    if mark[1] > 0 and mark[1] <= lcount then
+      pcall(vim.api.nvim_win_set_cursor, 0, mark)
+    end
+  end,
+})
 
 vim.api.nvim_set_hl(0, 'BlinkCmpSignatureHelpActiveParameter', { bg = 'darkred' })
 vim.cmd.source(vimrc)
@@ -202,6 +219,7 @@ vim.api.nvim_set_hl(0, 'StatusBorder', { bg = tokyonight_moon.inactive.c.bg })
 -- vim.opt.statuscolumn = '%s%=%l│'
 
 vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
+vim.print 'status col set in custom.init'
 -- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '' : v:lnum) : ''}%"
 local tokyonight = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
 

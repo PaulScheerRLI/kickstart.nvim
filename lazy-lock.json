@@ -2,6 +2,7 @@
   "LuaSnip": { "branch": "master", "commit": "458560534a73f7f8d7a11a146c801db00b081df0" },
   "betterTerm.nvim": { "branch": "main", "commit": "0d1c4e122e32cee49ef48cdfb448ed0d4d2ba6e9" },
   "blink.cmp": { "branch": "main", "commit": "bae4bae0eedd1fa55f34b685862e94a222d5c6f8" },
+  "comfy-line-numbers.nvim": { "branch": "main", "commit": "eb1c966e22fbabe3a3214c78bda9793ccf9d2a5d" },
   "conform.nvim": { "branch": "master", "commit": "973f3cb73887d510321653044791d7937c7ec0fa" },
   "fidget.nvim": { "branch": "main", "commit": "4ec7bed6c86b671ddde03ca1b227343cfa3e65fa" },
   "flutter-tools.nvim": { "branch": "main", "commit": "65b7399804315a1160933b64292d3c5330aa4e9f" },

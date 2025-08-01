@@ -18,17 +18,16 @@ vim.schedule(function()
   vim.lsp.config('pyrefly', {})
   vim.lsp.config('ty', {})
   vim.lsp.config('lua_ls', { settings = { lua = { loglevel = 'trace' } } })
-  vim.lsp.config(
-    'pyright',
-    { settings = {
+  vim.lsp.config('pyright', {
+    settings = {
       python = {
         analysis = {
-          autoSearchPaths = false,
+          -- autoSearchPaths = false,
           typeCheckingMode = 'off',
         },
       },
-    } }
-  )
+    },
+  })
   vim.lsp.enable 'pyright'
   -- vim.lsp.enable 'pyright'
   vim.lsp.config('efm', {

@@ -401,11 +401,12 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          path_display = { 'truncate' },
+          mappings = {
+            i = { ['<c-space>'] = 'to_fuzzy_refine' },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -1125,6 +1126,7 @@ require('lazy').setup({
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.indent_line',
   --
   require 'custom.plugins.betterTerm',
 
@@ -1133,7 +1135,8 @@ require('lazy').setup({
   require 'custom.plugins.mason_setup',
   require 'custom.plugins.lspconfigs',
   require 'custom.plugins.fugitive',
-  require 'custom.plugins.gF-python-traceback',
+  --  copy pasted functionality to make it usable in normal buffers
+  -- require 'custom.plugins.gF-python-traceback',
   require 'custom.plugins.harpoon',
   require 'custom.plugins.misc',
   require 'custom.plugins.lazygit',
