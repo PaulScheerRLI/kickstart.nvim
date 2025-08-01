@@ -403,8 +403,14 @@ require('lazy').setup({
         --  All the info you're looking for is in `:help telescope.setup()`
         --
         defaults = {
+<<<<<<< HEAD
           mappings = {
             i = { ['<C-e>'] = 'to_fuzzy_refine' },
+=======
+          path_display = { 'truncate' },
+          mappings = {
+            i = { ['<c-space>'] = 'to_fuzzy_refine' },
+>>>>>>> 2ccfead7549c423a05ecd40caaa8480405a60ac8
           },
         },
         -- pickers = {}
@@ -509,7 +515,7 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim', opts = { notification = { window = { normal_hl = 'Comment', winblend = 0, border = 'none' } } } },
 
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
@@ -1170,6 +1176,7 @@ require('lazy').setup({
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.indent_line',
   --
   require 'custom.plugins.betterTerm',
 
@@ -1178,7 +1185,8 @@ require('lazy').setup({
   require 'custom.plugins.mason_setup',
   require 'custom.plugins.lspconfigs',
   require 'custom.plugins.fugitive',
-  require 'custom.plugins.gF-python-traceback',
+  --  copy pasted functionality to make it usable in normal buffers
+  -- require 'custom.plugins.gF-python-traceback',
   require 'custom.plugins.harpoon',
   require 'custom.plugins.misc',
   require 'custom.plugins.lazygit',
