@@ -42,6 +42,7 @@ if get_nvim_open_level() >= min_level then
 end
 vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
 vim.keymap.set({ 'n' }, '<leader>td', ':lcd %:p:h <CR>', { desc = 'Toggle directory to current file path' })
+vim.keymap.set({ 'n' }, '(', '@y', { desc = 'Easy @Access to y Macro' })
 
 -- Set up grep to use vim grep, set the format to properly parse the results to
 -- the quickfix/"copen" and fix the shell for windows
@@ -73,7 +74,6 @@ vim.keymap.set('n', '<leader>rr', ':%s/', { desc = 'Enter Replace/Substition' })
 
 local vimrc = vim.fn.stdpath 'config' .. '/vimrc.vim'
 
-vim.api.nvim_set_hl(0, 'BlinkCmpSignatureHelpActiveParameter', { bg = 'darkred' })
 vim.cmd.source(vimrc)
 -- without this nvim copy pasting to inside tmux to tmux terminals or windows did now work
 -- from https://github.com/neovim/neovim/discussions/29350

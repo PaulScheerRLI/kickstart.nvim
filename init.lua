@@ -285,6 +285,7 @@ require('lazy').setup({
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VeryLazy', -- Sets the loading event to 'VimEnter'
+    enabled = false,
     opts = {
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.opt.timeoutlen
@@ -401,11 +402,11 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          mappings = {
+            i = { ['<C-e>'] = 'to_fuzzy_refine' },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -991,6 +992,47 @@ require('lazy').setup({
           float = 'transparent',
         },
         transparent = true,
+        dim_inactive = true,
+
+        on_highlights = function(hl, c)
+          local prompt = '#2d3149'
+          hl.TelescopeNormal = {
+            bg = c.bg_dark,
+            fg = c.fg_dark,
+          }
+          hl.TelescopeBorder = {
+            bg = c.bg_dark,
+            fg = c.bg_dark,
+          }
+          hl.TelescopePromptNormal = {
+            bg = prompt,
+          }
+          hl.TelescopePromptBorder = {
+            bg = prompt,
+            fg = prompt,
+          }
+          hl.TelescopePromptTitle = {
+            bg = prompt,
+            fg = prompt,
+          }
+          hl.TelescopePreviewTitle = {
+            bg = c.bg_dark,
+            fg = c.bg_dark,
+          }
+          hl.TelescopeResultsTitle = {
+            bg = c.bg_dark,
+            fg = c.bg_dark,
+          }
+
+          hl.BlinkCmpSignatureHelpActiveParameter = hl.Todo
+        end,
+
+        -- vim.api.nvim_set_hl(0, 'BlinkCmpSignatureHelpActiveParameter', { bg = 'darkred' })
+        -- Change the "hint" color to the "orange" color, and make the "error" color bright red
+        on_colors = function(colors)
+          colors.hint = colors.orange
+          colors.error = '#ff0000'
+        end,
       }
 
       -- Load the colorscheme here.
