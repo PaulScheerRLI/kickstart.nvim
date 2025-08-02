@@ -403,14 +403,9 @@ require('lazy').setup({
         --  All the info you're looking for is in `:help telescope.setup()`
         --
         defaults = {
-<<<<<<< HEAD
-          mappings = {
+         mappings = {
             i = { ['<C-e>'] = 'to_fuzzy_refine' },
-=======
           path_display = { 'truncate' },
-          mappings = {
-            i = { ['<c-space>'] = 'to_fuzzy_refine' },
->>>>>>> 2ccfead7549c423a05ecd40caaa8480405a60ac8
           },
         },
         -- pickers = {}
