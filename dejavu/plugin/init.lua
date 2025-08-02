@@ -1,0 +1,2 @@
+-- __AUTO_GENERATED_PRINTF_START__
+-- print [==[1]==] -- __AUTO_GENERATED_PRINTF_END__

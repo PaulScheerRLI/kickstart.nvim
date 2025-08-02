@@ -47,7 +47,7 @@ if get_nvim_open_level() >= min_level then
 end
 vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
 vim.keymap.set({ 'n' }, '<leader>td', ':lcd %:p:h <CR>', { desc = 'Toggle directory to current file path' })
-vim.keymap.set({ 'n' }, '(', '@y', { desc = 'Easy @Access to y Macro' })
+vim.keymap.set({ 'n' }, '(', '@x', { desc = 'Easy @Access to x Macro' })
 
 -- Set up grep to use vim grep, set the format to properly parse the results to
 -- the quickfix/"copen" and fix the shell for windows

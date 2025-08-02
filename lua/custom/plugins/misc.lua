@@ -61,4 +61,10 @@ return {
       -- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
     end,
   },
+  {
+
+    dir = vim.fn.stdpath 'config' .. '/dejavu',
+    dependencies = { 'j-hui/fidget.nvim' },
+    opts = {},
+  },
 }

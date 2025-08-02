@@ -1,3 +1,11 @@
+local function tablelength(T)
+  local count = 0
+  for _ in pairs(T) do
+    count = count + 1
+  end
+  return count
+end
+
 local auto_source_buffers = {}
 function turn_on_auto_source()
   local bufnr = vim.api.nvim_get_current_buf()
@@ -117,12 +125,5 @@ function clear_jumps_from_deleted_buffers()
   end
 end
 
-function tablelength(T)
-  local count = 0
-  for _ in pairs(T) do
-    count = count + 1
-  end
-  return count
-end
 vim.api.nvim_create_user_command('ClearJumpsFromNonBuffers', clear_jumps_from_deleted_buffers, {})
 vim.api.nvim_create_user_command('JumpFilesIntoQuickFix', jumplist_files_into_quickfix, {})
