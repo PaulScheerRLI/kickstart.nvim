@@ -30,18 +30,34 @@ local M = {
   keys = nil,
   command = nil,
   ns_id = vim.api.nvim_create_namespace 'dejavu-key-reader',
-  which_key_detected = false,
-  enabled = false,
+  config = {
+    which_key = false,
+    enabled = false,
+    macro_key = 'x',
+    callback = function(command)
+      vim.fn.setreg('x', command)
+    end,
+    notify = vim.notify,
+  },
 }
 function M.setup(opt)
   opt = opt or {}
+  vim.print(opt)
   local ok, _ = pcall(require, 'which-key')
-  M.which_key_detected = ok or opt.which_key
-  M.callback = opt.callback or function(command)
-    vim.fn.setreg('x', command)
+  M.enabled = opt.enabled or false
+  if M.enabled then
+    M.on()
   end
-  local ok, fidget = pcall(require, 'fidget')
-  notify = ok and fidget.notification.notify or vim.notify
+  M.which_key = ok or M.config.which_key
+  if opt.macro_key and opt.callback then
+    vim.notify('Setup received a macro_key and a callback function. The macro_key is ignored and the callback function is used', vim.log.levels.ERROR)
+  end
+  M.config = vim.tbl_deep_extend('force', M.config, opt)
+  if opt.macro_key and not opt.callback then
+    M.config.callback = function(command)
+      vim.fn.setreg(opt.macro_key, command)
+    end
+  end
 end
 
 -- Function to check for single duplication, which happens due to which-key
@@ -56,9 +72,6 @@ local function is_once_duplicated_substring(s)
   return left == right, left
 end
 
-function M.runCallback()
-  M.callback(M.command)
-end
 function M.on()
   vim.api.nvim_create_autocmd('SafeState', {
     group = vim.api.nvim_create_augroup(M.augroup_name1, { clear = true }),
@@ -81,6 +94,7 @@ function M.on()
   })
   vim.api.nvim_create_autocmd('ModeChanged', {
     group = vim.api.nvim_create_augroup(M.augroup_name3, { clear = true }),
+    -- Turn off when entering insert, terminal, cmd or visual mode
     pattern = { '*:i', '*:c', '*:tl', '*:v' },
     callback = function()
       _unregister_keylogger(M)
@@ -106,20 +120,17 @@ function M.storage_logic()
   -- dejavu doesnt store macros either
   -- this can easily crash vim when recursivly calling macros
   if string.find(M.keys, '@x') then
-    notify('macro not allowed', 10)
+    M.config.notify 'dejvu: recursive macro not allowed'
     M.safestate = true
     return
   end
   M.command = M.typed
-  if M.which_key_detected then
+  if M.which_key then
     duplicated, left = is_once_duplicated_substring(M.command)
     M.command = not duplicated and M.command or left
-    if duplicated then
-      notify('detected which key error', 10)
-    end
   end
-  notify('Sucessfully set command:' .. M.command)
-  M.runCallback()
+  M.config.notify('dejavu: Command:' .. M.command)
+  M.config.callback(M.command)
   M.safestate = true
 end
 
@@ -134,27 +145,15 @@ end
 
 function M.toggle()
   if not M.enabled then
-    vim.print 'Dejavu enabled'
+    M.config.notify 'dejavu enabled'
     M.on()
   else
-    vim.print 'Dejavu disabled'
+    M.config.notify 'dejavu disabled'
     M.off()
   end
   M.enabled = not M.enabled
 end
--- -- Map a command to the function
--- vim.api.nvim_command 'command! DejavuToggle lua require("dejavu").toggle()'
--- vim.keymap.set('n', '<Plug>DejavuToggle', function()
---   M.on()
--- end, { noremap = true })
--- vim.keymap.set('n', '<Plug>DejavuOn', function()
---   M.on()
 vim.api.nvim_create_user_command('DejavuToggle', M.toggle, {})
--- end, { noremap = true })
--- vim.keymap.set('n', '<Plug>DejavuOff', function()
---   M.off()
--- end, { noremap = true })
--- Map a command to the function
-vim.api.nvim_command 'command! HelloWorld lua require("dejavu").toggle()'
-
+vim.api.nvim_create_user_command('DejavuOn', M.on, {})
+vim.api.nvim_create_user_command('DejavuOff', M.off, {})
 return M

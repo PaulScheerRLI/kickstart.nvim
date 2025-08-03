@@ -62,9 +62,19 @@ return {
     end,
   },
   {
-
     dir = vim.fn.stdpath 'config' .. '/dejavu',
-    dependencies = { 'j-hui/fidget.nvim' },
-    opts = {},
+    opts = {
+      callback = function(x)
+        vim.print(x)
+      end,
+      enabled = true,
+    },
+    -- dependencies = { 'j-hui/fidget.nvim' },
+    -- config = function()
+    --   require('dejavu').setup {
+    --     notify = require('fidget').notification.notify,
+    --     enabled = true,
+    --   }
+    -- end,
   },
 }

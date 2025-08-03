@@ -1,0 +1,47 @@
+
+==============================================================================
+*dejavu.txt* A plugin to make repeating any normal commands easy.
+
+Author: Paul Scheer
+License: Apache License 2.0
+
+
+                                                        *dejavu*
+
+Dejavu is a plugin to increase the repeat pattern in nvim. The dot command supports a variety of repetitions but some are missing which make some commands awkard. Other plugins allow registering commands to make them repeatable
+
+- https://github.com/jonatan-branting/nvim-better-n
+- https://github.com/tpope/vim-repeat/tree/master
+
+both need setup for commands to make them repeatable.
+Dejavu follows a different approach.
+The last normal mode commands is simply made available. This includes:
+
+- f/F search
+- t/T search
+- Bracket Commands such as [d, ]d
+This plugin is a template for writing Neovim plugins.
+- Plugin Commands like sourround
+
+How it works?
+All normal mode input is tracked and chunked into commands. This is done through autocommands which add a keylogger (vim.fn.on_key()) while in normal and operator-pending mode. When a SafeState is reached, the end of the command is detected, and the callback with this command is triggered. By default it puts the command into the "x" register. To repeat the command call "@x".
+
+                                                     *dejavu.install*
+Use your favorite plugin manager. Call
+
+
+                                                     *dejavu.setup()*
+plugin-template.hello()
+
+  Print a greeting to the user.
+  >
+  > plugin-template.hello()
+<
+  TODO: Only the "n"ormal mode is currently supported.
+
+                                                   *plugin-template._greetings
+plugin-template._greetings
+
+  A table of greetings that can be used by the |plugin-template.hello()|
+
+vim:tw=78:ts=2:ft=help:norl:
