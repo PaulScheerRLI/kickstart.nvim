@@ -62,19 +62,19 @@ return {
     end,
   },
   {
-    dir = vim.fn.stdpath 'config' .. '/dejavu',
-    opts = {
-      callback = function(x)
-        vim.print(x)
-      end,
-      enabled = true,
-    },
-    -- dependencies = { 'j-hui/fidget.nvim' },
-    -- config = function()
-    --   require('dejavu').setup {
-    --     notify = require('fidget').notification.notify,
-    --     enabled = true,
-    --   }
-    -- end,
+    'juk3-min/dejavu.nvim',
+    dependencies = { 'j-hui/fidget.nvim' },
+    config = function()
+      require('dejavu').setup {
+        notify = require('fidget').notification.notify,
+        enabled = true,
+        macro_key = 'y',
+      }
+    end,
+  },
+  {
+    'NStefan002/screenkey.nvim',
+    lazy = false,
+    version = '*', -- or branch = "main", to use the latest commit
   },
 }
