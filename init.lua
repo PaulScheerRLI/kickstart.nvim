@@ -1033,6 +1033,7 @@ require('lazy').setup({
         on_colors = function(colors)
           colors.hint = colors.orange
           colors.error = '#ff0000'
+          colors.bg_visual = colors.blue0
         end,
       }
 
