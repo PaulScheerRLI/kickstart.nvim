@@ -204,6 +204,22 @@ vim.keymap.set('i', '<Down>', ':copy +0 <CR>i', { desc = 'duplicate' })
 -- overwritting each other
 --
 -- -- The name should be unique so that it doesn't overwrite one of the default highlight group
+c = require 'tokyonight.colors.night'
+vim.api.nvim_set_hl(0, 'InActive', { bg = c.bg })
+vim.api.nvim_create_autocmd('WinLeave', {
+  group = vim.api.nvim_create_augroup('InActiveHl', { clear = true }),
+  callback = function()
+    require('fidget').notification.notify 'left'
+    vim.wo.winhl = 'cursorline:InActive'
+  end,
+})
+vim.api.nvim_create_autocmd('WinEnter', {
+  group = vim.api.nvim_create_augroup('ActiveHl', { clear = true }),
+  callback = function()
+    require('fidget').notification.notify 'left'
+    vim.wo.winhl = 'InActive:cursorline'
+  end,
+})
 
 vim.opt.signcolumn = 'yes:1'
 -- sets the minimum amount of numbers
