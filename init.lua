@@ -285,7 +285,7 @@ require('lazy').setup({
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VeryLazy', -- Sets the loading event to 'VimEnter'
-    enabled = true,
+    enabled = false,
     opts = {
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.opt.timeoutlen
@@ -1003,6 +1003,7 @@ require('lazy').setup({
         on_colors = function(colors)
           colors.hint = colors.orange
           colors.error = '#ff0000'
+          colors.bg_visual = colors.blue0
         end,
       }
 

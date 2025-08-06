@@ -62,7 +62,6 @@ return {
     end,
   },
   {
-    -- dir = vim.fn.stdpath 'config' .. '/dejavu',
     'juk3-min/dejavu.nvim',
     -- opts = {
     --   callback = function(x)
@@ -79,5 +78,10 @@ return {
         enabled = true,
       }
     end,
+  },
+  {
+    'NStefan002/screenkey.nvim',
+    lazy = false,
+    version = '*', -- or branch = "main", to use the latest commit
   },
 }
