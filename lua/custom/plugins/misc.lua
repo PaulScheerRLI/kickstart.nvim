@@ -62,19 +62,22 @@ return {
     end,
   },
   {
-    dir = vim.fn.stdpath 'config' .. '/dejavu',
-    opts = {
-      callback = function(x)
-        vim.print(x)
-      end,
-      enabled = true,
-    },
-    -- dependencies = { 'j-hui/fidget.nvim' },
-    -- config = function()
-    --   require('dejavu').setup {
-    --     notify = require('fidget').notification.notify,
-    --     enabled = true,
-    --   }
-    -- end,
+    -- dir = vim.fn.stdpath 'config' .. '/dejavu',
+    'juk3-min/dejavu.nvim',
+    -- opts = {
+    --   callback = function(x)
+    --     vim.print(x)
+    --   end,
+    --   enabled = true,
+    -- },
+    dependencies = { 'j-hui/fidget.nvim' },
+    config = function()
+      require('dejavu').setup {
+        notify = function(x)
+          require('fidget').notification.notify('', vim.log.levels.INFO, { annote = x })
+        end,
+        enabled = true,
+      }
+    end,
   },
 }

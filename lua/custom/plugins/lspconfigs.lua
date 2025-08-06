@@ -18,9 +18,10 @@ vim.schedule(function()
   vim.lsp.config('pyrefly', {})
   vim.lsp.config('ty', {})
   vim.lsp.config('lua_ls', { settings = { lua = { loglevel = 'trace' } } })
-  vim.lsp.config('pyright', {
+  -- copied from pyright
+  vim.lsp.config('basedpyright', {
     settings = {
-      python = {
+      basedpyright = {
         analysis = {
           -- autoSearchPaths = false,
           typeCheckingMode = 'off',
@@ -28,7 +29,7 @@ vim.schedule(function()
       },
     },
   })
-  vim.lsp.enable 'pyright'
+  vim.lsp.enable 'basedpyright'
   -- vim.lsp.enable 'pyright'
   vim.lsp.config('efm', {
     capabilities = capabilities,
