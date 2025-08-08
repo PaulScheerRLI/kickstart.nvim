@@ -285,11 +285,11 @@ require('lazy').setup({
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VeryLazy', -- Sets the loading event to 'VimEnter'
-    enabled = false,
+    enabled = true,
     opts = {
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.opt.timeoutlen
-      delay = 200,
+      delay = 300,
       icons = {
         -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
@@ -923,6 +923,7 @@ require('lazy').setup({
         default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
         per_filetype = {
           sql = { 'snippets', 'dadbod', 'buffer' },
+          python = { 'lsp', 'path' },
         },
         providers = {
           dadbod = { name = 'Dadbod', module = 'vim_dadbod_completion.blink' },
@@ -958,7 +959,7 @@ require('lazy').setup({
       -- See :h blink-cmp-config-fuzzy for more information
       fuzzy = {
         sorts = {
-          'exact', -- prio for exact matches
+          -- 'exact', -- prio for exact matches
           'score', -- Primary sort: by fuzzy matching score
           'sort_text', -- Secondary sort: by sortText field if scores are equal
           'label', -- Tertiary sort: by label if still tied
@@ -1003,7 +1004,7 @@ require('lazy').setup({
         on_colors = function(colors)
           colors.hint = colors.orange
           colors.error = '#ff0000'
-          colors.bg_visual = colors.blue0
+          -- colors.bg_visual = colors.blue0
         end,
       }
 
