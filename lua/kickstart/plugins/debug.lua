@@ -237,6 +237,27 @@ return {
       table.insert(require('dap').configurations.python, {
         type = 'python',
         request = 'launch',
+        name = 'launch With library code',
+        program = '${file}',
+        justMyCode = false,
+        pathMappings = {
+          -- {
+          --   localRoot = './.venv/Lib/site-packages',
+          --   remoteRoot = './.venv/Lib/site-packages',
+          -- },
+          -- {
+          --   localRoot = 'J:/dev/python/test/.venv/Lib/site-packages',
+          --   remoteRoot = 'J:/dev/python/test/.venv/Lib/site-packages',
+          -- },
+          -- {
+          --   localRoot = vim.fn.getcwd(), -- your source code
+          --   remoteRoot = vim.fn.getcwd(),
+          -- },
+        },
+      })
+      table.insert(require('dap').configurations.python, {
+        type = 'python',
+        request = 'launch',
         name = 'Django runserver WITH reload',
         args = { 'runserver' },
         django = true,
