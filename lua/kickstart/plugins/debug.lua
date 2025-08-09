@@ -193,6 +193,7 @@ return {
       require('dap').configurations.python = {
         {
           type = 'python',
+          django = true,
           request = 'launch',
           name = 'file:args with not justMyCode',
           program = '${file}',
@@ -207,8 +208,11 @@ return {
           variablePresentation = {
             all = 'group',
           },
+          -- checjout autoreload  https://code.visualstudio.com/docs/python/debugging#_autoreload
+          -- stopOnEntry = true,
           justMyCode = false,
-          console = 'integratedTerminal',
+          -- env = { GEVENT_SUPPORT = '0' },
+          -- console = 'integratedTerminal',
         },
       }
       table.insert(require('dap').configurations.python, {
