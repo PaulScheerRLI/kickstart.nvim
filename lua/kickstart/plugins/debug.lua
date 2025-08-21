@@ -36,6 +36,13 @@ return {
         desc = 'Debug: Start/Continue',
       },
       {
+        '<F9>',
+        function()
+          require('dap').close()
+        end,
+        desc = 'Debug: close/stop',
+      },
+      {
         '<F8>',
         function()
           require('dap').restart()
@@ -229,6 +236,23 @@ return {
           return vim.split(args_string, ' +')
         end,
         django = true,
+        program = vim.loop.cwd() .. '/manage.py',
+        variablePresentation = {
+          all = 'hide',
+          class = 'group',
+          protected = 'group',
+          special = 'group',
+          -- function cant be set because its a protected name by lua
+        },
+      })
+      table.insert(require('dap').configurations.python, {
+        type = 'python',
+        request = 'attach',
+        name = 'Django attach',
+        port = 5678,
+        host = "127.0.0.1",
+        django = true,
+          justMyCode = false,
         program = vim.loop.cwd() .. '/manage.py',
         variablePresentation = {
           all = 'hide',

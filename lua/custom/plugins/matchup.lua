@@ -31,7 +31,8 @@ return {
       },
       -- NOTE: This seems to be a very important setting. setting to 1 makes it way less laggg i thinkg
       matchup_matchparen_deferred = 1,
-      matchup_transmute_enabled = false,
+      -- does not seem to work, so disabled
+      matchup_transmute_enabled = 0,
     },
   },
 }

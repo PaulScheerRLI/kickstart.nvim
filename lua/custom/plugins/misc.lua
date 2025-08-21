@@ -35,6 +35,28 @@ return {
     --]]
   },
   {
+    'nat-418/boole.nvim',
+    config = function()
+      require('boole').setup {
+        mappings = {
+          increment = '<C-a>',
+          decrement = '<C-x>',
+        },
+        -- User defined loops
+        additions = {
+          { 'true', 'false' },
+          -- { 'tic', 'tac', 'toe' },
+        },
+        allow_caps_additions = {
+          { 'enable', 'disable' },
+          -- enable → disable
+          -- Enable → Disable
+          -- ENABLE → DISABLE
+        },
+      }
+    end,
+  },
+  {
     dir = vim.fn.stdpath 'config' .. '/comfy-line-numbers.nvim',
     enabled = true,
 
@@ -83,5 +105,41 @@ return {
     'NStefan002/screenkey.nvim',
     lazy = false,
     version = '*', -- or branch = "main", to use the latest commit
+  },
+  {
+    -- This plugin depends on on of these two LSP servers to configured
+    --   https://github.com/valentjn/ltex-ls
+    --   https://github.com/ltex-plus/ltex-ls-plus
+    'barreiroleo/ltex_extra.nvim',
+    -- dependencies = { 'neovim/nvim-lspconfig' },
+
+    opts = {
+      -- load_langs = { 'en-US', 'de-DE' },
+      load_langs = { 'de-DE' },
+      -- save to .ltex dir
+      path = '.ltex',
+    },
+
+    config = function(_, opts)
+      -- Ltex LSP
+      vim.lsp.config('ltex_plus', {
+        on_attach = function()
+          require('ltex_extra').setup(opts)
+        end,
+
+        settings = {
+          ltex = {
+            checkFrequency = 'save',
+            -- enabled = { 'markdown', 'plaintex', 'rst', 'tex', 'latex' },
+            language = 'de-DE', -- default language
+          },
+          ltex_plus = {
+            checkFrequency = 'save',
+            -- enabled = { 'markdown', 'plaintex', 'rst', 'tex', 'latex' },
+            language = 'de-DE', -- default language
+          },
+        },
+      })
+    end,
   },
 }

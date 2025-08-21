@@ -875,9 +875,9 @@ require('lazy').setup({
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = true, auto_show_delay_ms = 500 },
+        documentation = { window = { border = 'rounded' }, auto_show = true, auto_show_delay_ms = 40 },
         menu = { border = 'none' },
-        documentation = { window = { border = 'double' } },
+        -- documentation = { window = { border = 'double' } },
       },
       cmdline = {
         keymap = { preset = 'cmdline' },
@@ -1001,13 +1001,23 @@ require('lazy').setup({
 
         -- vim.api.nvim_set_hl(0, 'BlinkCmpSignatureHelpActiveParameter', { bg = 'darkred' })
         -- Change the "hint" color to the "orange" color, and make the "error" color bright red
+        style = 'night',
         on_colors = function(colors)
           colors.hint = colors.orange
-          colors.error = '#ff0000'
+          -- colors.error = '#ff0000'
+          -- colors.diff = '#ff0000'
+          colors.bg_visual = '#303e69'
+          colors.fg_gutter = '#505878'
+          -- TODO:currently unhappy with the gitdiff colors
+          -- colors.diff.add = require"tokyonight.util".blend(colors.git.add, 0.5, colors.bg)
+          -- colors.diff.change = colors.git.change
+          -- colors.diff.delete = require"tokyonight.util".blend(colors.git.delete, 0.5, colors.bg)
+
+          -- colors.bg_visual = '#303e69'
           -- colors.bg_visual = colors.blue0
+          -- saldfkjasdkjlj
         end,
       }
-
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
@@ -1170,6 +1180,7 @@ require('lazy').setup({
   require 'custom.plugins.vimbegood',
   require 'custom.plugins.zettelkasten',
   require 'custom.plugins.dadbod',
+  require 'custom.plugins.tailwind-tool',
 
   require 'custom.plugins.flutter-nvim',
   require 'custom.plugins.undotree',
