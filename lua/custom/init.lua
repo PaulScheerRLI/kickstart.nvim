@@ -33,19 +33,36 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
   end,
 })
 
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
+  pattern = { '*' },
+  callback = function()
+    if vim.bo.filetype == 'dbui' then
+      return
+    end
+    -- vim.o.tabstop = 2
+    -- vim.o.shiftwidth = 2
+    -- vim.o.expandtab = true
+  end,
+})
 --  lets me jump around in zk with gf
 vim.o.suffixesadd = vim.o.suffixesadd .. '.md,.html'
 
 -- for better goFile with python file / line number combos based on
 -- https://github.com/sychen52/gF-python-traceback
 -- the function is in  autoload/pythongF
-vim.keymap.set({ 'n' }, 'gF', '<Cmd>call pythongF#gF()<CR>', { desc = 'go  to File with python formatting' })
+-- vim.keymap.set({ 'n' }, 'gF', '<Cmd>call pythongF#gF()<CR>', { desc = 'go  to File with python formatting' })
 
 if get_nvim_open_level() >= min_level then
   vim.o.path = vim.o.path .. '**'
   print 'path has been appended with cwd'
 end
-vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+-- NOTE: This destroys python diffing when tabbing
+-- vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+vim.o.diffopt = vim.o.diffopt
+
+-- # Delete into void register in visual mode
+vim.keymap.set({ 'x' }, 'D', '"_d')
+
 vim.keymap.set({ 'n' }, '<leader>td', ':lcd %:p:h <CR>', { desc = 'Toggle directory to current file path' })
 vim.keymap.set({ 'n' }, '(', '@x', { desc = 'Easy @Access to x Macro' })
 
@@ -106,6 +123,7 @@ vim.schedule(function()
     vim.opt.clipboard = ''
     -- vim.opt.clipboard = 'unnamedplus'
     -- also slow
+    --
     vim.g.clipboard = {
       name = 'win32yank-wsl',
       copy = {
@@ -198,9 +216,10 @@ if vim.fn.exists ':DiffOrig' == 0 then
   vim.cmd 'command! DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
 end
 -- Duplicate lines by pressing arrow down in normal, inserst or visual mode
-vim.keymap.set('n', '<Down>', ':copy . <CR>', { desc = 'Duplicate' })
-vim.keymap.set('v', '<Down>', ':copy +0 <CR>', { desc = 'duplicate' })
-vim.keymap.set('i', '<Down>', ':copy +0 <CR>i', { desc = 'duplicate' })
+-- NOTE: Disabled
+-- vim.keymap.set('n', '<Down>', ':copy . <CR>', { desc = 'Duplicate' })
+-- vim.keymap.set('v', '<Down>', ':copy +0 <CR>', { desc = 'duplicate' })
+-- vim.keymap.set('i', '<Down>', ':copy +0 <CR>i', { desc = 'duplicate' })
 -- We set the signcolumn to 2 so Errors and writing status can both be shown instead of
 -- overwritting each other
 --
@@ -222,7 +241,6 @@ vim.api.nvim_create_autocmd('WinEnter', {
 
 vim.opt.signcolumn = 'yes:1'
 -- sets the minimum amount of numbers
-vim.opt.numberwidth = 3
 local tokyonight_moon = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
 
 vim.api.nvim_set_hl(0, 'StatusBorder', { bg = tokyonight_moon.inactive.c.bg })
@@ -233,7 +251,9 @@ vim.api.nvim_set_hl(0, 'StatusBorder', { bg = tokyonight_moon.inactive.c.bg })
 -- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? @SignCb@%s : v:lnum) : ''}%=│%T"
 -- vim.opt.statuscolumn = '%s%=%l│'
 
-vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
+-- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
+-- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s"
+-- statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
 vim.print 'status col set in custom.init'
 -- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '' : v:lnum) : ''}%"
 local tokyonight = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker

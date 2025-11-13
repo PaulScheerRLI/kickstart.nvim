@@ -22,6 +22,6 @@ return {
     vim.keymap.set('n', '<leader>rm', '<Plug>SlimeMotionSend', opts)
 
     -- Normal mode: send line
-    vim.keymap.set('n', '<leader>ss', '<Plug>SlimeLineSend', opts)
+    vim.keymap.set('n', '<leader>sj', '<Plug>SlimeLineSend', opts)
   end,
 }

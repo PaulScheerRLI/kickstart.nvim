@@ -129,8 +129,8 @@ vim.opt.signcolumn = 'yes'
 -- Decrease update time
 vim.opt.updatetime = 250
 
--- Decrease mapped sequence wait time
-vim.opt.timeoutlen = 300
+-- Decrease mapped sequence wait time in ms
+vim.opt.timeoutlen = 150
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
@@ -420,6 +420,7 @@ require('lazy').setup({
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
       pcall(require('telescope').load_extension 'live_grep_args')
+      pcall(require('telescope').load_extension 'smart_open')
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
@@ -442,7 +443,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>scg', function()
         builtin.live_grep { search_dirs = { vim.fn.expand '%:h:p' } }
       end, { desc = 'Grep in current directory' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader><leader>', function()
+        require('telescope').extensions.smart_open.smart_open()
+      end, { noremap = true, silent = true, desc = '[ ] Smart open' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -875,7 +878,11 @@ require('lazy').setup({
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { window = { border = 'rounded' }, auto_show = true, auto_show_delay_ms = 40 },
+        documentation = {
+          window = { border = 'rounded' },
+          auto_show = true,
+          auto_show_delay_ms = 40,
+        },
         menu = { border = 'none' },
         -- documentation = { window = { border = 'double' } },
       },
@@ -904,6 +911,7 @@ require('lazy').setup({
             show_on_blocked_trigger_characters = {},
             show_on_x_blocked_trigger_characters = {},
           },
+
           list = {
             selection = {
               -- When `true`, will automatically select the first item in the completion list
@@ -974,7 +982,7 @@ require('lazy').setup({
       },
 
       -- Shows a signature help window while you type arguments for a function
-      signature = { enabled = true },
+      signature = { enabled = true, window = { border = 'rounded' } },
     },
     -- signature = { window = { border = 'single' } },
   },
@@ -989,11 +997,11 @@ require('lazy').setup({
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
         styles = {
-          comments = { italic = false }, -- Disable italics in comments
-          sidebars = 'transparent',
-          float = 'transparent',
+          -- comments = { italic = false }, -- Disable italics in comments
+          -- sidebars = 'transparent',
+          -- float = 'transparent',
         },
-        transparent = true,
+        -- transparent = true,
 
         on_highlights = function(hl, c)
           hl.BlinkCmpSignatureHelpActiveParameter = hl.Todo
@@ -1004,10 +1012,20 @@ require('lazy').setup({
         style = 'night',
         on_colors = function(colors)
           colors.hint = colors.orange
-          -- colors.error = '#ff0000'
-          -- colors.diff = '#ff0000'
           colors.bg_visual = '#303e69'
           colors.fg_gutter = '#505878'
+          -- colors.error = '#ff0000'
+          -- colors.diff = '#ff0000'
+          -- tmux messes up the colors!! neeeded color fix in tmux conf
+          -- # Enable 24 bit true colors
+          -- set -ga terminal-overrides ',*:Tc'
+          -- -----
+          colors.diff.add = '#003800'
+          -- colors.diff.add = '#003000'
+          colors.diff.change = '#3a453a'
+          -- colors.diff.change = colors.diff.add
+          -- colors.diff.delete = "#a31c1c"
+          -- colors.diff.delete = '#380610'
           -- TODO:currently unhappy with the gitdiff colors
           -- colors.diff.add = require"tokyonight.util".blend(colors.git.add, 0.5, colors.bg)
           -- colors.diff.change = colors.git.change
@@ -1219,95 +1237,3 @@ require('lazy').setup({
 })
 
 require 'custom'
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
-
--- local lspconfig = require 'lspconfig'
--- local configs = require 'lspconfig.configs'
--- --local root_files = {
--- --  'pyproject.toml',
--- --  'setup.py',
--- --  'setup.cfg',
--- --  'requirements.txt',
--- --  'Pipfile',
--- --  '.git',
--- --}
--- --
--- if not configs.lemminx then
---   configs.lemminx = {
--- lspconfig.dartls.setup {
---   settings = {
---     color = { -- show the derived colours for dart variables
---       enabled = true, -- whether or not to highlight color variables at all, only supported on flutter >= 2.10
---       background = true, -- highlight the background
---       background_color = nil, -- required, when background is transparent (i.e. background_color = { r = 19, g = 17, b = 24},)
---       foreground = true, -- highlight the foreground
---       virtual_text = true, -- show the highlight using virtual text
---       virtual_text_str = '■', -- the virtual text character to highlight
---     },
---   },
--- }
-
---local configs = require 'lspconfig.configs'
---local root_files = {
---  'pyproject.toml',
---  'setup.py',
---  'setup.cfg',
---  'requirements.txt',
---  'Pipfile',
---  '.git',
---}
---
---     maxItemsComputed = 5103,
---     settings = {
---       xml = {
---         symbols = { maxItemsComputed = 5002 },
---         maxItemsComputed = 5003,
---       },
---       railml = {
---         symbols = { maxItemsComputed = 5002 },
---         maxItemsComputed = 5003,
---       },
---
---       symbols = { maxItemsComputed = 5002 },
---       maxItemsComputed = 5103,
---     },
---     default_config = {
---
---       maxItemsComputed = 5103,
---       settings = {
---         xml = {
---           symbols = { maxItemsComputed = 5002 },
---           maxItemsComputed = 5003,
---         },
---         railml = {
---           symbols = { maxItemsComputed = 5002 },
---           maxItemsComputed = 5003,
---         },
---
---         symbols = { maxItemsComputed = 5002 },
---         maxItemsComputed = 5103,
---       },
---     },
---   }
--- end
--- lspconfig.lemminx.setup {}
--- function lemminx()
---   vim.lsp.config('lemminx', {
---     -- Server-specific settings. See `:help lsp-quickstart`
---     settings = {
---       ['lemminx'] = {
---         xml = {
---           symbols = { maxItemsComputed = 10009 },
---         },
---         settings = {
---
---           xml = {
---             symbols = { maxItemsComputed = 10008 },
---           },
---         },
---       },
---     },
---   })
--- end
--- lemminx()

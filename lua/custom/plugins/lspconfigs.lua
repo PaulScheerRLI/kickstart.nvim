@@ -125,6 +125,13 @@ do
   end
 end
 
+-- Translate htmldjango to html
+vim.lsp.config('superhtml', {
+  get_language_id = get_language_id,
+})
+-- superhtml is eneabled through mason anyways but doing it does not hurt
+vim.lsp.enable 'superhtml'
+
 vim.lsp.config('ltex_plus', {
   cmd = { 'ltex-ls-plus' },
   filetypes = filetypes,

@@ -215,11 +215,11 @@ return {
           variablePresentation = {
             all = 'group',
           },
-          -- checjout autoreload  https://code.visualstudio.com/docs/python/debugging#_autoreload
+          -- checkout autoreload  https://code.visualstudio.com/docs/python/debugging#_autoreload
           -- stopOnEntry = true,
           justMyCode = false,
           -- env = { GEVENT_SUPPORT = '0' },
-          -- console = 'integratedTerminal',
+          console = 'integratedTerminal',
         },
       }
       table.insert(require('dap').configurations.python, {
