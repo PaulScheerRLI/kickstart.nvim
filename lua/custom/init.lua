@@ -33,19 +33,36 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
   end,
 })
 
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
+  pattern = { '*' },
+  callback = function()
+    if vim.bo.filetype == 'dbui' then
+      return
+    end
+    -- vim.o.tabstop = 2
+    -- vim.o.shiftwidth = 2
+    -- vim.o.expandtab = true
+  end,
+})
 --  lets me jump around in zk with gf
 vim.o.suffixesadd = vim.o.suffixesadd .. '.md,.html'
 
 -- for better goFile with python file / line number combos based on
 -- https://github.com/sychen52/gF-python-traceback
 -- the function is in  autoload/pythongF
-vim.keymap.set({ 'n' }, 'gF', '<Cmd>call pythongF#gF()<CR>', { desc = 'go  to File with python formatting' })
+-- vim.keymap.set({ 'n' }, 'gF', '<Cmd>call pythongF#gF()<CR>', { desc = 'go  to File with python formatting' })
 
 if get_nvim_open_level() >= min_level then
   vim.o.path = vim.o.path .. '**'
   print 'path has been appended with cwd'
 end
-vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+-- NOTE: This destroys python diffing when tabbing
+-- vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
+vim.o.diffopt = vim.o.diffopt
+
+-- # Delete into void register in visual mode
+vim.keymap.set({ 'x' }, 'D', '"_d')
+
 vim.keymap.set({ 'n' }, '<leader>td', ':lcd %:p:h <CR>', { desc = 'Toggle directory to current file path' })
 vim.keymap.set({ 'n' }, '(', '@x', { desc = 'Easy @Access to x Macro' })
 
@@ -59,6 +76,7 @@ if vim.fn.has 'windows' == 1 and vim.fn.has 'wsl' == 0 then
 end
 
 local python_path = '/home/ubuntu/.pyenv/versions/neovim/bin/python'
+local python_path = '/usr/bin/python3.10'
 -- Check if the file exists
 if vim.loop.fs_stat(python_path) then
   vim.g.python3_host_prog = python_path
@@ -105,6 +123,7 @@ vim.schedule(function()
     vim.opt.clipboard = ''
     -- vim.opt.clipboard = 'unnamedplus'
     -- also slow
+    --
     vim.g.clipboard = {
       name = 'win32yank-wsl',
       copy = {
@@ -197,9 +216,10 @@ if vim.fn.exists ':DiffOrig' == 0 then
   vim.cmd 'command! DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_ | diffthis | wincmd p | diffthis'
 end
 -- Duplicate lines by pressing arrow down in normal, inserst or visual mode
-vim.keymap.set('n', '<Down>', ':copy . <CR>', { desc = 'Duplicate' })
-vim.keymap.set('v', '<Down>', ':copy +0 <CR>', { desc = 'duplicate' })
-vim.keymap.set('i', '<Down>', ':copy +0 <CR>i', { desc = 'duplicate' })
+-- NOTE: Disabled
+-- vim.keymap.set('n', '<Down>', ':copy . <CR>', { desc = 'Duplicate' })
+-- vim.keymap.set('v', '<Down>', ':copy +0 <CR>', { desc = 'duplicate' })
+-- vim.keymap.set('i', '<Down>', ':copy +0 <CR>i', { desc = 'duplicate' })
 -- We set the signcolumn to 2 so Errors and writing status can both be shown instead of
 -- overwritting each other
 --
@@ -209,21 +229,18 @@ vim.api.nvim_set_hl(0, 'InActive', { bg = c.bg })
 vim.api.nvim_create_autocmd('WinLeave', {
   group = vim.api.nvim_create_augroup('InActiveHl', { clear = true }),
   callback = function()
-    require('fidget').notification.notify 'left'
     vim.wo.winhl = 'cursorline:InActive'
   end,
 })
 vim.api.nvim_create_autocmd('WinEnter', {
   group = vim.api.nvim_create_augroup('ActiveHl', { clear = true }),
   callback = function()
-    require('fidget').notification.notify 'left'
     vim.wo.winhl = 'InActive:cursorline'
   end,
 })
 
 vim.opt.signcolumn = 'yes:1'
 -- sets the minimum amount of numbers
-vim.opt.numberwidth = 1
 local tokyonight_moon = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
 
 vim.api.nvim_set_hl(0, 'StatusBorder', { bg = tokyonight_moon.inactive.c.bg })
@@ -234,7 +251,9 @@ vim.api.nvim_set_hl(0, 'StatusBorder', { bg = tokyonight_moon.inactive.c.bg })
 -- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? @SignCb@%s : v:lnum) : ''}%=│%T"
 -- vim.opt.statuscolumn = '%s%=%l│'
 
-vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
+-- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
+-- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s"
+-- statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
 vim.print 'status col set in custom.init'
 -- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '' : v:lnum) : ''}%"
 local tokyonight = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
@@ -267,6 +286,10 @@ vim.keymap.set('n', '<leader>cc', function()
   vim.cmd 'BufDel'
 end, { desc = 'Delete Buffer' })
 
+vim.keymap.set('n', '<leader>w', function()
+  vim.cmd 'noautocmd write'
+end, { desc = 'Quick write without autocommands/formating' })
+
 vim.api.nvim_set_hl(0, 'WinSeparator', { fg = '#c0caf5', bold = true })
 vim.opt.fillchars = {
   horiz = '━',
@@ -279,16 +302,7 @@ vim.opt.fillchars = {
 }
 
 local ts = vim.treesitter
-
-function query_all_injected_trees(query, quicklist_method)
-  assert(quicklist_method == 'r' or quicklist_method == 'a' or quicklist_method == 'f' or quicklist_method == ' ' or quicklist_method == nil)
-  quicklist_method = quicklist_method or 'r'
-
-  if query == nil or query == '' then
-    error 'Pass a query like [[(text) @text]] to the function. quotes around query are optional.'
-  end
-  local bufnr = vim.api.nvim_get_current_buf()
-
+function getTSCaptures(query, bufnr)
   -- Temporarily open the buffer in a window. This is needed since injected languages are only detected when opening the file.
   -- kinda strange behvaioru
   local cur_win = vim.api.nvim_get_current_win()
@@ -332,21 +346,31 @@ function query_all_injected_trees(query, quicklist_method)
     end)
     if ok then
       for id, node, _ in query:iter_captures(root, bufnr, 0, -1) do
-        local name = query.captures[id]
-        local sr, sc, er, ec = node:range()
-        local ok, text = pcall(ts.get_node_text, node, bufnr)
-        table.insert(qf_entries, {
-          bufnr = bufnr,
-          lnum = sr + 1,
-          end_lnum = er + 1,
-          col = sc + 1,
-          end_col = ec + 1,
-          text = text,
-        })
+        -- print 'found'
+        -- local name = query.captures[id]
+        -- local sr, sc, er, ec = node:range()
+        table.insert(qf_entries, node)
       end
+    else
+      -- print 'not ok'
+      -- print(lang)
+      -- ts.query.parse(lang, query)
     end
   end
-  if next(qf_entries) == nil then
+  return qf_entries, all_trees
+end
+function query_all_injected_trees(query, quicklist_method)
+  assert(quicklist_method == 'r' or quicklist_method == 'a' or quicklist_method == 'f' or quicklist_method == ' ' or quicklist_method == nil)
+  quicklist_method = quicklist_method or 'r'
+
+  if query == nil or query == '' then
+    error 'Pass a query like [[(text) @text]] to the function. quotes around query are optional.'
+  end
+  local bufnr = vim.api.nvim_get_current_buf()
+  print(query)
+
+  nodes, all_trees = getTSCaptures(query, bufnr)
+  if next(nodes) == nil then
     vim.print(filename)
     vim.print 'No matches found. The following languages where searched'
     local langs = {}
@@ -355,6 +379,19 @@ function query_all_injected_trees(query, quicklist_method)
     end
     vim.print(langs)
     return
+  end
+  qf_entries = {}
+  for _, node in ipairs(nodes) do
+    local sr, sc, er, ec = node:range()
+    local ok, text = pcall(ts.get_node_text, node, bufnr)
+    table.insert(qf_entries, {
+      bufnr = bufnr,
+      lnum = sr + 1,
+      end_lnum = er + 1,
+      col = sc + 1,
+      end_col = ec + 1,
+      text = text,
+    })
   end
   vim.fn.setqflist(qf_entries, quicklist_method)
 end
@@ -368,6 +405,7 @@ local function unique(list)
       table.insert(result, v)
     end
   end
+
   return result
 end
 
@@ -395,6 +433,8 @@ local function select_current_qf_item()
 end
 
 vim.api.nvim_create_user_command('QueryTS', function(opts)
+  -- example call
+  --QueryTS [[(text) @text]] -f
   local query = opts.args
   local flag = string.match(query, '%-(%a)')
   if flag then
