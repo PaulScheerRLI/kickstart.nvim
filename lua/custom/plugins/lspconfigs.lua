@@ -30,6 +30,7 @@ vim.schedule(function()
     },
   })
   vim.lsp.enable 'basedpyright'
+  vim.lsp.enable 'dart_lsp'
   -- vim.lsp.enable 'pyright'
   vim.lsp.config('efm', {
     capabilities = capabilities,

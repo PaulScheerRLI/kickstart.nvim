@@ -989,11 +989,7 @@ require('lazy').setup({
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
         styles = {
-          comments = { italic = false }, -- Disable italics in comments
-          sidebars = 'transparent',
-          float = 'transparent',
         },
-        transparent = true,
 
         on_highlights = function(hl, c)
           hl.BlinkCmpSignatureHelpActiveParameter = hl.Todo
