@@ -279,6 +279,9 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev Diagnostic' }
 -- this is done by [b   ]b
 -- vim.keymap.set('n', '<leader>n', '<cmd>bn<CR>', { desc = 'Next Buffer' })
 -- vim.keymap.set('n', '<leader>m', '<cmd>bp<CR>', { desc = 'Prev Buffer' })
+vim.keymap.set('n', '<leader>w', function()
+  vim.cmd 'noautocmd write'
+end, { desc = 'Write Buffer' })
 vim.keymap.set('n', '<leader>cc', function()
   vim.cmd 'BufDel'
 end, { desc = 'Delete Buffer' })

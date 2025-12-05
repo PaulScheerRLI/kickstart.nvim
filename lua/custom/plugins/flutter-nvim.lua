@@ -20,6 +20,11 @@ return {
       closing_tags = {
         enabled = true,
       },
+      debugger = { -- integrate with nvim dap + install dart code debugger
+        -- if you want to debug run FlutterDebug
+        -- setting enabled true even debugs when running FlutterRun
+        enabled = false,
+      },
       lsp = {
         color = { -- show the derived colours for dart variables
           enabled = true, -- whether or not to highlight color variables at all, only supported on flutter >= 2.10

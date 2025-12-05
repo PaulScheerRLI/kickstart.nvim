@@ -30,6 +30,8 @@ vim.schedule(function()
       },
     },
   })
+  -- vim.lsp.enable 'basedpyright'
+  vim.lsp.enable 'dart_lsp'
   vim.lsp.config('pyright', {
     settings = {
       basedpyright = {
