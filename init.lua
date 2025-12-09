@@ -1199,7 +1199,6 @@ require('lazy').setup({
   require 'custom.plugins.vimbegood',
   require 'custom.plugins.zettelkasten',
   require 'custom.plugins.dadbod',
-  require 'custom.plugins.tailwind-tool',
 
   require 'custom.plugins.flutter-nvim',
   require 'custom.plugins.undotree',
