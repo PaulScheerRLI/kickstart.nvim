@@ -134,6 +134,7 @@ vim.lsp.config('superhtml', {
 -- superhtml is eneabled through mason anyways but doing it does not hurt
 vim.lsp.enable 'superhtml'
 
+-- Used for better spellchecking
 vim.lsp.config('ltex_plus', {
   cmd = { 'ltex-ls-plus' },
   filetypes = filetypes,
@@ -154,7 +155,8 @@ vim.lsp.config('ltex_plus', {
     },
   },
 })
-vim.lsp.enable 'ltex_plus'
+-- disabled for now since it hogs memeory a little bit i think
+-- vim.lsp.enable 'ltex_plus'
 function CheckEnglish()
   local config = vim.lsp.config['ltex_plus']
   local new_config = vim.tbl_deep_extend('force', {}, config, { settings = { ltex_plus = { language = 'en' }, ltex = { language = 'en' } } })

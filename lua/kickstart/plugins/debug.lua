@@ -5,6 +5,8 @@
 -- Primarily focused on configuring the debugger for Go, but can
 -- be extended to other languages as well. That's why it's called
 -- kickstart.nvim and not kitchen-sink.nvim ;)
+dap_last_config = nil
+
 return {
   {
     -- NOTE: Yes, you can install new plugins here!
@@ -194,7 +196,64 @@ return {
         -- vim.fn.sign_define(tp, { text = icon, linehl = hl, texthl = hl, numhl = hl })
       end
 
-      dap.listeners.after.event_initialized['dapui_config'] = dapui.open
+      vim.api.nvim_create_user_command('ReRunDebug', function(t)
+        dap.run(dap_last_config)
+      end, {
+        complete = nil,
+        nargs = nil,
+      })
+
+      vim.api.nvim_create_user_command('RunScriptWithArgs', function(t)
+        -- :help nvim_create_user_command
+        -- doesnt work for -f foo/bar.txt
+        -- args = vim.split(vim.fn.expand(t.args), '\n')
+        args = vim.fn.split(t.args)
+        approval = vim.fn.confirm(
+          'Will try to run:\n    ' .. vim.bo.filetype .. ' ' .. vim.fn.expand '%' .. ' ' .. t.args .. '\n\n' .. 'Do you approve? ',
+          '&Yes\n&No',
+          1
+        )
+        if approval == 1 then
+          dap.run {
+            type = vim.bo.filetype,
+            request = 'launch',
+            name = 'Launch file with custom arguments (adhoc) from vim cwd',
+            program = '${file}',
+            args = args,
+            cwd = vim.loop.cwd(),
+          }
+        end
+      end, {
+        complete = 'file',
+        nargs = '*',
+      })
+
+      function shallowcopy(orig)
+        local orig_type = type(orig)
+        local copy
+        if orig_type == 'table' then
+          copy = {}
+          for orig_key, orig_value in pairs(orig) do
+            copy[orig_key] = orig_value
+          end
+        else -- number, string, boolean, etc
+          copy = orig
+        end
+        return copy
+      end
+      dap.listeners.after.event_initialized['dapui_config'] = function(args)
+        used_config = shallowcopy(args.config)
+        used_config.name = "00: " .. args.config.name .. " [RERUN]"
+        for index, value in ipairs(require('dap').configurations.python) do
+            if string.find(value.name, "00:")  then
+              table.remove(require('dap').configurations.python, index)
+            end
+        end
+        dap_last_config = used_config
+        table.insert(require('dap').configurations.python,1, used_config)
+        dapui.open(args)
+      end
+
       dap.listeners.before.event_terminated['dapui_config'] = dapui.close
       dap.listeners.before.event_exited['dapui_config'] = dapui.close
       require('dap').configurations.python = {
@@ -250,9 +309,9 @@ return {
         request = 'attach',
         name = 'Django attach',
         port = 5678,
-        host = "127.0.0.1",
+        host = '127.0.0.1',
         django = true,
-          justMyCode = false,
+        justMyCode = false,
         program = vim.loop.cwd() .. '/manage.py',
         variablePresentation = {
           all = 'hide',
@@ -329,7 +388,7 @@ return {
     'theHamsta/nvim-dap-virtual-text',
     config = function()
       require('nvim-dap-virtual-text').setup {
-        enabled = true, -- enable this plugin (the default)
+        enabled = false, -- enable this plugin (the default)
         enabled_commands = true, -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
         highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
         highlight_new_as_changed = false, -- highlight new variables in the same way as changed variables (if highlight_changed_variables)

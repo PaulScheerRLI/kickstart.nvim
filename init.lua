@@ -445,13 +445,16 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("."cfor repeat)' })
+      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[S]earch open Files ("."cfor repeat)' })
       vim.keymap.set('n', '<leader>scf', function()
         builtin.find_files { search_dirs = { vim.fn.expand '%:h:p' } }
       end, { desc = 'find in current directory' })
       vim.keymap.set('n', '<leader>scg', function()
         builtin.live_grep { search_dirs = { vim.fn.expand '%:h:p' } }
       end, { desc = 'Grep in current directory' })
+      vim.keymap.set('n', '<leader>s.', function()
+        require('telescope').extensions.smart_open.smart_open()
+      end, { noremap = true, silent = true, desc = '[ ] Smart open' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -1026,9 +1029,10 @@ require('lazy').setup({
           -- # Enable 24 bit true colors
           -- set -ga terminal-overrides ',*:Tc'
           -- -----
-          colors.diff.add = '#003800'
+          -- colors.diff.add = '#003800'
+          -- colors.diff.change = '#2a352a'
+          --
           -- colors.diff.add = '#003000'
-          colors.diff.change = '#3a453a'
           -- colors.diff.change = colors.diff.add
           -- colors.diff.delete = "#a31c1c"
           -- colors.diff.delete = '#380610'
@@ -1204,7 +1208,6 @@ require('lazy').setup({
   require 'custom.plugins.vimbegood',
   require 'custom.plugins.zettelkasten',
   require 'custom.plugins.dadbod',
-  require 'custom.plugins.tailwind-tool',
 
   require 'custom.plugins.flutter-nvim',
   require 'custom.plugins.undotree',
