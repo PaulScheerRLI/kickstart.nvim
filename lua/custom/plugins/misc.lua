@@ -13,35 +13,35 @@ return {
   },
   { 'ojroques/nvim-bufdel' },
   {
-  "danielfalk/smart-open.nvim",
-  branch = "0.2.x",
-  config = function()
-    require("telescope").load_extension("smart_open")
-  end,
-  dependencies = {
-    "kkharji/sqlite.lua",
-    -- Only required if using match_algorithm fzf
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-    -- Optional.  If installed, native fzy will be used when match_algorithm is fzy
-    { "nvim-telescope/telescope-fzy-native.nvim" },
+    'danielfalk/smart-open.nvim',
+    branch = '0.2.x',
+    config = function()
+      -- require("telescope").load_extension("smart_open")
+    end,
+    dependencies = {
+      'kkharji/sqlite.lua',
+      -- Only required if using match_algorithm fzf
+      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+      -- Optional.  If installed, native fzy will be used when match_algorithm is fzy
+      { 'nvim-telescope/telescope-fzy-native.nvim' },
+    },
   },
-},
 
- --  {
-    -- 'danilamihailov/beacon.nvim',
-    -- config = function()
-    --   require('beacon').setup ({
-    --     cursor_events = {}
-    --   })
-    --   vim.keymap.set('n', '<leader>jj', require('beacon').highlight_cursor, { desc = 'Beacon and highlight the cursor' })
-    -- end,
+  --  {
+  -- 'danilamihailov/beacon.nvim',
+  -- config = function()
+  --   require('beacon').setup ({
+  --     cursor_events = {}
+  --   })
+  --   vim.keymap.set('n', '<leader>jj', require('beacon').highlight_cursor, { desc = 'Beacon and highlight the cursor' })
+  -- end,
   -- }, -- lazy calls etup() by itself
   {
     'echasnovski/mini.move',
     config = function()
-      require('mini.move').setup({
-      winborder="none"
-      })
+      require('mini.move').setup {
+        winborder = 'none',
+      }
     end,
     -- default mappings set by setup. Added as comment for documentation
     --[[
@@ -113,17 +113,17 @@ return {
   },
   {
     'juk3-min/dejavu.nvim',
-    -- opts = {
-    --   callback = function(x)
-    --     vim.print(x)
-    --   end,
-    --   enabled = true,
-    -- },
+    opts = {
+      callback = function(x)
+        vim.print(x)
+        print 'foo'
+      end,
+    },
     dependencies = { 'j-hui/fidget.nvim' },
     config = function()
       require('dejavu').setup {
         notify = function(x)
-          -- require('fidget').notification.notify('', vim.log.levels.INFO, { annote = x })
+          require('fidget').notification.notify('', vim.log.levels.INFO, { annote = x })
         end,
         enabled = true,
       }
@@ -204,65 +204,80 @@ return {
     },
     -- calling setup is optional :)
   },
-{
-    "jake-stewart/multicursor.nvim",
-    branch = "1.0",
+  {
+    'jake-stewart/multicursor.nvim',
+    branch = '1.0',
     config = function()
-        local mc = require("multicursor-nvim")
-        mc.setup()
+      local mc = require 'multicursor-nvim'
+      mc.setup()
 
-        local set = vim.keymap.set
+      local set = vim.keymap.set
 
-        -- Add or skip cursor above/below the main cursor.
-        set({"n", "x"}, "<up>", function() mc.lineAddCursor(-1) end)
-        set({"n", "x"}, "<down>", function() mc.lineAddCursor(1) end)
-        set({"n", "x"}, "<leader><up>", function() mc.lineSkipCursor(-1) end)
-        set({"n", "x"}, "<leader><down>", function() mc.lineSkipCursor(1) end)
+      -- Add or skip cursor above/below the main cursor.
+      set({ 'n', 'x' }, '<up>', function()
+        mc.lineAddCursor(-1)
+      end)
+      set({ 'n', 'x' }, '<down>', function()
+        mc.lineAddCursor(1)
+      end)
+      set({ 'n', 'x' }, '<leader><up>', function()
+        mc.lineSkipCursor(-1)
+      end)
+      set({ 'n', 'x' }, '<leader><down>', function()
+        mc.lineSkipCursor(1)
+      end)
 
-        -- Add or skip adding a new cursor by matching word/selection
-        set({"n", "x"}, "<leader>n", function() mc.matchAddCursor(1) end)
-        set({"n", "x"}, "<leader>s", function() mc.matchSkipCursor(1) end)
-        set({"n", "x"}, "<leader>N", function() mc.matchAddCursor(-1) end)
-        set({"n", "x"}, "<leader>S", function() mc.matchSkipCursor(-1) end)
+      -- Add or skip adding a new cursor by matching word/selection
+      set({ 'n', 'x' }, '<leader>n', function()
+        mc.matchAddCursor(1)
+      end)
+      set({ 'n', 'x' }, '<leader>s', function()
+        mc.matchSkipCursor(1)
+      end)
+      set({ 'n', 'x' }, '<leader>N', function()
+        mc.matchAddCursor(-1)
+      end)
+      set({ 'n', 'x' }, '<leader>S', function()
+        mc.matchSkipCursor(-1)
+      end)
 
-        -- Add and remove cursors with control + left click.
-        set("n", "<c-leftmouse>", mc.handleMouse)
-        set("n", "<c-leftdrag>", mc.handleMouseDrag)
-        set("n", "<c-leftrelease>", mc.handleMouseRelease)
+      -- Add and remove cursors with control + left click.
+      set('n', '<c-leftmouse>', mc.handleMouse)
+      set('n', '<c-leftdrag>', mc.handleMouseDrag)
+      set('n', '<c-leftrelease>', mc.handleMouseRelease)
 
-        -- Disable and enable cursors.
-        set({"n", "x"}, "c-q", mc.toggleCursor)
+      -- Disable and enable cursors.
+      set({ 'n', 'x' }, 'c-q', mc.toggleCursor)
 
-        -- Mappings defined in a keymap layer only apply when there are
-        -- multiple cursors. This lets you have overlapping mappings.
-        mc.addKeymapLayer(function(layerSet)
+      -- Mappings defined in a keymap layer only apply when there are
+      -- multiple cursors. This lets you have overlapping mappings.
+      mc.addKeymapLayer(function(layerSet)
+        -- Select a different cursor as the main one.
+        layerSet({ 'n', 'x' }, '<left>', mc.prevCursor)
+        layerSet({ 'n', 'x' }, '<right>', mc.nextCursor)
 
-            -- Select a different cursor as the main one.
-            layerSet({"n", "x"}, "<left>", mc.prevCursor)
-            layerSet({"n", "x"}, "<right>", mc.nextCursor)
+        -- Delete the main cursor.
+        layerSet({ 'n', 'x' }, '<leader>x', mc.deleteCursor)
 
-            -- Delete the main cursor.
-            layerSet({"n", "x"}, "<leader>x", mc.deleteCursor)
-
-            -- Enable and clear cursors using escape.
-            layerSet("n", "<esc>", function()
-                if not mc.cursorsEnabled() then
-                    mc.enableCursors()
-                else
-                    mc.clearCursors()
-                end
-            end)
+        -- Enable and clear cursors using escape.
+        layerSet('n', '<esc>', function()
+          if not mc.cursorsEnabled() then
+            mc.enableCursors()
+          else
+            mc.clearCursors()
+          end
         end)
+      end)
 
-        -- Customize how cursors look.
-        local hl = vim.api.nvim_set_hl
-        hl(0, "MultiCursorCursor", { reverse = true })
-        hl(0, "MultiCursorVisual", { link = "Visual" })
-        hl(0, "MultiCursorSign", { link = "SignColumn"})
-        hl(0, "MultiCursorMatchPreview", { link = "Search" })
-        hl(0, "MultiCursorDisabledCursor", { reverse = true })
-        hl(0, "MultiCursorDisabledVisual", { link = "Visual" })
-        hl(0, "MultiCursorDisabledSign", { link = "SignColumn"})
-    end
-},
+      -- Customize how cursors look.
+      local hl = vim.api.nvim_set_hl
+      hl(0, 'MultiCursorCursor', { reverse = true })
+      hl(0, 'MultiCursorVisual', { link = 'Visual' })
+      hl(0, 'MultiCursorSign', { link = 'SignColumn' })
+      hl(0, 'MultiCursorMatchPreview', { link = 'Search' })
+      hl(0, 'MultiCursorDisabledCursor', { reverse = true })
+      hl(0, 'MultiCursorDisabledVisual', { link = 'Visual' })
+      hl(0, 'MultiCursorDisabledSign', { link = 'SignColumn' })
+    end,
+  },
 }

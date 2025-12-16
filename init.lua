@@ -420,7 +420,16 @@ require('lazy').setup({
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
       pcall(require('telescope').load_extension 'live_grep_args')
-      pcall(require('telescope').load_extension 'smart_open')
+
+      if vim.fn.has 'wsl' == 0 then
+        vim.g.sqlite_clib_path = 'J://dev/sqlite3/sqlite3.dll'
+      else
+        -- # Enable smart open only for wsl since it does not work on windows
+        pcall(require('telescope').load_extension 'smart_open')
+        vim.keymap.set('n', '<leader><leader>', function()
+          require('telescope').extensions.smart_open.smart_open()
+        end, { noremap = true, silent = true, desc = '[ ] Smart open' })
+      end
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
@@ -443,9 +452,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>scg', function()
         builtin.live_grep { search_dirs = { vim.fn.expand '%:h:p' } }
       end, { desc = 'Grep in current directory' })
-      vim.keymap.set('n', '<leader><leader>', function()
-        require('telescope').extensions.smart_open.smart_open()
-      end, { noremap = true, silent = true, desc = '[ ] Smart open' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()

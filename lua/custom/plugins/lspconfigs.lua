@@ -1,19 +1,19 @@
 vim.schedule(function()
-  local lspconfig = require 'lspconfig'
-  local capabilities = require('blink.cmp').get_lsp_capabilities()
-  vim.lsp.config('lemminx', {
-    capabilities = capabilities,
-    on_attach = function(client, bufnr)
-      -- Your on_attach logic here (keymaps, etc.)
-    end,
-    settings = {
-      -- Your Lemminx settings go here
-
-      xml = {
-        symbols = { maxItemsComputed = 20008 },
-      },
-    },
-  })
+  -- local lspconfig = require 'lspconfig'
+  -- local capabilities = require('blink.cmp').get_lsp_capabilities()
+  -- vim.lsp.config('lemminx', {
+  --   capabilities = capabilities,
+  --   on_attach = function(client, bufnr)
+  --     -- Your on_attach logic here (keymaps, etc.)
+  --   end,
+  --   settings = {
+  --     -- Your Lemminx settings go here
+  --
+  --     xml = {
+  --       symbols = { maxItemsComputed = 20008 },
+  --     },
+  --   },
+  -- })
 
   vim.lsp.config('pyrefly', {})
   vim.lsp.config('ty', {})
