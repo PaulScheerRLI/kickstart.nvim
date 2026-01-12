@@ -409,6 +409,8 @@ local function unique(list)
   return result
 end
 
+vim.api.nvim_create_user_command('OpenDir',':!explorer.exe $(wslpath -w %:p:h)', {})
+
 local function select_current_qf_item()
   local qf_list = vim.fn.getqflist()
   local idx = vim.fn.getqflist({ idx = 0 }).idx
