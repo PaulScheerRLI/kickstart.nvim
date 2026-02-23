@@ -204,10 +204,19 @@ return {
       })
 
       vim.api.nvim_create_user_command('RunScriptWithArgs', function(t)
+        local args = {}
+        for arg in t.args:gmatch '%S+' do
+          if arg:match '^".*"$' or arg:match "^'.*'$" then
+            table.insert(args, arg:sub(2, -2)) -- remove surrounding quotes
+          else
+            table.insert(args, arg)
+          end
+        end
+        -- args now contains proper arguments
+        -- args = vim.fn.split(t.args)
         -- :help nvim_create_user_command
         -- doesnt work for -f foo/bar.txt
         -- args = vim.split(vim.fn.expand(t.args), '\n')
-        args = vim.fn.split(t.args)
         approval = vim.fn.confirm(
           'Will try to run:\n    ' .. vim.bo.filetype .. ' ' .. vim.fn.expand '%' .. ' ' .. t.args .. '\n\n' .. 'Do you approve? ',
           '&Yes\n&No',
@@ -221,6 +230,21 @@ return {
             program = '${file}',
             args = args,
             cwd = vim.loop.cwd(),
+            env = {
+              PYTHONPATH = vim.loop.cwd(),  -- Add current directory to Python path. this allows calling
+              -- ./foo/main.py some-args, with imports like 'from foo import bar' working
+            }, 
+           autoReload= {
+            enable = true,
+          },
+            console = 'integratedTerminal',
+            variablePresentation = {
+              all = 'hide',
+              class = 'group',
+              ['function'] = 'group',
+              protected = 'hide',
+              special = 'hide',
+            },
           }
         end
       end, {
@@ -243,14 +267,18 @@ return {
       end
       dap.listeners.after.event_initialized['dapui_config'] = function(args)
         used_config = shallowcopy(args.config)
-        used_config.name = "00: " .. args.config.name .. " [RERUN]"
+        if (string.find(args.config.name, "%[RERUN%]$")) then
+            used_config.name = args.config.name
+          else
+            used_config.name = '00: ' .. args.config.name .. ' [RERUN]'
+        end
         for index, value in ipairs(require('dap').configurations.python) do
-            if string.find(value.name, "00:")  then
-              table.remove(require('dap').configurations.python, index)
-            end
+          if string.find(value.name, '00:') then
+            table.remove(require('dap').configurations.python, index)
+          end
         end
         dap_last_config = used_config
-        table.insert(require('dap').configurations.python,1, used_config)
+        table.insert(require('dap').configurations.python, 1, used_config)
         dapui.open(args)
       end
 

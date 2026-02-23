@@ -23,7 +23,10 @@ end
 
 -- this way hovers dont blend so much with the background
 vim.o.winborder = 'rounded'
+
+-- use local .nvim.lua for project configs
 vim.o.exrc = true
+vim.o.secure = true
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
   pattern = { 'dbui' },
@@ -56,6 +59,7 @@ if get_nvim_open_level() >= min_level then
   vim.o.path = vim.o.path .. '**'
   print 'path has been appended with cwd'
 end
+vim.o.formatlistpat = [[^\s*[0-9\-\+\*]\+[\.\)]*\s\+]]
 -- NOTE: This destroys python diffing when tabbing
 -- vim.o.diffopt = vim.o.diffopt .. ',iwhiteall'
 vim.o.diffopt = vim.o.diffopt
@@ -409,7 +413,7 @@ local function unique(list)
   return result
 end
 
-vim.api.nvim_create_user_command('OpenDir',':!explorer.exe $(wslpath -w %:p:h)', {})
+vim.api.nvim_create_user_command('OpenDir', ':!explorer.exe $(wslpath -w %:p:h)', {})
 
 local function select_current_qf_item()
   local qf_list = vim.fn.getqflist()

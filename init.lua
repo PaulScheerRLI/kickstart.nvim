@@ -407,6 +407,7 @@ require('lazy').setup({
           mappings = {
             i = { ['<C-e>'] = 'to_fuzzy_refine' },
           },
+          preview = { treesitter = { table = { disable = { 'js' } } } },
         },
         -- pickers = {}
         extensions = {
@@ -440,8 +441,13 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>scf', function()
         builtin.find_files { search_dirs = { vim.fn.expand '%:h:p' } }
       end, { desc = 'find in current directory' })
-      vim.keymap.set('n', '<leader>scg', function()
-        builtin.live_grep { search_dirs = { vim.fn.expand '%:h:p' } }
+      vim.keymap.set('n', '<leader>si', function()
+        builtin.live_grep {
+          search_dirs = { vim.fn.expand '%:h:p' },
+          additional_args = function()
+            return { '--no-ignore', '--hidden' }
+          end,
+        }
       end, { desc = 'Grep in current directory' })
       vim.keymap.set('n', '<leader>s.', function()
         require('telescope').extensions.smart_open.smart_open()
@@ -792,7 +798,7 @@ require('lazy').setup({
           --'isort',
           'black',
         },
-        htmldjango = { 'djlint' },
+        -- htmldjango = { 'djlint' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -802,6 +808,8 @@ require('lazy').setup({
   { -- Autocompletion
     'saghen/blink.cmp',
     event = 'VeryLazy',
+
+    enabled = true,
     version = '1.*',
     dependencies = {
       -- Snippet Engine
@@ -864,7 +872,7 @@ require('lazy').setup({
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
-
+        ['<Tab>'] = { 'accept', 'fallback' },
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
@@ -931,7 +939,14 @@ require('lazy').setup({
         default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
         per_filetype = {
           sql = { 'snippets', 'dadbod', 'buffer' },
-          python = { 'lsp', 'path' },
+          python = function()
+            local node = vim.treesitter.get_node()
+            if node and vim.tbl_contains({ 'comment', 'line_comment', 'comment_content', 'block_comment' }, node:type()) then
+              return {}
+            else
+              return { 'lsp', 'path', 'snippets' }
+            end
+          end,
         },
         providers = {
           dadbod = { name = 'Dadbod', module = 'vim_dadbod_completion.blink' },
@@ -943,9 +958,9 @@ require('lazy').setup({
             },
           },
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
-          lsp = { score_offset = 1 },
-          snippets = { score_offset = -40 },
-          buffer = { score_offset = -44 },
+          lsp = { score_offset = 1},
+          snippets = { score_offset = -45, opts = { search_paths = { vim.fn.stdpath 'config' .. '/snippets' } }, max_items = 3 },
+          buffer = { score_offset = -44, max_items = 5 },
           cmdline = {
             -- wsl setting, since it used to break see blink.cmp doc
             -- ignores cmdline completions when executing shell commands
@@ -1207,7 +1222,8 @@ require('lazy').setup({
   -- NOTE: This  plugin is terrible for the speed, introduces laggyness very easily with multiple bigger buffers
   -- strangley configuring it to be used with python (ft = python) reduced lag instead of increasing it
   -- maybe more resaerch is needed
-  require 'custom.plugins.matchup',
+  -- require 'custom.plugins.matchup',
+  --
   -- { import = 'custom.plugins.' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`

@@ -1,0 +1,1 @@
+{"comment":{"body":["{% comment %}","${1:}","{% endcomment %}"],"prefix":"%comment"}}
