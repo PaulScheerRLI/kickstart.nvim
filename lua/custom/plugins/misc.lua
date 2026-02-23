@@ -175,17 +175,17 @@ return {
   },
   {
     'juk3-min/dejavu.nvim',
-    -- opts = {
-    --   callback = function(x)
-    --     vim.print(x)
-    --   end,
-    --   enabled = true,
-    -- },
+    opts = {
+      callback = function(x)
+        vim.print(x)
+        print 'foo'
+      end,
+    },
     dependencies = { 'j-hui/fidget.nvim' },
     config = function()
       require('dejavu').setup {
         notify = function(x)
-          -- require('fidget').notification.notify('', vim.log.levels.INFO, { annote = x })
+          require('fidget').notification.notify('', vim.log.levels.INFO, { annote = x })
         end,
         enabled = true,
       }
