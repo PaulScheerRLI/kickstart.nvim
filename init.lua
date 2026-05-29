@@ -85,6 +85,10 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+--
+vim.schedule(function()
+  require 'custom.completfunc'
+end)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -448,8 +452,14 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[S]earch open Files ("."cfor repeat)' })
       vim.keymap.set('n', '<leader>scf', function()
-        builtin.find_files { search_dirs = { vim.fn.expand '%:h:p' } }
-      end, { desc = 'find in current directory' })
+        builtin.find_files {
+
+          no_ignore = true,
+          hidden = true,
+          no_ignore_parent = true,
+          search_dirs = { vim.fn.expand '%:h:p' },
+        }
+      end, { desc = 'find in current directory with no ignore' })
       vim.keymap.set('n', '<leader>si', function()
         builtin.live_grep {
           search_dirs = { vim.fn.expand '%:h:p' },
@@ -457,7 +467,7 @@ require('lazy').setup({
             return { '--no-ignore', '--hidden' }
           end,
         }
-      end, { desc = 'Grep in current directory' })
+      end, { desc = 'Grep in current directory without ignore' })
       vim.keymap.set('n', '<leader>s.', function()
         require('telescope').extensions.smart_open.smart_open()
       end, { noremap = true, silent = true, desc = '[ ] Smart open' })
@@ -516,7 +526,7 @@ require('lazy').setup({
         opts = {
           ensure_installed = { 'lua_ls' },
           automatic_enable = {
-            exclude = { 'efm', 'pyright', 'pyrefly', 'ty', 'basedpyright' },
+            exclude = { 'efm', 'pyright', 'pyrefly', 'ty', 'basedpyright', 'harper_ls', 'copilot' },
           },
         },
         dependencies = {
@@ -580,6 +590,7 @@ require('lazy').setup({
           --  Most Language Servers support renaming across files, etc.
           map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
 
+          map('grf', vim.lsp.buf.format, '[F]ormat ')
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
           map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
@@ -758,7 +769,7 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'isort',
-        'black',
+        -- 'black',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
     end,
@@ -798,6 +809,9 @@ require('lazy').setup({
       formatters = {
         black = {
           prepend_args = { '--fast' },
+        },
+        ruff = {
+          prepend_args = {},
         },
       },
       formatters_by_ft = {
@@ -949,12 +963,13 @@ require('lazy').setup({
         per_filetype = {
           sql = { 'snippets', 'dadbod', 'buffer' },
           python = function()
-            local node = vim.treesitter.get_node()
-            if node and vim.tbl_contains({ 'comment', 'line_comment', 'comment_content', 'block_comment' }, node:type()) then
-              return {}
-            else
-              return { 'lsp', 'path', 'snippets' }
-            end
+            return { 'lsp', 'path', 'snippets' }
+            -- local node = vim.treesitter.get_node()
+            -- if node and vim.tbl_contains({ 'comment', 'line_comment', 'comment_content', 'block_comment' }, node:type()) then
+            --   return {}
+            -- else
+            --   return { 'lsp', 'path', 'snippets' }
+            -- end
           end,
         },
         providers = {
@@ -967,8 +982,14 @@ require('lazy').setup({
             },
           },
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
-          lsp = { score_offset = 1},
-          snippets = { score_offset = -45, opts = { search_paths = { vim.fn.stdpath 'config' .. '/snippets' } }, max_items = 3 },
+          lsp = { score_offset = 1 },
+          snippets = {
+            score_offset = -45,
+            opts = {
+              -- search_paths = { vim.fn.stdpath 'config' .. '/snippets' }
+            },
+            max_items = 3,
+          },
           buffer = { score_offset = -44, max_items = 5 },
           cmdline = {
             -- wsl setting, since it used to break see blink.cmp doc
@@ -1029,6 +1050,7 @@ require('lazy').setup({
 
         on_highlights = function(hl, c)
           hl.BlinkCmpSignatureHelpActiveParameter = hl.Todo
+          -- hl.LspReferenceText = { fg = c.orange, bg = c.bg_visual, bold = true }
         end,
 
         -- vim.api.nvim_set_hl(0, 'BlinkCmpSignatureHelpActiveParameter', { bg = 'darkred' })
@@ -1039,7 +1061,7 @@ require('lazy').setup({
           colors.bg_visual = '#303e69'
           colors.fg_gutter = '#505878'
           -- colors.error = '#ff0000'
-          -- colors.diff = '#ff0000'
+          colors.diff.change = '#330536'
           -- tmux messes up the colors!! neeeded color fix in tmux conf
           -- # Enable 24 bit true colors
           -- set -ga terminal-overrides ',*:Tc'
@@ -1080,7 +1102,29 @@ require('lazy').setup({
       --  - va)  - [V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
       --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
+      require('mini.ai').setup {
+        -- Module mappings. Use `''` (empty string) to disable one.
+        mappings = {
+          -- Main textobject prefixes
+          around = 'a',
+          inside = 'i',
+
+          -- Next/last variants
+          -- NOTE: These override built-in LSP selection mappings on Neovim>=0.12
+          -- Map LSP selection manually to use it (see `:h MiniAi.config`)
+          -- around_next = 'an',
+          -- inside_next = 'in',
+          around_next = 'aN',
+          inside_next = 'iN',
+          around_last = 'aL',
+          inside_last = 'iL',
+
+          -- Move cursor to corresponding edge of `a` textobject
+          goto_left = 'g[',
+          goto_right = 'g]',
+        },
+        n_lines = 500,
+      }
 
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
@@ -1146,30 +1190,95 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
-    event = 'VeryLazy',
+    lazy = false,
+    branch = 'main',
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    config = function()
+      -- Keep alphabetical order when managing this list
+      local parsers = {
+        'bash',
+        'c',
+        'comment',
+        'css',
+        'csv',
+        'diff',
+        'dockerfile',
+        'gitignore',
+        'go',
+        'html',
+        'javascript',
+        'jsdoc',
+        'json',
+        'lua',
+        'luadoc',
+        'make',
+        'markdown',
+        'markdown_inline',
+        'nginx',
+        'php',
+        'python',
+        'query',
+        'regex',
+        'rust',
+        'scss',
+        'svelte',
+        'sql',
+        'templ',
+        'toml',
+        'tsv',
+        'typescript',
+        'vim',
+        'vimdoc',
+        'xml',
+        'yaml',
+        'zig',
+      }
+
+      require('nvim-treesitter').install(parsers)
+
+      vim.api.nvim_create_autocmd('FileType', {
+        callback = function(args)
+          local buf, filetype = args.buf, args.match
+
+          local language = vim.treesitter.language.get_lang(filetype)
+          if not language then
+            return
+          end
+
+          -- check if parser exists and load it
+          if not vim.treesitter.language.add(language) then
+            return
+          end
+
+          -- enables syntax highlighting and other treesitter features
+          vim.treesitter.start(buf, language)
+
+          -- enables treesitter based indentation
+          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
+      })
+    end,
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = {
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          node_incremental = 'v',
-          node_decremental = 'V',
-        },
-      },
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-    },
+    -- opts = {
+    --   incremental_selection = {
+    --     enable = true,
+    --     keymaps = {
+    --       node_incremental = 'v',
+    --       node_decremental = 'V',
+    --     },
+    --   },
+    --   ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+    --   -- Autoinstall languages that are not installed
+    --   auto_install = true,
+    --   highlight = {
+    --     enable = true,
+    --     -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+    --     --  If you are experiencing weird indenting issues, add the language to
+    --     --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+    --     additional_vim_regex_highlighting = { 'ruby' },
+    --   },
+    --   indent = { enable = true, disable = { 'ruby' } },
+    -- },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
@@ -1186,27 +1295,29 @@ require('lazy').setup({
   --
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  -- -- require 'kickstart.plugins.neo-tree',
   --
+  -- -- require 'kickstart.plugins.neo-tree',
   -- indent_line seems to make neovim a little slow for me
   -- i tried out indentmini but it was even worse
   -- require 'kickstart.plugins.indent_line',
   -- autopairs feel like they are rarely useful
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
+  --
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   require 'kickstart.plugins.indent_line',
   --
-  require 'custom.plugins.betterTerm',
+  require 'custom.plugins.toggleterm',
+  require 'custom.plugins.octo',
 
   -- what can code-runner do that slime cant?
   -- require 'custom.plugins.code-runner',
   require 'custom.plugins.mason_setup',
   require 'custom.plugins.lspconfigs',
   require 'custom.plugins.fugitive',
-  --  copy pasted functionality to make it usable in normal buffers
-  -- require 'custom.plugins.gF-python-traceback',
+  -- --  copy pasted functionality to make it usable in normal buffers
+  -- -- require 'custom.plugins.gF-python-traceback',
   require 'custom.plugins.harpoon',
   require 'custom.plugins.misc',
   require 'custom.plugins.lazygit',
@@ -1217,16 +1328,18 @@ require('lazy').setup({
   require 'custom.plugins.render-markdown',
   require 'custom.plugins.slides',
   require 'custom.plugins.tmux',
+  require 'custom.plugins.sidekick',
   require 'custom.plugins.treesitter-context',
   require 'custom.plugins.treesitter-textobjects',
   require 'custom.plugins.vim_slime',
   require 'custom.plugins.vimbegood',
   require 'custom.plugins.zettelkasten',
   require 'custom.plugins.dadbod',
-
   require 'custom.plugins.flutter-nvim',
-  require 'custom.plugins.undotree',
   require 'custom.plugins.lualine',
+
+  require 'custom.plugins.latex',
+  require 'custom.plugins.typst',
   --
   -- NOTE: This  plugin is terrible for the speed, introduces laggyness very easily with multiple bigger buffers
   -- strangley configuring it to be used with python (ft = python) reduced lag instead of increasing it
@@ -1262,3 +1375,19 @@ require('lazy').setup({
 })
 
 require 'custom'
+vim.cmd.packadd 'nvim.difftool'
+vim.cmd.packadd 'nvim.undotree'
+-- :EditQuery
+-- (attribute
+--   (attribute_name) @name
+--   (#eq? @name "class")
+--   (quoted_attribute_value) @value
+--   ) @attribute
+-- local map_lsp_selection = function(lhs, desc)
+--     local s = vim.startswith(desc, 'Increase') and 1 or -1
+--     local rhs = function()
+--     vim.lsp.buf.selection_range(s * vim.v.count1) end
+--     vim.keymap.set('x', lhs, rhs, { desc = desc })
+--   end
+--   map_lsp_selection('v', 'Increase selection')
+--   map_lsp_selection('V', 'Decrease selection')

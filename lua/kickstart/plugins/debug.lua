@@ -24,7 +24,7 @@ return {
       -- Installs the debug adapters for you
       'williamboman/mason.nvim',
       'jay-babu/mason-nvim-dap.nvim',
-
+      -- Javascript
       -- Add your own debuggers here
       'leoluz/nvim-dap-go',
     },
@@ -112,10 +112,15 @@ return {
     config = function()
       local dap = require 'dap'
       local dapui = require 'dapui'
-      vim.api.nvim_create_user_command('DAPTestPyMethod', require('dap-python').test_method, {})
+      vim.api.nvim_create_user_command('DAPTestPyMethod', function()
+        -- require('dap-python').test_method()
+        require('dap-python').test_method { config = { exceptionOptions = { { breakMode = 'userUnhandled' } } } }
+      end, {})
       vim.api.nvim_create_user_command('DAPTestPyClass', require('dap-python').test_class, {})
 
-      require('dap').set_exception_breakpoints { 'raised', 'uncaught' }
+      -- this should not do anything ,since we are not inside a debugsession
+      -- require('dap').set_exception_breakpoints { 'raised', 'uncaught' }
+      --
       vim.keymap.set('n', '<leader>ri', function()
         local line = vim.api.nvim_get_current_line()
         dap.repl.open()
@@ -128,7 +133,6 @@ return {
 
         -- Use nvim_replace_termcodes to convert keys like <CR>, <Esc>, etc.
         local termcodes = vim.api.nvim_replace_termcodes(keys, true, false, true)
-
         -- Feed keys into Neovim input queue
         vim.api.nvim_feedkeys(termcodes, 'n', false)
       end, { desc = 'Insert selectioon line to buffer for dap Repl' })
@@ -231,15 +235,15 @@ return {
             args = args,
             cwd = vim.loop.cwd(),
             env = {
-              PYTHONPATH = vim.loop.cwd(),  -- Add current directory to Python path. this allows calling
+              PYTHONPATH = vim.loop.cwd(), -- Add current directory to Python path. this allows calling
               -- ./foo/main.py some-args, with imports like 'from foo import bar' working
-            }, 
-           autoReload= {
-            enable = true,
-          },
+            },
+            autoReload = {
+              enable = true,
+            },
             console = 'integratedTerminal',
             variablePresentation = {
-              all = 'hide',
+              all = 'inline',
               class = 'group',
               ['function'] = 'group',
               protected = 'hide',
@@ -265,12 +269,25 @@ return {
         end
         return copy
       end
+      dap.listeners.after.event_initialized['set_exception_bp'] = function(session)
+        if session.config.type == 'python' then
+          if session.config.exceptionOptions then
+            for _, option in pairs(session.config.exceptionOptions) do
+              vim.print(option.breakMode)
+              require('dap').set_exception_breakpoints { option.breakMode }
+            end
+          end
+        end
+      end
+      -- dap.listeners.after.event_initialized['exception_break'] = function(session, body)
+      --   print('breaked')
+      -- end
       dap.listeners.after.event_initialized['dapui_config'] = function(args)
         used_config = shallowcopy(args.config)
-        if (string.find(args.config.name, "%[RERUN%]$")) then
-            used_config.name = args.config.name
-          else
-            used_config.name = '00: ' .. args.config.name .. ' [RERUN]'
+        if string.find(args.config.name, '%[RERUN%]$') then
+          used_config.name = args.config.name
+        else
+          used_config.name = '00: ' .. args.config.name .. ' [RERUN]'
         end
         for index, value in ipairs(require('dap').configurations.python) do
           if string.find(value.name, '00:') then
@@ -300,7 +317,11 @@ return {
             return vim.split(args_string, ' +')
           end,
           variablePresentation = {
-            all = 'group',
+            all = 'inline',
+            class = 'group',
+            ['function'] = 'group',
+            protected = 'hide',
+            special = 'hide',
           },
           -- checkout autoreload  https://code.visualstudio.com/docs/python/debugging#_autoreload
           -- stopOnEntry = true,
@@ -309,6 +330,38 @@ return {
           console = 'integratedTerminal',
         },
       }
+
+      table.insert(require('dap').configurations.python, {
+        type = 'python',
+        request = 'launch',
+        name = 'pytest',
+        console = 'integratedTerminal',
+        args = function()
+          local args_string = vim.fn.input 'Arguments for pytest: '
+          local utils = require 'dap.utils'
+          return utils.splitstr(args_string)
+        end,
+        exceptionOptions = { { breakMode = 'userUnhandled' } },
+        module = 'pytest',
+        justMyCode = false,
+      })
+      table.insert(require('dap').configurations.python, {
+        type = 'python',
+        request = 'launch',
+        name = 'Django tests with userUnhandled',
+        args = function()
+          local args_string = vim.fn.input 'Arguments for test: '
+          local utils = require 'dap.utils'
+          args = utils.splitstr(args_string)
+          table.insert(args, 1, 'test')
+          return args
+        end,
+        django = true,
+        -- this feature only works because of the callback above which set breakpoints: see
+        -- dap.listeners.after.event_initialized['set_exception_bp'] = function(session)
+        exceptionOptions = { { breakMode = 'userUnhandled' } },
+        program = vim.loop.cwd() .. '/manage.py',
+      })
       table.insert(require('dap').configurations.python, {
         type = 'python',
         request = 'launch',
@@ -352,27 +405,6 @@ return {
       table.insert(require('dap').configurations.python, {
         type = 'python',
         request = 'launch',
-        name = 'launch With library code',
-        program = '${file}',
-        justMyCode = false,
-        pathMappings = {
-          -- {
-          --   localRoot = './.venv/Lib/site-packages',
-          --   remoteRoot = './.venv/Lib/site-packages',
-          -- },
-          -- {
-          --   localRoot = 'J:/dev/python/test/.venv/Lib/site-packages',
-          --   remoteRoot = 'J:/dev/python/test/.venv/Lib/site-packages',
-          -- },
-          -- {
-          --   localRoot = vim.fn.getcwd(), -- your source code
-          --   remoteRoot = vim.fn.getcwd(),
-          -- },
-        },
-      })
-      table.insert(require('dap').configurations.python, {
-        type = 'python',
-        request = 'launch',
         name = 'Django runserver WITH reload',
         args = { 'runserver' },
         django = true,
@@ -410,6 +442,7 @@ return {
           detached = vim.fn.has 'win32' == 0,
         },
       }
+      require 'kickstart.plugins.debug_js'
     end,
   },
   {

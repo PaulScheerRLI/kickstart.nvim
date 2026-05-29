@@ -1,5 +1,7 @@
+local oil_detail = false
 return {
   { 'kkoomen/vim-doge' },
+  { 'sindrets/diffview.nvim' },
   {
     'echasnovski/mini.surround',
     -- add = 'sa', -- Add surrounding in Normal and Visual modes
@@ -185,9 +187,9 @@ return {
     config = function()
       require('dejavu').setup {
         notify = function(x)
-          require('fidget').notification.notify('', vim.log.levels.INFO, { annote = x })
+          -- require('fidget').notification.notify('', vim.log.levels.INFO, { annote = x })
         end,
-        enabled = true,
+        disabled = true,
       }
     end,
   },
@@ -236,7 +238,74 @@ return {
     'stevearc/oil.nvim',
     ---@module 'oil'
     ---@type oil.SetupOpts
-    opts = { default_file_explorer = false },
+    opts = {
+      default_file_explorer = false,
+
+      keymaps = {
+        -- Mappings can be a string
+        ['~'] = '<cmd>edit $HOME<CR>',
+        -- Mappings can be a function
+        ['gd'] = function()
+          oil_detail = not oil_detail
+          if oil_detail then
+            require('oil').set_columns { 'icon', 'permissions', 'size', 'mtime' }
+          else
+            require('oil').set_columns { 'icon' }
+          end
+        end,
+        -- You can pass additional opts to vim.keymap.set by using
+        -- a table with the mapping as the first element.
+        ['<leader>sf'] = {
+          function()
+            require('telescope.builtin').find_files {
+              search_dirs = { require('oil').get_current_dir() },
+              prompt_title = 'Find files in the current Oil directory (no ignore)',
+              no_ignore=true,
+            }
+          end,
+          mode = 'n',
+          nowait = true,
+          desc = 'Find files in the current Oil directory',
+        },
+        ['<leader>sg'] = {
+          function()
+            require('telescope.builtin').live_grep {
+              cwd = require('oil').get_current_dir(),
+              prompt_title = 'Live grep in the current directory',
+            }
+          end,
+          mode = 'n',
+          nowait = true,
+          desc = 'Live grep in the current directory',
+        },
+        ['<leader>si'] = {
+          function()
+            require('telescope.builtin').live_grep {
+              cwd = require('oil').get_current_dir(),
+              additional_args = function()
+                return { '--no-ignore', '--hidden' }
+              end,
+              prompt_title = 'Live grep in the current oil directory (ignore gitignore)',
+            }
+          end,
+          mode = 'n',
+          nowait = true,
+          desc = 'Live grep in the current oil directory (ignore gitignore)',
+        },
+        -- Mappings that are a string starting with "actions." will be
+        -- one of the built-in actions, documented below.
+        ['`'] = 'actions.tcd',
+        -- Some actions have parameters. These are passed in via the `opts` key.
+        ['<leader>:'] = {
+          'actions.open_cmdline',
+          opts = {
+            shorten_path = true,
+            modify = ':h',
+          },
+          desc = 'Open the command line with the current directory as an argument',
+        },
+      },
+    },
     -- Optional dependencies
     dependencies = { { 'echasnovski/mini.icons', opts = {} } },
     -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons

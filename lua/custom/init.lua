@@ -1,3 +1,4 @@
+require 'custom.completfunc'
 local function get_nvim_open_level()
   local Path = require 'plenary.path' -- Requires plenary.nvim
   local cwd = Path:new(vim.fn.getcwd()):absolute()
@@ -24,9 +25,17 @@ end
 -- this way hovers dont blend so much with the background
 vim.o.winborder = 'rounded'
 
+-- continue with comments when pressing enter
+vim.opt.formatoptions:append 'r'
+
 -- use local .nvim.lua for project configs
 vim.o.exrc = true
 vim.o.secure = true
+
+-- When using completefunctions like c-x c-o the first item is selected. Instead we dont select
+--   anything so typing still changes and reduces the complete suggestions.
+--   NOTE: the normal full mode would need to cycle back to empty suggestion with C-p and then tpye
+vim.opt.completeopt = 'menuone,noinsert,popup'
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
   pattern = { 'dbui' },
@@ -66,6 +75,10 @@ vim.o.diffopt = vim.o.diffopt
 
 -- # Delete into void register in visual mode
 vim.keymap.set({ 'x' }, 'D', '"_d')
+
+-- Select/ Highlight whole buffer. First Step in yank whole buffer, and delete whole buffer, but also
+--   replace whole buffer
+vim.keymap.set({ 'n' }, '<M-a>', "m'goVG")
 
 vim.keymap.set({ 'n' }, '<leader>td', ':lcd %:p:h <CR>', { desc = 'Toggle directory to current file path' })
 vim.keymap.set({ 'n' }, '(', '@x', { desc = 'Easy @Access to x Macro' })
@@ -309,6 +322,7 @@ local ts = vim.treesitter
 function getTSCaptures(query, bufnr)
   -- Temporarily open the buffer in a window. This is needed since injected languages are only detected when opening the file.
   -- kinda strange behvaioru
+  print 'foo'
   local cur_win = vim.api.nvim_get_current_win()
   vim.cmd 'keepalt silent belowright split'
   local tmp_win = vim.api.nvim_get_current_win()
@@ -414,6 +428,7 @@ local function unique(list)
 end
 
 vim.api.nvim_create_user_command('OpenDir', ':!explorer.exe $(wslpath -w %:p:h)', {})
+vim.api.nvim_create_user_command('OpenFile', ':!explorer.exe $(wslpath -w %:p)', {})
 
 local function select_current_qf_item()
   local qf_list = vim.fn.getqflist()
@@ -453,3 +468,69 @@ vim.api.nvim_create_user_command('SelectQuickList', select_current_qf_item, {})
 vim.api.nvim_create_user_command('Clearquickfix', function()
   vim.fn.setqflist({}, ' ')
 end, {})
+
+vim.api.nvim_create_user_command('FilterWithoutDelete', function(opts)
+  local l1, l2 = opts.line1, opts.line2
+  local delta = l2 - l1 + 1
+  local cmd = table.concat(opts.fargs, ' ')
+  -- yank
+  vim.cmd(string.format('%d,%dyank', l1, l2))
+  -- put above
+  vim.cmd(string.format('%dput!', l1))
+  -- run provided filter command
+  vim.cmd(string.format('%d,%d!%s', l1 + delta, l2 + delta, cmd))
+end, {
+  range = true,
+  nargs = '+',
+})
+
+vim.api.nvim_create_user_command('MessagesToBuffer', function()
+  local messages = vim.fn.execute 'messages'
+  local lines = vim.split(messages, '\n')
+
+  vim.cmd 'new'
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+  vim.bo.buftype = 'nofile'
+  vim.bo.bufhidden = 'wipe'
+  vim.bo.swapfile = false
+end, {})
+
+vim.schedule(function()
+  require('vim._core.ui2').enable {
+    enable = true, -- Whether to enable or disable the UI.
+    msg = { -- Options related to the message module.
+      ---@type 'cmd'|'msg' Default message target, either in the
+      ---cmdline or in a separate ephemeral message window.
+      ---@type string|table<string, 'cmd'|'msg'|'pager'> Default message target
+      ---or table mapping |ui-messages| kinds and triggers to a target.
+      targets = 'cmd',
+      cmd = { -- Options related to messages in the cmdline window.
+        height = 0.5, -- Maximum height while expanded for messages beyond 'cmdheight'.
+      },
+      dialog = { -- Options related to dialog window.
+        height = 0.5, -- Maximum height.
+      },
+      msg = { -- Options related to msg window.
+        height = 0.5, -- Maximum height.
+        timeout = 4000, -- Time a message is visible in the message window.
+      },
+      pager = { -- Options related to message window.
+        height = 1, -- Maximum height.
+      },
+    },
+  }
+  print 'vim.core.ui2'
+end)
+
+-- Instead of jumping to the file jump to the file and go to the last exit of the buffer
+local function remap_uppercase_marks()
+  for i = string.byte 'A', string.byte 'Z' do
+    local mark = string.char(i)
+    vim.keymap.set('n', "'" .. mark, function()
+      vim.cmd("normal! '" .. mark)
+      vim.cmd [[normal! '"]]
+    end, { noremap = true, silent = true })
+  end
+end
+
+remap_uppercase_marks()

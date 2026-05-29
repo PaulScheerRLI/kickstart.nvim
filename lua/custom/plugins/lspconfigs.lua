@@ -30,6 +30,14 @@ vim.schedule(function()
       },
     },
   })
+  -- for copilot
+  vim.keymap.set('i', '<Tab>', function()
+    if not vim.lsp.inline_completion.get() then
+      return '<Tab>'
+    end
+  end, { expr = true, desc = 'Accept the current inline completion' })
+  vim.lsp.inline_completion.enable()
+
   -- vim.lsp.enable 'basedpyright'
   vim.lsp.enable 'dart_lsp'
   vim.lsp.config('pyright', {
@@ -129,11 +137,21 @@ end
 
 -- Translate htmldjango to html
 vim.lsp.config('superhtml', {
+  cmd = { 'superhtml', 'lsp' },
+  filetypes = { 'superhtml', 'html', 'htmldjango' },
+  root_markers = { '.git' },
   get_language_id = get_language_id,
+  on_attach = function(client, bufnr)
+    vim.print 'superhtml attached'
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  end,
 })
 -- superhtml is eneabled through mason anyways but doing it does not hurt
 vim.lsp.enable 'superhtml'
+vim.lsp.enable('harper_ls', false)
 
+-- Disable superhtml formatting which is not playing nice with djlint
 -- Used for better spellchecking
 vim.lsp.config('ltex_plus', {
   cmd = { 'ltex-ls-plus' },

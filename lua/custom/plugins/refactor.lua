@@ -51,20 +51,20 @@ return {
     vim.keymap.set({ 'n', 'x' }, '<leader>RR', function()
       require('telescope').extensions.refactoring.refactors()
       -- require('refactoring').select_refactor { prefer_ex_cmd = true }
-    end)
+    end, { desc = 'Refactor telescope refactors' })
     -- You can also use below = true here to to change the position of the printf
     -- statement (or set two remaps for either one). This remap must be made in normal mode.
     vim.keymap.set('n', '<leader>RP', function()
       require('refactoring').debug.printf { below = false }
-    end)
+    end, { desc = 'Refactor printf' })
     -- Print var
     vim.keymap.set({ 'x', 'n' }, '<leader>RV', function()
       require('refactoring').debug.print_var()
-    end)
+    end, { desc = 'Refactor print var' })
     -- Supports both visual and normal mode
 
     vim.keymap.set('n', '<leader>RC', function()
       require('refactoring').debug.cleanup {}
-    end)
+    end, { desc = 'Refactor cleanup' })
   end,
 }

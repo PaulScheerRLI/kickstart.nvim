@@ -39,6 +39,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
 return {
   'CRAG666/betterTerm.nvim',
   event = 'VimEnter',
+  enabled=false,
   keys = {
     {
       mode = { 'n' },
