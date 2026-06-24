@@ -135,6 +135,10 @@ do
   end
 end
 
+vim.lsp.config('emmet_language_server', {
+  init_options = { excludeLanguages = { 'css' } },
+})
+
 -- Translate htmldjango to html
 vim.lsp.config('superhtml', {
   cmd = { 'superhtml', 'lsp' },
@@ -148,7 +152,8 @@ vim.lsp.config('superhtml', {
   end,
 })
 -- superhtml is eneabled through mason anyways but doing it does not hurt
-vim.lsp.enable 'superhtml'
+-- vim.lsp.enable 'superhtml'
+
 vim.lsp.enable('harper_ls', false)
 
 -- Disable superhtml formatting which is not playing nice with djlint

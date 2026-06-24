@@ -4,9 +4,11 @@
 return {
   'jmbuhr/otter.nvim',
   event = 'VeryLazy',
-  ft = { 'markdown', 'rmd', 'quarto', 'html', 'htmldjango' },
+  ft = { 'css', 'markdown', 'rmd', 'quarto', 'html', 'htmldjango' },
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
   },
-  opts = {},
+  opts = {
+    write_to_disk = true,
+  },
 }

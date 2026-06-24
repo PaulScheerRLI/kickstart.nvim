@@ -47,7 +47,7 @@ return {
     'slim',
     'twig',
     -- css
-    'css',
+    -- 'css',
     'less',
     'postcss',
     'sass',

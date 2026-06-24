@@ -12,7 +12,7 @@ return {
   cmd = { 'emmet-ls', '--stdio' },
   filetypes = {
     'astro',
-    'css',
+    -- 'css',
     'eruby',
     'html',
     'htmlangular',

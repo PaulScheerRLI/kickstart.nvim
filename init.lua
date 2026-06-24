@@ -526,7 +526,7 @@ require('lazy').setup({
         opts = {
           ensure_installed = { 'lua_ls' },
           automatic_enable = {
-            exclude = { 'efm', 'pyright', 'pyrefly', 'ty', 'basedpyright', 'harper_ls', 'copilot' },
+            exclude = { 'efm', 'pyright', 'pyrefly', 'ty','djls', 'basedpyright', 'harper_ls', 'copilot', 'emmet_language_server', 'superhtml', 'tailwindcss' },
           },
         },
         dependencies = {
@@ -958,9 +958,9 @@ require('lazy').setup({
         },
       },
       sources = {
-        -- Removed buffer for now
         default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
         per_filetype = {
+          html = { 'lsp' },
           sql = { 'snippets', 'dadbod', 'buffer' },
           python = function()
             return { 'lsp', 'path', 'snippets' }
@@ -988,9 +988,8 @@ require('lazy').setup({
             opts = {
               -- search_paths = { vim.fn.stdpath 'config' .. '/snippets' }
             },
-            max_items = 3,
           },
-          buffer = { score_offset = -44, max_items = 5 },
+          buffer = { score_offset = -44 },
           cmdline = {
             -- wsl setting, since it used to break see blink.cmp doc
             -- ignores cmdline completions when executing shell commands

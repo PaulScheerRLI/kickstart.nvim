@@ -534,3 +534,39 @@ local function remap_uppercase_marks()
 end
 
 remap_uppercase_marks()
+
+vim.filetype.add({
+    extension = {
+        script = "myscript",
+    },
+})
+
+
+-- Bookmark system
+-- bookmarks.txt in ~/bookmarks.txt
+bookmark_path = "~/bookmarks.txt"
+vim.api.nvim_create_user_command('MarkBookmark', function()
+  local path = vim.fn.expand('%:p:h')
+  local bpath = vim.fn.expand(bookmark_path)
+  vim.fn.system('grep -qF ' .. vim.fn.shellescape(path) .. ' ' .. vim.fn.shellescape(bpath))
+  if vim.v.shell_error ~= 0 then
+    vim.fn.system('echo ' .. vim.fn.shellescape(path) .. ' >> ' .. vim.fn.shellescape(bpath))
+    print('added')
+  else
+    print('exists already')
+  end
+end, {})
+
+vim.api.nvim_create_user_command('GoBookmark', function(opts)
+  local path = opts.args
+  if path ~= '' then
+    vim.cmd('edit ' .. vim.fn.fnameescape(path))
+  end
+end, {
+  nargs = 1,
+  complete = function()
+    local bpath = vim.fn.expand(bookmark_path)
+    if vim.fn.filereadable(bpath) == 0 then return {} end
+    return vim.fn.readfile(bpath)
+  end,
+})

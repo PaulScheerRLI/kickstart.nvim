@@ -235,6 +235,9 @@ return {
     end,
   },
   {
+    'barrettruth/live-server.nvim',
+  },
+  {
     'stevearc/oil.nvim',
     ---@module 'oil'
     ---@type oil.SetupOpts
