@@ -1,10 +1,16 @@
 -- github.com/nvim-treesitter/nvim-treesitter-textobjects
-vim.keymap.set({ 'x', 'o' }, 'ar', function()
+-- use operators on lefthand or righthand side
+vim.keymap.set({ 'x', 'o' }, 'sr', function()
   require('nvim-treesitter-textobjects.select').select_textobject('@assignment.rhs', 'textobjects')
 end)
-vim.keymap.set({ 'x', 'o' }, 'al', function()
+vim.keymap.set({ 'x', 'o' }, 'sl', function()
   require('nvim-treesitter-textobjects.select').select_textobject('@assignment.lhs', 'textobjects')
 end)
+
+vim.keymap.set({ 'x', 'o' }, 'aa', function()
+  require('nvim-treesitter-textobjects.select').select_textobject('@attribute', 'textobjects')
+end)
+
 return {
   'nvim-treesitter/nvim-treesitter-textobjects',
   branch = 'main',

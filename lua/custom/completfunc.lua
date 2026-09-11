@@ -12,11 +12,9 @@ function _G.my_find(text, _)
     end
     return f
   end, files)
-  local filtered
+  local filtered = files
   if text ~= '' then
     filtered = vim.fn.matchfuzzy(files, text)
-  else
-    filtered = files
   end
   return filtered
 end

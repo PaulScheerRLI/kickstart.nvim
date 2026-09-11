@@ -271,7 +271,6 @@ require('lazy').setup({
       },
     },
   },
-
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
@@ -526,7 +525,19 @@ require('lazy').setup({
         opts = {
           ensure_installed = { 'lua_ls' },
           automatic_enable = {
-            exclude = { 'efm', 'pyright', 'pyrefly', 'ty','djls', 'basedpyright', 'harper_ls', 'copilot', 'emmet_language_server', 'superhtml', 'tailwindcss' },
+            exclude = {
+              'efm',
+              'pyright',
+              'pyrefly',
+              'ty',
+              'djls',
+              'basedpyright',
+              'harper_ls',
+              'copilot',
+              'emmet_language_server',
+              'superhtml',
+              'tailwindcss',
+            },
           },
         },
         dependencies = {
@@ -538,7 +549,10 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = { notification = { window = { normal_hl = 'Comment', winblend = 0, border = 'none' } } } },
+      {
+        'j-hui/fidget.nvim',
+        opts = { notification = { window = { normal_hl = 'Comment', winblend = 0, border = 'none' } } },
+      },
 
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
@@ -712,7 +726,7 @@ require('lazy').setup({
       --  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
       --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
       local capabilities = require('blink.cmp').get_lsp_capabilities()
-
+      capabilities.textDocument.completion.dynamicRegistration = true
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --
@@ -736,17 +750,39 @@ require('lazy').setup({
         -- ts_ls = {},
         --
 
+        stylua = {}, -- Used to format Lua code
+
+        -- Special Lua Config, as recommended by neovim help docs. from new kickstart
         lua_ls = {
-          -- cmd = { ... },
-          -- filetypes = { ... },
-          -- capabilities = {},
+          on_init = function(client)
+            print 'attacking'
+            client.server_capabilities.documentFormattingProvider = false -- Disable formatting (formatting is done by stylua)
+
+            if client.workspace_folders then
+              local path = client.workspace_folders[1].name
+              if path ~= vim.fn.stdpath 'config' and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
+                return
+              end
+            end
+
+            local current_settings = client.config.settings --[[@as lspconfig.settings.lua_ls]]
+            client.config.settings.Lua = vim.tbl_deep_extend('force', current_settings.Lua, {
+              runtime = {
+                version = 'LuaJIT',
+                path = { 'lua/?.lua', 'lua/?/init.lua' },
+              },
+              workspace = {
+                checkThirdParty = false,
+                -- NOTE: this is a lot slower and will cause issues when working on your own configuration.
+                --  See https://github.com/neovim/nvim-lspconfig/issues/3189
+                library = vim.api.nvim_get_runtime_file('', true),
+              },
+            })
+          end,
+          ---@type lspconfig.settings.lua_ls
           settings = {
             Lua = {
-              completion = {
-                callSnippet = 'Replace',
-              },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              format = { enable = false }, -- Disable formatting (formatting is done by stylua)
             },
           },
         },
@@ -908,13 +944,16 @@ require('lazy').setup({
 
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
-        -- Optionally, set `auto_show = true` to show the documentation after a delay.
+        -- Optionally, set `auto_show = true` to show the documentation after a delay. 
         documentation = {
           window = { border = 'rounded' },
           auto_show = true,
           auto_show_delay_ms = 40,
         },
-        menu = { border = 'none' },
+        menu = { border = 'none' , 
+          auto_show=true,
+          auto_show_delay_ms = 200,
+        },
         -- documentation = { window = { border = 'double' } },
       },
       cmdline = {
@@ -982,7 +1021,7 @@ require('lazy').setup({
             },
           },
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
-          lsp = { score_offset = 1 },
+          lsp = { score_offset = 100 },
           snippets = {
             score_offset = -45,
             opts = {
@@ -1090,7 +1129,12 @@ require('lazy').setup({
   },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VeryLazy', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  {
+    'folke/todo-comments.nvim',
+    event = 'VeryLazy',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = { signs = false },
+  },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -1197,7 +1241,7 @@ require('lazy').setup({
       local parsers = {
         'bash',
         'c',
-        'comment',
+        -- 'comment', makes insert in comments kinda laggy 
         'css',
         'csv',
         'diff',
@@ -1252,8 +1296,11 @@ require('lazy').setup({
           -- enables syntax highlighting and other treesitter features
           vim.treesitter.start(buf, language)
 
+          local has_indent_query = vim.treesitter.query.get(language, 'indents') ~= nil
           -- enables treesitter based indentation
-          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          if has_indent_query then
+            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
         end,
       })
     end,

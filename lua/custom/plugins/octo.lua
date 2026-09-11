@@ -1,3 +1,4 @@
+vim.api.nvim_set_hl(0, "OctoFilePanelSelectedFile", {   fg = "#ffffff",   bg = "#ffff00",   bold = true, })
 return {
   "pwntester/octo.nvim",
   cmd = "Octo",

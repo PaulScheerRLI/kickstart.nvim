@@ -1,4 +1,3 @@
-require 'custom.completfunc'
 local function get_nvim_open_level()
   local Path = require 'plenary.path' -- Requires plenary.nvim
   local cwd = Path:new(vim.fn.getcwd()):absolute()
@@ -318,102 +317,6 @@ vim.opt.fillchars = {
   verthoriz = '╋',
 }
 
-local ts = vim.treesitter
-function getTSCaptures(query, bufnr)
-  -- Temporarily open the buffer in a window. This is needed since injected languages are only detected when opening the file.
-  -- kinda strange behvaioru
-  print 'foo'
-  local cur_win = vim.api.nvim_get_current_win()
-  vim.cmd 'keepalt silent belowright split'
-  local tmp_win = vim.api.nvim_get_current_win()
-  vim.api.nvim_win_set_buf(tmp_win, bufnr)
-
-  local parser = ts.get_parser(bufnr)
-  local trees = { parser:parse()[1] }
-  local filename = vim.api.nvim_buf_get_name(bufnr)
-  local all_trees = {}
-
-  -- Add main tree
-  for _, tree in ipairs(parser:parse()) do
-    table.insert(all_trees, { tree = tree, lang = parser:lang() })
-  end
-
-  -- Add injected trees manually
-  local function addChildren(parser)
-    for key, child in pairs(parser:children()) do
-      for _, tree in pairs(child:parse()) do
-        table.insert(all_trees, { tree = tree, lang = child:lang() })
-      end
-      addChildren(child)
-    end
-  end
-  addChildren(parser)
-
-  -- the children/ injected languages are detected. close window again
-  vim.api.nvim_win_close(tmp_win, true)
-  vim.api.nvim_set_current_win(cur_win)
-
-  local qf_entries = {}
-  for _, tree_data in ipairs(all_trees) do
-    local tree = tree_data.tree
-    local lang = tree_data.lang
-    local root = tree:root()
-    -- Query example: get all text and element nodes from any tree
-    local ok, query = pcall(function()
-      return ts.query.parse(lang, query)
-    end)
-    if ok then
-      for id, node, _ in query:iter_captures(root, bufnr, 0, -1) do
-        -- print 'found'
-        -- local name = query.captures[id]
-        -- local sr, sc, er, ec = node:range()
-        table.insert(qf_entries, node)
-      end
-    else
-      -- print 'not ok'
-      -- print(lang)
-      -- ts.query.parse(lang, query)
-    end
-  end
-  return qf_entries, all_trees
-end
-function query_all_injected_trees(query, quicklist_method)
-  assert(quicklist_method == 'r' or quicklist_method == 'a' or quicklist_method == 'f' or quicklist_method == ' ' or quicklist_method == nil)
-  quicklist_method = quicklist_method or 'r'
-
-  if query == nil or query == '' then
-    error 'Pass a query like [[(text) @text]] to the function. quotes around query are optional.'
-  end
-  local bufnr = vim.api.nvim_get_current_buf()
-  print(query)
-
-  nodes, all_trees = getTSCaptures(query, bufnr)
-  if next(nodes) == nil then
-    vim.print(filename)
-    vim.print 'No matches found. The following languages where searched'
-    local langs = {}
-    for key, value in pairs(all_trees) do
-      table.insert(langs, value.lang)
-    end
-    vim.print(langs)
-    return
-  end
-  qf_entries = {}
-  for _, node in ipairs(nodes) do
-    local sr, sc, er, ec = node:range()
-    local ok, text = pcall(ts.get_node_text, node, bufnr)
-    table.insert(qf_entries, {
-      bufnr = bufnr,
-      lnum = sr + 1,
-      end_lnum = er + 1,
-      col = sc + 1,
-      end_col = ec + 1,
-      text = text,
-    })
-  end
-  vim.fn.setqflist(qf_entries, quicklist_method)
-end
-
 local function unique(list)
   local seen = {}
   local result = {}
@@ -429,45 +332,6 @@ end
 
 vim.api.nvim_create_user_command('OpenDir', ':!explorer.exe $(wslpath -w %:p:h)', {})
 vim.api.nvim_create_user_command('OpenFile', ':!explorer.exe $(wslpath -w %:p)', {})
-
-local function select_current_qf_item()
-  local qf_list = vim.fn.getqflist()
-  local idx = vim.fn.getqflist({ idx = 0 }).idx
-  local item = qf_list[idx]
-
-  if not item or not item.bufnr or item.bufnr == 0 then
-    return
-  end
-
-  local bufnr = item.bufnr
-  local start_lnum = item.lnum
-  local start_col = item.col
-  local end_lnum = item.end_lnum or item.lnum
-  local end_col = item.end_col - 1 or (item.col + 1)
-  -- Switch to the buffer and move the cursor
-  vim.api.nvim_set_current_buf(bufnr)
-  vim.api.nvim_win_set_cursor(0, { start_lnum, start_col - 1 })
-
-  -- Use visual selection to select the range
-  vim.cmd 'normal! v'
-  vim.api.nvim_win_set_cursor(0, { end_lnum, math.max(end_col - 1, 0) })
-end
-
-vim.api.nvim_create_user_command('QueryTS', function(opts)
-  -- example call
-  --QueryTS [[(text) @text]] -f
-  local query = opts.args
-  local flag = string.match(query, '%-(%a)')
-  if flag then
-    local cleaned = string.gsub(query, '%-' .. flag, '', 1)
-    query = vim.trim(cleaned)
-  end
-  query_all_injected_trees(query, flag)
-end, { nargs = 1 })
-vim.api.nvim_create_user_command('SelectQuickList', select_current_qf_item, {})
-vim.api.nvim_create_user_command('Clearquickfix', function()
-  vim.fn.setqflist({}, ' ')
-end, {})
 
 vim.api.nvim_create_user_command('FilterWithoutDelete', function(opts)
   local l1, l2 = opts.line1, opts.line2
@@ -505,21 +369,20 @@ vim.schedule(function()
       ---or table mapping |ui-messages| kinds and triggers to a target.
       targets = 'cmd',
       cmd = { -- Options related to messages in the cmdline window.
-        height = 0.5, -- Maximum height while expanded for messages beyond 'cmdheight'.
       },
+      maxheight = 0.5, -- Maximum height while expanded for messages beyond 'cmdheight'.
       dialog = { -- Options related to dialog window.
         height = 0.5, -- Maximum height.
       },
       msg = { -- Options related to msg window.
-        height = 0.5, -- Maximum height.
-        timeout = 4000, -- Time a message is visible in the message window.
       },
+
+      timeout = 4000, -- Time a message is visible in the message window.
       pager = { -- Options related to message window.
-        height = 1, -- Maximum height.
+        height = 40, -- Maximum height.
       },
     },
   }
-  print 'vim.core.ui2'
 end)
 
 -- Instead of jumping to the file jump to the file and go to the last exit of the buffer
@@ -535,25 +398,24 @@ end
 
 remap_uppercase_marks()
 
-vim.filetype.add({
-    extension = {
-        script = "myscript",
-    },
-})
-
+vim.filetype.add {
+  extension = {
+    script = 'myscript',
+  },
+}
 
 -- Bookmark system
 -- bookmarks.txt in ~/bookmarks.txt
-bookmark_path = "~/bookmarks.txt"
+bookmark_path = '~/bookmarks.txt'
 vim.api.nvim_create_user_command('MarkBookmark', function()
-  local path = vim.fn.expand('%:p:h')
+  local path = vim.fn.expand '%:p:h'
   local bpath = vim.fn.expand(bookmark_path)
   vim.fn.system('grep -qF ' .. vim.fn.shellescape(path) .. ' ' .. vim.fn.shellescape(bpath))
   if vim.v.shell_error ~= 0 then
     vim.fn.system('echo ' .. vim.fn.shellescape(path) .. ' >> ' .. vim.fn.shellescape(bpath))
-    print('added')
+    print 'added'
   else
-    print('exists already')
+    print 'exists already'
   end
 end, {})
 
@@ -566,7 +428,60 @@ end, {
   nargs = 1,
   complete = function()
     local bpath = vim.fn.expand(bookmark_path)
-    if vim.fn.filereadable(bpath) == 0 then return {} end
+    if vim.fn.filereadable(bpath) == 0 then
+      return {}
+    end
     return vim.fn.readfile(bpath)
   end,
 })
+
+vim.api.nvim_create_user_command('ClearMulticursor', function()
+  local mc_ns = vim.api.nvim_create_namespace 'nvim.multicursor'
+  vim.api.nvim_buf_clear_namespace(0, mc_ns, 0, -1)
+end, { desc = 'clear multicursor' })
+
+vim.api.nvim_create_user_command('EditWindowsPath', function(opts)
+  local path = opts.args
+  local result = vim.system({ 'wslpath', path }):wait()
+  local wslpath = vim.trim(result.stdout)
+  if wslpath ~= '' then
+    vim.cmd('edit ' .. vim.fn.fnameescape(wslpath))
+  end
+end, {
+  nargs = 1,
+})
+
+-- tresitter highlighting can be very slow in insert mode.
+-- this uses an autocommand when switching modes to turn off treesitter in insert mode for a smoother
+-- typing experience. When going back to other modes treesitter is started again.
+-- a guard stops treesitter from starting when already started
+local ts_active = nil
+vim.api.nvim_create_autocmd('ModeChanged', {
+  group = vim.api.nvim_create_augroup('enable-treesitter-in-normal-mode', { clear = true }),
+  pattern = { '*:n', '*:o', '*:v' },
+  callback = function()
+    -- only activate if the parser exists
+    local parser = vim.treesitter.get_parser(0, nil, { error = false })
+    if not ts_active and parser then
+      local start = vim.uv.hrtime()
+      vim.treesitter.start()
+      ts_active = true
+      local elapsed = (vim.uv.hrtime() - start) / 1e6
+      require('fidget').notification.notify('custom/init.lua', vim.log.levels.INFO, { annote = ('TS Restarted in %.3f ms'):format(elapsed) })
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd('ModeChanged', {
+  group = vim.api.nvim_create_augroup('disable-treesitter-in-inser-mode', { clear = true }),
+  pattern = { '*:i' },
+  callback = function()
+    vim.treesitter.stop()
+    ts_active = false
+  end,
+})
+
+require 'custom.completfunc'
+require 'custom.edit_location_list'
+require 'custom.query_treesitter'
+require 'custom.substitute'

@@ -7,9 +7,13 @@ return {
     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     ---@module 'render-markdown'
     ---@type render.md.UserConfig
-    opts = {},
+    opts = {
     -- dont enable it since most oven i prefer markdown preview
-    ft = { '' },
+      enabled = false,
+    },
+    -- NOTE:does not seem to be allowed anymore?
+    -- dont enable it since most oven i prefer markdown preview
+    -- ft = { '' },
   },
 
   {

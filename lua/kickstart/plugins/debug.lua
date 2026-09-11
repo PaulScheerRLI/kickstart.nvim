@@ -6,6 +6,29 @@
 -- be extended to other languages as well. That's why it's called
 -- kickstart.nvim and not kitchen-sink.nvim ;)
 dap_last_config = nil
+local selected_text = function()
+  local mode = vim.api.nvim_get_mode().mode
+  local opts = {}
+  -- \22 is an escaped version of <c-v>
+  if mode == 'v' or mode == 'V' or mode == '\22' then
+    opts.type = mode
+  end
+  return vim.fn.getregion(vim.fn.getpos 'v', vim.fn.getpos '.', opts)
+end
+
+local function get_operator_text(type)
+  local start_pos = vim.api.nvim_buf_get_mark(0, '[')
+  local end_pos = vim.api.nvim_buf_get_mark(0, ']')
+
+  local end_col = end_pos[2] + 1
+  if type == 'line' then
+    end_col = -1
+  end
+
+  local lines = vim.api.nvim_buf_get_text(0, start_pos[1] - 1, start_pos[2], end_pos[1] - 1, end_col, {})
+  local text = table.concat(lines, '\n')
+  return text
+end
 
 return {
   {
@@ -121,21 +144,25 @@ return {
       -- this should not do anything ,since we are not inside a debugsession
       -- require('dap').set_exception_breakpoints { 'raised', 'uncaught' }
       --
-      vim.keymap.set('n', '<leader>ri', function()
-        local line = vim.api.nvim_get_current_line()
-        dap.repl.open()
-        dap.repl.execute(line)
-      end, { desc = 'Insert current line to dap Repl' })
+      -- vim.keymap.set('n', '<leader>ri', function()
+      --   local line = vim.api.nvim_get_current_line()
+      --   dap.repl.execute(line)
+      -- end, { desc = 'Insert current line to dap Repl' })
 
-      vim.keymap.set('x', '<leader>ri', function()
-        -- The keys to press, encoded as a string
-        local keys = ':DapEval! <CR> :q <CR>'
+      -- vim.keymap.set('x', '<leader>ri', function()
+      --   -- The keys to press, encoded as a string
+      --   local text = selected_text()
+      --   require('dap').repl.execute(table.concat(text, '\n'))
+      -- end, { desc = 'Insert selectioon line to buffer for dap Repl' })
 
-        -- Use nvim_replace_termcodes to convert keys like <CR>, <Esc>, etc.
-        local termcodes = vim.api.nvim_replace_termcodes(keys, true, false, true)
-        -- Feed keys into Neovim input queue
-        vim.api.nvim_feedkeys(termcodes, 'n', false)
-      end, { desc = 'Insert selectioon line to buffer for dap Repl' })
+      vim.keymap.set({ 'x', 'n' }, '<leader>ri', function()
+        vim.go.operatorfunc = function(type)
+          local text = get_operator_text(type)
+          require('dap').repl.execute(text)
+        end
+        return 'g@'
+      end, { desc = 'Send motion to or selection to debug repl', expr = true })
+
       require('mason-nvim-dap').setup {
         -- Makes a best effort to setup the various debuggers with
         -- reasonable debug configurations
@@ -349,6 +376,7 @@ return {
         type = 'python',
         request = 'launch',
         name = 'Django tests with userUnhandled',
+        console = 'integratedTerminal',
         args = function()
           local args_string = vim.fn.input 'Arguments for test: '
           local utils = require 'dap.utils'

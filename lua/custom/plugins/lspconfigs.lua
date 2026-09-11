@@ -17,7 +17,8 @@ vim.schedule(function()
 
   vim.lsp.config('pyrefly', {})
   vim.lsp.config('ty', {})
-  vim.lsp.config('lua_ls', { settings = { lua = { loglevel = 'trace' } } })
+  vim.lsp.config('lua_ls', {})
+
   -- copied from pyright
   vim.lsp.config('basedpyright', {
     settings = {

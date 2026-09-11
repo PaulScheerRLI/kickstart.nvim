@@ -7,6 +7,7 @@ return {
       local lint = require 'lint'
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
+        python = { 'pylint' },
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
@@ -55,6 +56,22 @@ return {
           end
         end,
       })
+      -- Set pylint to work in virtualenv
+      -- Make Mason's Pylint see packages installed in the active venv.
+      local python = vim.env.VIRTUAL_ENV and vim.env.VIRTUAL_ENV .. '/bin/python' or 'python'
+      local site_packages = vim.fn
+        .system({
+          python,
+          '-c',
+          'import site; print(site.getsitepackages()[0])',
+        })
+        :gsub('%s+$', '')
+
+
+      vim.print(vim.env.PYTHONPATH)
+      lint.linters.pylint.env = {
+        PYTHONPATH = site_packages,
+      }
     end,
   },
 }

@@ -37,5 +37,5 @@ local function pick_and_run()
   end)
 end
 
-vim.api.nvim_create_user_command('TermExecList', pick_and_run, {})
+vim.keymap.set('n', '<leader>T', ':ToggleTerm<CR>')
 return { 'akinsho/toggleterm.nvim', version = '*', config = { direction = 'vertical', size = vim.o.columns * 0.4 } }

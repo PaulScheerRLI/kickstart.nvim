@@ -20,9 +20,9 @@ return {
       local file = vim.fn.expand '%'
       print('Added to harpoon: ' .. file)
     end, { desc = '<Leader> [a]dd to [h]arpoon' })
-    vim.keymap.set('n', '<C-s>', function()
-      harpoon.ui:toggle_quick_menu(harpoon:list())
-    end)
+    -- vim.keymap.set('n', '<C-s>', function()
+    --   harpoon.ui:toggle_quick_menu(harpoon:list())
+    -- end)
     -- destroys fast move between windows
     -- vim.keymap.set('n', '<C-h>', function()
     -- harpoon:list():select(1)
