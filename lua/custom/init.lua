@@ -74,12 +74,56 @@ vim.o.diffopt = vim.o.diffopt
 
 -- # Delete into void register in visual mode
 vim.keymap.set({ 'x' }, 'D', '"_d')
+------------------------------------------
+---Custom text object
+-- vim.keymap.set({ 'o' }, 'ikkk', ":normal vik<CR>", {silent=true})
+-- vim.keymap.set({ 'x' }, 'ikkk', function()
+--   vim.api.nvim_buf_set_mark(0,'[', 77,0)
+--   vim.api.nvim_buf_set_mark(0,']', 77,10)
+--   -- in visual mode go to the exact (`) location of mark [ then switch cursor position of selection
+--   -- from start to end. move the end of the selection to mark ]
+--   return "`[o`]"
+-- end, {expr=true})
+
+-- # easy selectin increase
+vim.keymap.set({ 'x' }, 'v', function()
+  vim.api.nvim_feedkeys('an', 'v', false)
+end)
+vim.keymap.set({ 'x' }, 'V', function()
+  vim.api.nvim_feedkeys('in', 'v', false)
+end)
 
 -- Select/ Highlight whole buffer. First Step in yank whole buffer, and delete whole buffer, but also
 --   replace whole buffer
-vim.keymap.set({ 'n' }, '<M-a>', "m'goVG")
+-- vim.keymap.set({ 'n' }, '<M-a>', "m'goVG")
+-- use nvim 0.13 al motion instead val
 
-vim.keymap.set({ 'n' }, '<leader>td', ':lcd %:p:h <CR>', { desc = 'Toggle directory to current file path' })
+vim.keymap.set({ 'n' }, '<leader>td', function()
+  local root_markers = {
+    'manage.py',
+    'pyproject.toml',
+    'requirements.txt',
+    '.git',
+  }
+  -- use vim.w for window specific values
+  local assumed_root = vim.fs.root(0, root_markers)
+  local current_dir = vim.fn.getcwd()
+  if assumed_root == current_dir then
+    local path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':h')
+    vim.fn.chdir(path, 'window')
+    require('fidget').notification.notify('custom/init.lua', vim.log.levels.INFO, { key = 'pauls_toggle_dir', annote = 'Toggle cd of Window to current file' })
+    return
+  else
+    vim.fn.chdir(assumed_root, 'window')
+    require('fidget').notification.notify(
+      'custom/init.lua',
+      vim.log.levels.INFO,
+      { key = 'pauls_toggle_dir', annote = (('Toggle cd of window to assumed root: %s'):format(assumed_root)) }
+    )
+    return
+  end
+end, { desc = 'Toggle dir of window between file/assumed_root' })
+
 vim.keymap.set({ 'n' }, '(', '@x', { desc = 'Easy @Access to x Macro' })
 
 -- Set up grep to use vim grep, set the format to properly parse the results to

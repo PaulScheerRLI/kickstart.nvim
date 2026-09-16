@@ -1,6 +1,12 @@
 return {
   'christoomey/vim-tmux-navigator',
   lazy = true,
+  init = function()
+    -- prevent the plugin's own tnoremap (a Vim-only <C-w> escape hack that
+    -- doesn't work in Neovim's terminal mode) from overriding the
+    -- terminal-mode mappings defined below
+    vim.g.tmux_navigator_no_mappings = 1
+  end,
   cmd = {
     'TmuxNavigateLeft',
     'TmuxNavigateDown',
@@ -10,16 +16,18 @@ return {
     'TmuxNavigatorProcessList',
   },
   keys = {
-    { '<C-h>', '<cmd><C-U>TmuxNavigateLeft<cr>', mode = 'n' },
-    { '<C-j>', '<cmd><C-U>TmuxNavigateDown<cr>', mode = 'n' },
-    { '<C-k>', '<cmd><C-U>TmuxNavigateUp<cr>', mode = 'n' },
-    { '<C-l>', '<cmd><C-U>TmuxNavigateRight<cr>', mode = 'n' },
-    { '<C-\\>', '<cmd><C-U>TmuxNavigatePrevious<cr>', mode = 'n' },
+    { '<C-h>', '<cmd>TmuxNavigateLeft<cr>', mode = 'n' },
+    { '<C-j>', '<cmd>TmuxNavigateDown<cr>', mode = 'n' },
+    { '<C-k>', '<cmd>TmuxNavigateUp<cr>', mode = 'n' },
+    { '<C-l>', '<cmd>TmuxNavigateRight<cr>', mode = 'n' },
+    -- { '<C-\\>', '<cmd><C-U>TmuxNavigatePrevious<cr>', mode = 'n' },
     -- to escape from terminal mode first leave terminal mode
-    { '<C-h>', '<C-\\><C-n><cmd><C-U>TmuxNavigateLeft<cr>', mode = 't' },
-    { '<C-j>', '<C-\\><C-n><cmd><C-U>TmuxNavigateDown<cr>', mode = 't' },
-    { '<C-k>', '<C-\\><C-n><cmd><C-U>TmuxNavigateUp<cr>', mode = 't' },
-    { '<C-l>', '<C-\\><C-n><cmd><C-U>TmuxNavigateRight<cr>', mode = 't' },
-    { '<C-\\>', '<C-\\><C-n><cmd><C-U>TmuxNavigatePrevious<cr>', mode = 't' },
+    --
+    -- this only seems to work for non tmux session
+    { '<C-h>', '<C-\\><C-n><cmd>TmuxNavigateLeft<cr>', mode = 't' },
+    { '<C-j>', '<C-\\><C-n><cmd>TmuxNavigateDown<cr>', mode = 't' },
+    { '<C-k>', '<C-\\><C-n><cmd>TmuxNavigateUp<cr>', mode = 't' },
+    { '<C-l>', '<C-\\><C-n><cmd>TmuxNavigateRight<cr>', mode = 't' },
+    -- { '<C-\\>', '<C-\\><C-n><cmd><C-U>TmuxNavigatePrevious<cr>', mode = 't' },
   },
 }
