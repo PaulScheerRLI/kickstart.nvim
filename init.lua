@@ -87,11 +87,11 @@ P.S. You can delete this when you're done too. It's your config now! :)
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 --
 vim.schedule(function()
-  require 'custom.completfunc'
+  require 'custom.pauls.completfunc'
 end)
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -234,6 +234,13 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+
+  performance = {
+    reset_packpath = false, -- reset the package path to improve startup time
+    rtp = {
+      reset = false, -- reset the runtime path to $VIMRUNTIME and your config directory
+    },
+  },
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
@@ -528,6 +535,7 @@ require('lazy').setup({
             exclude = {
               'efm',
               'pyright',
+              'pylsp',
               'pyrefly',
               'ty',
               'djls',
@@ -751,41 +759,6 @@ require('lazy').setup({
         --
 
         stylua = {}, -- Used to format Lua code
-
-        -- Special Lua Config, as recommended by neovim help docs. from new kickstart
-        lua_ls = {
-          on_init = function(client)
-            print 'attacking'
-            client.server_capabilities.documentFormattingProvider = false -- Disable formatting (formatting is done by stylua)
-
-            if client.workspace_folders then
-              local path = client.workspace_folders[1].name
-              if path ~= vim.fn.stdpath 'config' and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
-                return
-              end
-            end
-
-            local current_settings = client.config.settings --[[@as lspconfig.settings.lua_ls]]
-            client.config.settings.Lua = vim.tbl_deep_extend('force', current_settings.Lua, {
-              runtime = {
-                version = 'LuaJIT',
-                path = { 'lua/?.lua', 'lua/?/init.lua' },
-              },
-              workspace = {
-                checkThirdParty = false,
-                -- NOTE: this is a lot slower and will cause issues when working on your own configuration.
-                --  See https://github.com/neovim/nvim-lspconfig/issues/3189
-                library = vim.api.nvim_get_runtime_file('', true),
-              },
-            })
-          end,
-          ---@type lspconfig.settings.lua_ls
-          settings = {
-            Lua = {
-              format = { enable = false }, -- Disable formatting (formatting is done by stylua)
-            },
-          },
-        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -944,16 +917,18 @@ require('lazy').setup({
 
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
-        -- Optionally, set `auto_show = true` to show the documentation after a delay. 
+        -- Optionally, set `auto_show = true` to show the documentation after a delay.
         documentation = {
           window = { border = 'rounded' },
           auto_show = true,
           auto_show_delay_ms = 40,
         },
-        menu = { border = 'none' , 
-          auto_show=true,
-          auto_show_delay_ms = 200,
+        menu = {
+          border = 'none',
+          auto_show = true,
+          -- auto_show_delay_ms = 0,
         },
+
         -- documentation = { window = { border = 'double' } },
       },
       cmdline = {
@@ -1000,6 +975,8 @@ require('lazy').setup({
         default = { 'lsp', 'path', 'snippets', 'lazydev', 'buffer' },
         per_filetype = {
           html = { 'lsp' },
+          -- &omnifunc (djangoplus#complete) for templates
+          htmldjango = { 'lsp', 'omni', 'path', 'snippets', 'buffer' },
           sql = { 'snippets', 'dadbod', 'buffer' },
           python = function()
             return { 'lsp', 'path', 'snippets' }
@@ -1241,7 +1218,7 @@ require('lazy').setup({
       local parsers = {
         'bash',
         'c',
-        -- 'comment', makes insert in comments kinda laggy 
+        -- 'comment', makes insert in comments kinda laggy
         'css',
         'csv',
         'diff',
@@ -1390,7 +1367,7 @@ require('lazy').setup({
   -- NOTE: This  plugin is terrible for the speed, introduces laggyness very easily with multiple bigger buffers
   -- strangley configuring it to be used with python (ft = python) reduced lag instead of increasing it
   -- maybe more resaerch is needed
-  -- require 'custom.plugins.matchup',
+  require 'custom.plugins.matchup',
   --
   -- { import = 'custom.plugins.' },
   --
@@ -1423,6 +1400,12 @@ require('lazy').setup({
 require 'custom'
 vim.cmd.packadd 'nvim.difftool'
 vim.cmd.packadd 'nvim.undotree'
+-- lazy resets this path or something. so add it back. this way we can develop in
+-- data/site/core/start/someplugin.nvim
+-- vim.opt.packpath:append(vim.fn.stdpath 'data' .. '/site')
+-- runnning require is not the same as installing since autosourcing for .plugin and init is off
+-- require('hello')
+
 -- :EditQuery
 -- (attribute
 --   (attribute_name) @name

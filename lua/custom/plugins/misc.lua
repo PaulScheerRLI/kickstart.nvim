@@ -1,6 +1,8 @@
 local oil_detail = false
 return {
-  { 'kkoomen/vim-doge' },
+  { dir = vim.fn.stdpath 'config' .. '/hello.nvim' },
+  -- { 'bfredl/nvim-luadev' },
+  -- { 'kkoomen/vim-doge' },
   { 'sindrets/diffview.nvim' },
   {
     'echasnovski/mini.surround',
@@ -223,21 +225,27 @@ return {
       }
     end,
   },
+  { 'tweekmonster/django-plus.vim', lazy = false },
   {
     'juk3-min/dejavu.nvim',
-    opts = {
-      callback = function(x)
-        vim.print(x)
-        print 'foo'
-      end,
-    },
+    -- opts = {
+    --   callback = function(x)
+    --     vim.print(x)
+    --     print 'foo'
+    --   end,
+    -- },
     dependencies = { 'j-hui/fidget.nvim' },
     config = function()
       require('dejavu').setup {
         notify = function(x)
-          -- require('fidget').notification.notify('', vim.log.levels.INFO, { annote = x })
+          require('fidget').notification.notify('dejavu', vim.log.levels.INFO, { key = 'dejavuannote', annote = x })
         end,
-        disabled = true,
+        enabled = false,
+        callback = function(command) -- Callback which is triggered when a command is detected
+          vim.fn.setreg('x', command)
+        end,
+        which_key = true,           -- Is which-key installed? If false dejavu also checks by itself
+
       }
     end,
   },

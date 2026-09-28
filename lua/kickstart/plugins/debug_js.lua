@@ -1,4 +1,5 @@
-print 'hello from debug_js' -- setup dap config by VsCode launch.json file
+-- setup dap config by VsCode launch.json file
+-- Example can be found online and in this folder
 
 local dap = require 'dap'
 --- Gets a path to a package in the Mason registry.

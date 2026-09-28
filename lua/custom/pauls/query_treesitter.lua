@@ -1,5 +1,3 @@
-print 'hello from query tree'
-
 local ts = vim.treesitter
 function getTSCaptures(query, bufnr)
   -- Temporarily open the buffer in a window. This is needed since injected languages are only detected when opening the file.

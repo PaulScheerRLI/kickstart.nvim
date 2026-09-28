@@ -1,5 +1,13 @@
 {
   "plugins": {
+    "django-plus.vim": {
+      "rev": "220cfbc03e89c636606f0f4bc89f8135be5f765e",
+      "src": "https://github.com/tweekmonster/django-plus.vim"
+    },
+    "hello.nvim": {
+      "rev": "955610efddb647be423780230010e068e21c94e2",
+      "src": "/home/ubuntu/.config/nvim/hello.nvim"
+    },
     "mason.nvim": {
       "rev": "57e5a8addb8c71fb063ee4acda466c7cf6ad2800",
       "src": "https://github.com/mason-org/mason.nvim"

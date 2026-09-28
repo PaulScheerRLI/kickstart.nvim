@@ -475,6 +475,7 @@ return {
   },
   {
     'theHamsta/nvim-dap-virtual-text',
+    event="VeryLazy",
     config = function()
       require('nvim-dap-virtual-text').setup {
         enabled = false, -- enable this plugin (the default)

@@ -1,3 +1,4 @@
+local start_time = vim.uv.hrtime()
 local function get_nvim_open_level()
   local Path = require 'plenary.path' -- Requires plenary.nvim
   local cwd = Path:new(vim.fn.getcwd()):absolute()
@@ -65,7 +66,8 @@ vim.o.suffixesadd = vim.o.suffixesadd .. '.md,.html'
 
 if get_nvim_open_level() >= min_level then
   vim.o.path = vim.o.path .. '**'
-  print 'path has been appended with cwd'
+  -- vim.print 'path has been appended with cwd'
+      require('fidget').notification.notify('custom/init.lua', vim.log.levels.INFO, { annote = ('path appebded')})
 end
 vim.o.formatlistpat = [[^\s*[0-9\-\+\*]\+[\.\)]*\s\+]]
 -- NOTE: This destroys python diffing when tabbing
@@ -299,23 +301,12 @@ vim.api.nvim_create_autocmd('WinEnter', {
   end,
 })
 
-vim.opt.signcolumn = 'yes:1'
 -- sets the minimum amount of numbers
+vim.opt.signcolumn = 'yes:1'
+
+
 local tokyonight_moon = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
-
 vim.api.nvim_set_hl(0, 'StatusBorder', { bg = tokyonight_moon.inactive.c.bg })
-
--- Change the background of inactive lualine/statusline to slightly darker
---'%#StatusBorder#%'
--- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . ' ' : v:lnum) : ''}%s│%T"
--- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? @SignCb@%s : v:lnum) : ''}%=│%T"
--- vim.opt.statuscolumn = '%s%=%l│'
-
--- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
--- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s"
--- statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '  ' : v:lnum) : ''}%=%s│%T"
-vim.print 'status col set in custom.init'
--- vim.opt.statuscolumn = "%=%{v:virtnum < 1 ? (v:relnum ? v:relnum : v:lnum < 10 ? v:lnum . '' : v:lnum) : ''}%"
 local tokyonight = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
 
 -- for netwr
@@ -525,7 +516,12 @@ vim.api.nvim_create_autocmd('ModeChanged', {
   end,
 })
 
-require 'custom.completfunc'
-require 'custom.edit_location_list'
-require 'custom.query_treesitter'
-require 'custom.substitute'
+require 'custom.pauls.completfunc'
+require 'custom.pauls.edit_location_list'
+require 'custom.pauls.query_treesitter'
+require 'custom.pauls.substitute'
+require 'custom.pauls.django_helpers'
+require 'custom.pauls.multicursor'
+
+local end_time = vim.uv.hrtime()
+-- vim.print((end_time-start_time)/10^6)

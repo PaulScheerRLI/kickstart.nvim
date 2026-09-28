@@ -1,4 +1,30 @@
 # kickstart.nvim
+## Pauls Notes
+nvim/plugin
+is automatically sourced, e.g
+nvim/plugin/foo/init.lua is sourced
+
+Is automatically used for lsp configs which are expected to be returned by the modules
+nvim/lsp/foo.lua
+
+to create pynvim plugins use and call :UpdateRemotePlugins
+nvim/rplugin/python3/foo.py
+Example for pynvim
+https://pynvim.readthedocs.io/en/latest/usage/remote-plugins.html
+
+is called per filetype
+ftplugin/python.lua
+
+at the end of sourcing you can use
+after/ftplugin/python.lua
+this will be sourced "last" (there might be other after/... which overwrite your after though)
+
+not 100%
+{
+after/syntax/python.lua
+after/indent/python.lua
+}
+
 
 ## Introduction
 

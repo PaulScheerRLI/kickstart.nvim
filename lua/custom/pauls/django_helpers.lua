@@ -1,0 +1,23 @@
+-- vim.api.nvim_create_autocmd('FileType', {
+--   group = vim.api.nvim_create_augroup('django_matchit_group', { clear = true }),
+--   pattern = {'htmldjango', 'html'},
+--   callback = function()
+--     local django = table.concat({
+--       [[\%({%\s*\)\@<=if\>:\%({%\s*\)\@<=elif\>:\%({%\s*\)\@<=else\>:\%({%\s*\)\@<=endif\>]],
+--       [[\%({%\s*\)\@<=for\>:\%({%\s*\)\@<=empty\>:\%({%\s*\)\@<=endfor\>]],
+--       [[\%({%\s*\)\@<=block\>:\%({%\s*\)\@<=endblock\>]],
+--       [[\%({%\s*\)\@<=with\>:\%({%\s*\)\@<=endwith\>]],
+--       [[\%({%\s*\)\@<=filter\>:\%({%\s*\)\@<=endfilter\>]],
+--       [[\%({%\s*\)\@<=comment\>:\%({%\s*\)\@<=endcomment\>]],
+--       [[\%({%\s*\)\@<=autoescape\>:\%({%\s*\)\@<=endautoescape\>]],
+--       [[\%({%\s*\)\@<=spaceless\>:\%({%\s*\)\@<=endspaceless\>]],
+--       [[\%({%\s*\)\@<=verbatim\>:\%({%\s*\)\@<=endverbatim\>]],
+--     }, ',')
+--
+--     if vim.b.match_words and vim.b.match_words ~= '' then
+--       vim.b.match_words = vim.b.match_words .. ',' .. django
+--     else
+--       vim.b.match_words = django
+--     end
+--   end,
+-- })

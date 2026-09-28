@@ -68,6 +68,7 @@ return {
     -- vim-slime's one-time TermOpen/TermClose tracking always registers,
     -- regardless of which backend we actually end up using.
     vim.g.slime_target = 'neovim'
+    vim.g.slime_bracketed_paste = 1
   end,
   config = function()
     -- Now that the plugin has loaded (and channel tracking is wired up

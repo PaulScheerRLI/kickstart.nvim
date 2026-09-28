@@ -41,17 +41,19 @@ vim.schedule(function()
 
   -- vim.lsp.enable 'basedpyright'
   vim.lsp.enable 'dart_lsp'
-  vim.lsp.config('pyright', {
-    settings = {
-      basedpyright = {
-        analysis = {
-          autoSearchPaths = false,
-          typeCheckingMode = 'off',
-          useLibraryCodeForTypes = false,
-        },
-      },
+  -- django lsp. self made config https://github.com/patrick91/django-lsp
+  vim.lsp.config('django_lsp', {
+    cmd = { '/home/ubuntu/dev/rust/django-lsp/target/release/django-lsp' },
+    root_markers = {
+      'manage.py',
+      'pyproject.toml',
+      'requirements.txt',
+      '.git',
     },
+    filetypes = { 'python' },
   })
+  vim.lsp.enable('django_lsp')
+
   vim.lsp.config('harper_ls', {
     -- Like this??
     diagnosticSeverity = 'error',
@@ -66,7 +68,22 @@ vim.schedule(function()
       },
     },
   })
-  vim.lsp.enable 'pyright'
+
+  vim.lsp.config('harper_ls', {
+    -- Like this??
+    diagnosticSeverity = 'error',
+
+    settings = {
+      harper_ls = {
+        linters = {
+          SentenceCapitalization = false,
+          SpellCheck = false,
+        },
+        diagnosticSeverity = 'error',
+      },
+    },
+  })
+  vim.lsp.enable 'pyrefly'
   -- vim.lsp.enable 'pyright'
   vim.lsp.config('efm', {
     capabilities = capabilities,
@@ -161,7 +178,7 @@ vim.lsp.enable('harper_ls', false)
 -- Used for better spellchecking
 vim.lsp.config('ltex_plus', {
   cmd = { 'ltex-ls-plus' },
-  filetypes = filetypes,
+  filetypes = {"*"},
   root_markers = { '.git' },
   get_language_id = get_language_id,
   -- NOTE: it seems like the used settings are ltex and not ltex_plus. maybe because the underlying lsp is still the same?

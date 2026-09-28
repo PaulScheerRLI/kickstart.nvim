@@ -28,7 +28,7 @@ return {
       },
 
       -- Whether to print session path after action
-      verbose = { read = true, write = true, delete = true },
+      verbose = { read = false, write = true, delete = true },
     }
   end,
 

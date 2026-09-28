@@ -1,0 +1,37 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run django tests",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": "${input:args}",
+            "justMyCode": true,
+            "exceptionOptions": [
+                {
+                    "breakMode": "${input:breakMode}"
+                }
+            ]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "breakMode",
+            "type": "pickString",
+            "description": "Auto Breakpoint Mode: ",
+            "options": [
+                "userUnhandled",
+                "",
+                "uncaught"
+            ],
+            "default": "uncaught"
+        },
+        {
+            "id": "args",
+            "type": "promptString",
+            "description": "Extra args: ",
+            "default": ""
+        }
+    ]
+}
