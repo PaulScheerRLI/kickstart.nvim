@@ -10,6 +10,7 @@ vim.keymap.set({ 'x', 'n' }, '<leader>*', function()
 end, { desc = 'Set multicursor on all matches for current word or selection' })
 
 vim.keymap.set('n', { '<Esc>', '<M-q>' }, function()
+    vim.cmd('nohlsearch')
   local mc_ns = vim.api.nvim_create_namespace 'nvim.multicursor'
   vim.api.nvim_buf_clear_namespace(0, mc_ns, 0, -1)
 end, { noremap = true, desc = 'Clear all multicursors' })
