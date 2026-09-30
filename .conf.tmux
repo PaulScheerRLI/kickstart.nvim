@@ -1,8 +1,29 @@
 # Undercurl
 set -g default-terminal "${TERM}"
 
+
 set -as terminal-overrides ',*:Smulx=\E[4::%p1%dm'  # undercurl support
-set -as terminal-overrides ',*:Setulc=\E[58::2::::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m'  # underscore colours - needs tmux-3.0+
+# Extended underline styles (single, double, curly, dotted, dashed)
+set -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m'  # underscore colours - needs tmux-3.0
+
+
+
+if-shell 'test -n "$WSL_DISTRO_NAME"' { # Check if we are in WSL
+  set -as terminal-overrides ',*:Setulc=\E[58::2::::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m' # underscore colours - needs tmux-3.0 (wsl2 in Windows Terminal)
+}
+
+# Overline
+set -as terminal-overrides ',*:Smol=\E[53m'
+set -as terminal-overrides ',*:Rmol=\E[55m'
+
+# Hyperlinks (OSC 8) - not doing anything 
+set -as terminal-overrides ',*:Ms=\E]8;;%p1%s\E\\'
+
+# https://justin.abrah.ms/configs/tmux.html
+set -g allow-passthrough on
+set -as terminal-features ',xterm*:hyperlinks'
+set -g focus-events on
+
 # Enable 24 bit true colors
 set -ga terminal-overrides ',*:Tc'
 
