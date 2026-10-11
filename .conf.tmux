@@ -6,6 +6,10 @@ set -as terminal-overrides ',*:Smulx=\E[4::%p1%dm'  # undercurl support
 # Extended underline styles (single, double, curly, dotted, dashed)
 set -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m'  # underscore colours - needs tmux-3.0
 
+# https://github.com/jesseduffield/lazygit/issues/3434   cursor flicker without it
+set-option -g terminal-features ",xterm-256color:Sync,tmux-256color:Sync"
+# https://neovim.io/doc/user/tui/#tui-cursor-shape -- nvim cursor does not wnat to change in tmux
+set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
 
 
 if-shell 'test -n "$WSL_DISTRO_NAME"' { # Check if we are in WSL
@@ -102,9 +106,18 @@ bind-key -n 'C-\' if-shell '[ "$(tmux list-panes | wc -l | bc)" = 1 ]' {
 # List of plugins
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
-set -g @plugin 'fabioluciano/tmux-tokyo-night'
 set -g @plugin 'tmux-plugins/tmux-yank'
 set -g @plugin 'christoomey/vim-tmux-navigator'
+
+set -g @plugin 'fabioluciano/tmux-tokyo-night'
+
+# # PowerKit plugin
+# set -g @plugin 'fabioluciano/tmux-powerkit'
+# # Basic configuration
+# set -g @powerkit_plugins "datetime,battery,cpu,memory,git,hostname"
+# set -g @powerkit_theme "tokyo-night"
+# set -g @powerkit_theme_variant "night"
+
 
 # Other examples:
 # set -g @plugin 'github_username/plugin_name'
@@ -118,4 +131,5 @@ run '~/.tmux/plugins/tpm/tpm'
 # Weaken the tab incdicator for inactive tabs
 # Overrides tokyo-night theme (must be after run line)
 set -g window-status-format '  #I:#W  '
+
 

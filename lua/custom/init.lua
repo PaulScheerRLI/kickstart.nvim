@@ -67,7 +67,7 @@ vim.o.suffixesadd = vim.o.suffixesadd .. '.md,.html'
 if get_nvim_open_level() >= min_level then
   vim.o.path = vim.o.path .. '**'
   -- vim.print 'path has been appended with cwd'
-      require('fidget').notification.notify('custom/init.lua', vim.log.levels.INFO, { annote = ('path appebded')})
+  require('fidget').notification.notify('custom/init.lua', vim.log.levels.INFO, { annote = 'path appebded' })
 end
 vim.o.formatlistpat = [[^\s*[0-9\-\+\*]\+[\.\)]*\s\+]]
 -- NOTE: This destroys python diffing when tabbing
@@ -200,21 +200,36 @@ vim.schedule(function()
     }
     -- from vim help clipboard-wsl
     --
-    -- works but is very slow
-    -- vim.g.clipboard = {
-    --   name = 'WslClipboard',
-    --   copy = {
-    --     ['+'] = 'clip.exe',
-    --     ['*'] = 'clip.exe',
-    --   },
-    --   paste = {
-    --     ['+'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-    --     ['*'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-    --   },
-    -- }
+    -- -- works but is very slow
     if vim.env.TMUX ~= nil then
       vim.opt.clipboard = 'unnamedplus'
-      vim.g.clipboard = 'tmux'
+
+    vim.g.clipboard = {
+      name = 'win32yank-wsl',
+      copy = {
+        ['+'] = 'win32yank.exe -i --crlf',
+        ['*'] = 'win32yank.exe -i --crlf',
+      },
+      paste = {
+        ['+'] = 'win32yank.exe -o --lf',
+        ['*'] = 'win32yank.exe -o --lf',
+      },
+      cache_enabled = 1,
+    }
+      -- vim.g.clipboard = 'tmux'
+
+      -- vim.g.clipboard = {
+      --   name = 'WslClipboard',
+      --   copy = {
+      --     ['+'] = 'clip.exe',
+      --     ['*'] = 'clip.exe',
+      --   },
+      --   paste = {
+      --     ['+'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+      --     ['*'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+      --   },
+      --   cache_enabled = 0,
+      -- }
       -- vim.g.clipboard = {
       --   name = 'tmux',
       --   copy = {
@@ -303,7 +318,6 @@ vim.api.nvim_create_autocmd('WinEnter', {
 
 -- sets the minimum amount of numbers
 vim.opt.signcolumn = 'yes:1'
-
 
 local tokyonight_moon = require 'lualine.themes.tokyonight' -- Change the background of inactive lualine/statusline to slightly darker
 vim.api.nvim_set_hl(0, 'StatusBorder', { bg = tokyonight_moon.inactive.c.bg })
@@ -525,3 +539,15 @@ require 'custom.pauls.multicursor'
 
 local end_time = vim.uv.hrtime()
 -- vim.print((end_time-start_time)/10^6)
+--
+
+vim.api.nvim_create_user_command('CreateAutoCmd', function()
+  local event = vim.fn.input 'AutoCmd for Event?(e.g. BufWritePost)'
+  local cmd = vim.fn.input "vim.cmd()? ,e.g. '!python %'"
+  vim.api.nvim_create_autocmd(event, {
+    group = vim.api.nvim_create_augroup('dynamicautocmd', { clear = true }),
+    callback = function()
+      vim.cmd(cmd)
+    end,
+  })
+end)

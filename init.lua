@@ -165,6 +165,7 @@ vim.opt.confirm = true
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
+-- NOTE: Overwritten in multicursor, where the it also disables multicursor in normal mode
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
@@ -1151,7 +1152,12 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      require('mini.surround').setup {
+
+        mappings = {
+          replace = 'srr', -- Replace surrounding
+        },
+      }
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,

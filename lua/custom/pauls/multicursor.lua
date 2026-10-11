@@ -17,9 +17,9 @@ end, { noremap = true, desc = 'Clear all multicursors' })
 
 --
 -- Reset old Q behavior of replaying last recordec macro
-vim.keymap.set('n', 'Q', function()
-  local reg = vim.fn.reg_recorded()
-  return reg == '' and '' or ('@' .. reg)
-end, { expr = true })
-
-vim.keymap.set('x', 'Q', "mode() ==# 'V' ? ':normal! @<C-R>=reg_recorded()<CR><CR>' : 'Q'", { silent = true, expr = true, desc = ':help v_Q-default' })
+-- vim.keymap.set('n', 'Q', function()
+--   local reg = vim.fn.reg_recorded()
+--   return reg == '' and '' or ('@' .. reg)
+-- end, { expr = true })
+--
+-- vim.keymap.set('x', 'Q', "mode() ==# 'V' ? ':normal! @<C-R>=reg_recorded()<CR><CR>' : 'Q'", { silent = true, expr = true, desc = ':help v_Q-default' })
